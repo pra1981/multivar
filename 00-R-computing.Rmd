@@ -1,0 +1,288 @@
+---
+title: "01 - Introduction to Computing using R"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  beamer_presentation:
+    theme: "Boadilla"
+    colortheme: "seagull"
+    fonttheme: "serif"
+  #ioslides_presentation: default
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Why R
+
+- `R` offers a powerful and appealing interactive environment for exploring data, running simulations, etc.  
+
+\itemsep0em
+
+- `R` is platform independent meaning it is available on Windows, Mac, and Linux.  
+
+\itemsep0em
+
+- `R`` has excellent resources both online (just google any issue/question) and using help(...), e.g. `help(lm)`.  
+
+\itemsep0em
+
+- `R` is not a black box software, i.e., you can trace how a function or package works by following the {\tt R} script, e.g. `lm()`
+
+
+## R as a calculator
+
+```{r}
+# create an integer sequence 
+3:7 
+# create an sequence from 0 to 3 with 0.5 increment 
+seq(0,3,by=0.5) 
+# create a repeated sequence 
+rep(pi,4)
+# Basic Operations
+(2-3)*(3/4)
+```
+
+
+## Concatenate operator
+
+```{r}
+c(6,20,-3) # numbers 
+c(log(100), log10(100))
+c("words","are","wind") # strings 
+```
+
+## Variable assignment, common operator
+
+```{r}
+a <- 3 
+# is the same as 
+a -> x 
+# and x = 3
+b <- 1:3; c <- 2:4
+a + b # scalar multiplication
+b * c # entrywise multiplication
+```
+
+
+## Matrices
+
+```{r}
+# store the vector (1, 2, 3, 4, 5, 6, 7, 8) 
+# into a 2x4 matrix named A
+# nrow = # of rows, ncol = # of columns
+A <- matrix(c(1,2,3,4,5,6,7,8), nrow = 2, ncol = 4) 
+colnames(A) <- c('C1', 'C2', 'C3', 'C4')
+A
+B <- matrix(1:8, nrow = 2, ncol = 4, byrow = TRUE) # 1:8 is another way of generating  the vector
+B
+```
+
+## Extracting matrix entries
+
+```{r}
+A[1, 3]   # row 1, col 3 entry
+A[1, 1:3] # row 1, col 1 to 3
+A[1, ]    # row 1
+A[ , 3]   # col 3
+```
+
+## Data Frames
+
+Data frames are similar in concept to Excel spreadsheet where each column represents a variable or measurement and each row represents and observational unit. 
+
+We can check the structure of the data frame using the function `str()`. The output includes data information such as
+
+* dimension (number of observations and variables), 
+* variable names
+* data type 
+    - `logi`: logical, `TRUE` or `FALSE`
+    - `int`: integer
+    - `num`: numerical 
+    - `chr`: character
+    - `Factor`: Factors are how R keeps track of categorical variables.
+
+
+## 
+
+Use `data.frame()`:
+
+```{r}
+stark.kids <- data.frame(
+  Name = c("Jon", "Sansa", "Arya", "Bran"),
+  Age = c(24, 20, 18, 17)
+)
+str(stark.kids)
+stark.kids
+```
+
+## Variable names
+
+We can also use the names of variables in a data frame to access the variable using the notation `data$name`.
+
+```{r }
+stark.kids$Name
+mean(stark.kids$Age) # average age
+head(stark.kids, 2) # display first 2 rows
+```
+
+
+## Reading data in R: Example 1.6 Lizard Size Data
+
+Data analysis using R often involves importing or reading data at some point.
+
+```{r}
+# File "T1-3.dat"" should be in your working directory
+# Specify the working directory
+# Session > Set Working Directory > Choose Directory
+lizard <- read.table("T1-3.dat")
+# assign names to the column variables
+colnames(lizard) <- c("mass", "svl", "hls") 
+head(lizard, 3) # display first 3 rows
+```
+
+## Reading CSV data in R
+
+`Goind Wireless` data reported the estimated percentage of house- holds with only wireless phone service (no land line) for the 50 U.S. states and the District of Columbia.
+
+The URL of the data set `Going Wireless` that we need to read the data is (<https://goo.gl/72BKSf>).
+
+```{r 16-wk02}
+wireless.data <- read.csv("https://goo.gl/72BKSf", 
+                          header = TRUE)
+str(wireless.data) # check structure
+```
+
+## Simple data summaries
+
+```{r}
+height <- 58:72
+weight <- c(115,117,120,123,126,129,132,135,139,
+				142,146,150,154,159,164)
+mean(height) # mean of height 
+var(height)  # variance of height 
+length(height)
+cor(height, weight) # correlation
+```
+
+## Writing Functions in R
+
+```{}
+function.name <- function(arglist){
+    expr
+}
+```
+
+```{r}
+my_fun <- function( x, y ){
+	  x + y 
+}
+my_fun(1,2)
+my_fun2 <- function(x, y) x*y
+my_fun2(10, 23)
+```
+If the body of the function is only one line, then braces aren't necessary.
+
+
+## `apply()` function
+
+Applies a function to sections of an array (or matrix) and returns the results in an array (or matrix). 
+
+```{r}
+# create a matrix of twenty rows, two columns
+dat <- cbind(rbinom(n = 20, size = 5, prob = 0.3), 
+             rnorm(n = 20)) 
+str(dat)
+apply(dat, MARGIN = 2, var) # apply variance to columns
+```
+
+
+## Conditionals
+
+```{}
+if (arglist is satisfied) {   
+	do this 
+} else {   
+	do this instead
+}
+```
+```{r}
+my_cond <- function( x ){ 
+  # function that tells whether a value is > 20.
+  if (x > 20) {
+	  print("x is greater than 20") 
+  } else {   
+	  print("x is less than 20") 
+  } 
+} 
+my_cond(10)
+```
+
+## Loops in `R`
+
+For loops iterate through each item in a vector or a list:
+
+```{}
+for (x in vector) {
+  do this
+}
+```
+The colon creates a vector, passing each integer from 0 to 4 to the loop.
+```{r}
+for (x in 0:4) print(x)
+```
+Two more loops in `R` are `repeat()` and `while()`. Search this!
+
+
+## Packages in R! Treasure troves of goodies
+
+- An `R` package is a set of related functions and help files, bundled
+together.  
+
+- Normally, all functions within a single package are related: for example, the  `stats` package contains functions for statistical analysis.  
+
+- There are few public repositories of packages: the largest is CRAN hosted by the `R` foundation with more than 4000 freely packages.  
+
+- To use a package, you first need to install it into `R`.  
+- Among other ways, you can also install `R` packages directly through `R` console using `install.packages()`.   
+
+- To load up an `R` package, use the `library()`. 
+
+
+## Learn More
+
+1. [An Introduction to R by WN Venables](https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf)
+
+\itemsep0em
+
+2. [Using R Markdown for Class Reports](http://www.stat.cmu.edu/~cshalizi/rmarkdown/)
+
+\itemsep0em
+
+3. [Quick R website](http://www.statmethods.net/)
+
+\itemsep0em
+
+4. [Online learning by RStudio](https://www.rstudio.com/online-learning/)
+
+\itemsep0em
+
+5. [R for Data Science by H Wickham](http://r4ds.had.co.nz/)
+
+\itemsep0em
+
+6. Just google it!

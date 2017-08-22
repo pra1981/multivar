@@ -1,0 +1,386 @@
+---
+title: "01 - What is Multivariate Data?"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  beamer_presentation:
+    theme: "Boadilla"
+    colortheme: "seagull"
+    fonttheme: "serif"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Multivariate Methods
+
+Multivariate data includes simultaneous measurements on many variables.  
+
+Most multivariate analysis involves analysis of measurements obtained with out actively controlling or manipulation any of the variables on which the measurements are made.
+
+1. Data reduction or structural simplification  
+2. Sorting and grouping  
+3. Investigation of the dependence among variables  
+4. Prediction  
+5. Hypothesis construction and testing
+
+
+## Organization of Data
+
+* $n$ measurements on $p\geq1$ number of variables  
+
+* $x_{jk}$ = measurement of the kth variable on the jth term  
+
+* Let $\mathbf{X}_{n\times p}$ matrix that contains the data consisting of all obs on all variables  
+
+$$
+\mathbf{X}=\left[\begin{array}{cccccc}
+x_{11} & x_{12} & \cdots & x_{1k} & \cdots & x_{1p}\\
+x_{21} & x_{22} & \cdots & x_{2k} & \cdots & x_{2p}\\
+\vdots & \vdots &  & \vdots &  & \vdots\\
+x_{j1} & x_{j2} & \cdots & x_{jk} & \cdots & x_{jp}\\
+\vdots & \vdots &  & \vdots &  & \vdots\\
+x_{n1} & x_{n2} & \cdots & x_{nk} & \cdots & x_{np}
+\end{array}\right]
+$$
+
+
+## Descriptive Statistics  
+
+Sample mean, sample variance 
+
+$$ 
+\bar{x}_{k}=\frac{1}{n}\sum_{j=1}^{n}x_{jk},\,\,\,\,s_{k}^{2}=\frac{1}{n}\sum_{i=1}^{n}(x_{jk}-\bar{x}_{k})^{2},\,\,\,k=1,2,\ldots,p
+$$
+
+
+Sample covariance measures linear association between the ith and kth variables.  
+$$
+s_{ij}=\frac{1}{n}\sum_{j=1}^{n}(x_{ji}-\bar{x}_{i})(x_{jk}-\bar{x}_{k}), \quad i,k=1,2,\ldots,p
+$$
+
+Sample correlation coefficient is a standardized version of the sample covariance  
+$$
+r_{ik}=\frac{s_{ik}}{\sqrt{s_{ii}}\sqrt{s_{kk}}}, \quad i,k=1,2,\ldots,p
+$$
+
+
+##  Arrays of Basic Descriptive Statistics
+
+
+Sample mean vector $(p\times1)$  
+$$
+\bar{\mathbf{x}}=\left[\begin{array}{c}
+\bar{x}_{1} \\
+\bar{x}_{2} \\ 
+\vdots  \\
+\bar{x}_{p}\end{array}\right]
+$$
+
+Sample variance covariance matrix  
+$$
+\mathbf{S}_{n}=\left[\begin{array}{cccc}
+s_{11} & s_{12} & \cdots & s_{1p}\\
+s_{21} & s_{22} & \cdots & s_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+s_{p1} & s_{p2} & \cdots & s_{pp}
+\end{array}\right]
+$$
+
+## 
+
+Sample correlation matrix  
+$$
+\mathbf{R}=\left[\begin{array}{cccc}
+1 & r_{12} & \cdots & r_{1p}\\
+r_{21} & 1 & \cdots & r_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+r_{p1} & r_{p2} & \cdots & 1
+\end{array}\right]
+$$
+
+
+##  Intuition and pitfalls for correlation 
+
+Correlation = LINEAR association
+
+![Correlation = LINEAR association](figures/correlation.png)
+
+
+## Random Vectors \S 2.5, 2.6
+
+Suppose $\mathbf{X}$ is a $(p\times 1)$ random vector where each element is a r.v. with its own probability distribution.  
+
+$$
+\mathbf{X}=
+\begin{bmatrix}
+X_{1}\\
+X_{2}\\
+\vdots\\
+X_{p}
+\end{bmatrix}, \quad \quad
+E(\mathbf{X})=
+\begin{bmatrix}
+\mu_{1}\\
+\mu_{2}\\
+\vdots\\
+\mu_{p}
+\end{bmatrix}
+$$  
+
+
+Marginal Means:
+$$
+\mu_{i}	=E(X_{i})=\begin{cases}
+\int_{-\infty}^{\infty}x_{i}f_{i}(x_{i})dx_{i} & \,X_{i}\,\text{is continuous r.v. with pdf }f_{i}(x_{i})\\
+\sum_{\text{all}\,x_{i}}x_{i}p_{i}(x_{i}) & \,X_{i}\,\text{is discrete r.v. with pmf }p_{i}(x_{i})
+\end{cases} 
+$$
+Marginal Variances:
+$$
+\sigma_{i}^{2}	=E(X_{i}-\mu_{i})^{2}=\begin{cases}
+\int_{-\infty}^{\infty}(x_{i}-\mu_{i})^{2}f_{i}(x_{i})dx_{i}\\
+\sum_{\text{all}\,x_{i}}(x_{i}-\mu_{i})^{2}p_{i}(x_{i})
+\end{cases}
+$$
+
+
+
+
+## Joint Distribution Function and Covariance
+
+The behavior of any pair of random variables $X_{i}$ and $X_{k}$ is described by their joint prob function $f_{ik}(x_{i},x_{k})$ if both are cont and $p_{ik}(x_{i},x_{k})$ if both are discrete.
+
+
+A measure of linear association between $X_{i}$ and $X_{k}$ is the covariance 
+$$
+\begin{aligned}
+\sigma_{ik}	&= Cov(X_{i},X_{k}) \\
+	&= E(X_{i}-\mu_{i})(X_{k}-\mu_{k}) \\
+ &= \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}(x_{i}-\mu_{i})(x_{k}-\mu_{k})f_{ik}(x_{i},x_{k})dx_{i}dx_{k}, \quad \text{if}\,X_{i},X_{k}\,\,\text{are cont} \\
+ &= \sum_{\text{all}\,x_{i}}\sum_{\text{all}\,x_{k}}(x_{i}-\mu_{i})(x_{k}-\mu_{k})p_{ik}(x_{i},x_{k}), \quad \text{if}\,X_{i},X_{k}\,\,\text{are discrete}
+\end{aligned}
+$$
+
+
+## Covariance Matrices
+
+The population covariance matrix 
+$$
+\Sigma=E(\mathbf{X}-\mathbf{\mu})(\mathbf{X}-\mathbf{\mu})'=\left[\begin{array}{cccc}
+\sigma_{11} & \sigma_{12} & \cdots & \sigma_{1p}\\
+\sigma_{21} & \sigma_{22} & \cdots & \sigma_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+\sigma_{p1} & \sigma_{p2} & \cdots & \sigma_{pp}
+\end{array}\right]
+$$
+
+1. If $X_{i}$ and $X_{k}$ are independent, then $\sigma_{ik}=0$.
+
+
+2. The converse is not true, in general. The converse holds for the multivariate normal.
+
+
+3. The multivariate normal distribution is completely specified once the mean vector $\mu$ and variance-covariance matrix $\Sigma$ are specified. More on this later.
+
+
+## Population Correllation Matrix
+
+For $i\neq j$, the correlation between variables $X_{i}$ and $X_{j}$
+is 
+\[
+\rho_{ij}=\frac{\sigma_{ij}}{\sqrt{\sigma_{ii}}\sqrt{\sigma_{jj}}}
+\]
+
+Population correlation matrix and standard deviation matrix.
+\[
+\mathbf{\rho}=\left[\begin{array}{cccc}
+1 & \rho_{12} & \cdots & \rho_{1p}\\
+\rho_{21} & 1 & \cdots & \rho_{21}\\
+\vdots & \vdots & \ddots & \vdots\\
+\rho_{p1} & \rho_{p2} & \cdots & 1
+\end{array}\right],\,\,\,\,\,\,\,\mathbf{V}^{1/2}=\left[\begin{array}{cccc}
+\sqrt{\sigma_{11}} & 0 & \cdots & 0\\
+0 & \sqrt{\sigma_{22}} & \cdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \cdots & \sqrt{\sigma_{pp}}
+\end{array}\right]
+\]
+
+
+## Example: Multinomial Distribution
+
+ Let $\mathbf{X}=(X_{1},X_{2},X_{3})$ follow the multinomial distribution
+with probability vector $(p_{1},p_{2},p_{3})$ with $p_{1}+p_{2}+p_{3}=1$.
+\[
+\begin{aligned}
+f(\mathbf{x}) &= f(x_{1},x_{2},x_{3}) \\
+& =\begin{cases}
+p_{1}^{x_{1}}p_{2}^{x_{2}}p_{3}^{x_{3}}, & \text{where}\,\,\mathbf{x}\in\left\{ (1,0,0),(0,1,0),(0,0,1)\right\} \\
+0, & \text{elsewhere}
+\end{cases}
+\end{aligned}
+\]
+
+1. Find the mean vector $\mu$ and variance-covariance matrix $\Sigma$.
+
+2. Find the correlation matrix $\rho$.
+
+
+## Example 1.6 Lizard Size Data
+
+```{r}
+# File "T1-3.dat"" should be in your working directory
+# Specify the working directory
+# Session > Set Working Directory > Choose Directory
+lizard <- read.table("T1-3.dat")
+# assign names to the column variables
+colnames(lizard) <- c("mass", "svl", "hls") 
+head(lizard) # display first 6 rows
+```
+
+## Example 1.6 - Numerical Summary
+
+```{r}
+colMeans(lizard) # Sample Mean Xbar of the three variables 
+# apply function computes summary by row or column
+apply(lizard, MARGIN = 2, median) # median, MARGIN = 2 for column summary
+apply(lizard, MARGIN = 2, var) # sample variance
+```
+
+## Example 1.6 - Numerical Summary
+
+
+```{r}
+cov(lizard)  # Sample Covariance matrix S 
+cor(lizard)  # Sample Correlation matrix R 
+```
+
+> What is the difference between the Sample Covariance Matrix and Sample Correlation Matrix?
+
+
+## Example 1.6 - Graphical Summary
+
+Install the package `GGally` to use the function `ggpairs`
+```{r 01-fg01, fig.height=2.5, fig.width=3.5}
+GGally::ggpairs(lizard)
+```
+
+## Load data from the web using its URL
+
+One waiter recorded information about each tip he received over a period of a few months working in one restaurant.
+```{r }
+tips <- read.csv(
+  "http://siue.edu/~jpailde/tips.csv", header = TRUE)
+str(tips) # check data structure
+```
+
+
+##
+
+```{r 01-fg02, fig.height=4, fig.width=5.5}
+GGally::ggpairs(tips[,1:3])
+```
+
+
+## Properties of Expected Value
+
+1. The linear combination 
+$$
+\mathbf{c'X}=c_{1}X_{1}+\cdots+c_{p}X_{p},
+$$
+where $c_{i}$ are constants, has 
+
+$$
+\begin{aligned}
+E(\mathbf{c'X}) & =\mathbf{c'\mu}\\
+Var(\mathbf{c'X}) & =\mathbf{c'}\Sigma_{X}\mathbf{c}
+\end{aligned}
+$$
+
+2. Let $\mathbf{C}$ be a $q\times p$ matrix of constants. The linear
+combinations $\mathbf{Z=CX}$ have
+
+$$
+\begin{aligned}
+\mathbf{\mu}_{\mathbf{Z}} & =E(\mathbf{Z})=E(\mathbf{CX})=\mathbf{C\mu_{X}}\\
+\Sigma_{\mathbf{Z}} & =Cov(\mathbf{Z})=Cov(\mathbf{CX})=\mathbf{C}\Sigma_{X}\mathbf{C}'
+\end{aligned}
+$$
+
+
+
+## Properties of Expected Value
+
+Result (1) is a special case of (2). To show (2), we need the following
+results: 
+
+Let $A_{n\times m}$, $B_{m\times n}$, $C_{m\times n}$.
+
+Then, 
+
+$$
+A\cdot(B-C)=A\cdot B-A\cdot C
+$$   
+
+$$
+(A\cdot B)'=B'\cdot A'
+$$
+
+
+## Exercise 2.41
+
+Let $\mathbf{X}'=[X_{1},X_{2},X_{3},X_{4}]$ with mean vector $\mu_{X}'=[3,2,-2,0]$
+and variance-covariance matrix 
+\[
+\text{(Case I})\,\,\Sigma_{X}=\left[\begin{array}{cccc}
+3 & 0 & 0 & 0\\
+0 & 3 & 0 & 0\\
+0 & 0 & 3 & 0\\
+0 & 0 & 0 & 3
+\end{array}\right]
+\]
+
+\[\text{(Case II})\,\,\Sigma_{X}=\left[\begin{array}{cccc}
+3 & 1 & 1 & 1\\
+1 & 3 & 1 & 1\\
+1 & 1 & 3 & 1\\
+1 & 1 & 1 & 3
+\end{array}\right]
+\]
+
+## Exercise 2.41
+
+1. Under each cases, find $E(\mathbf{AX})$ and $Cov(\mathbf{AX})$ where
+\[
+\mathbf{A}=\left[\begin{array}{cccc}
+1 & -1 & 0 & 0\\
+1 & 1 & -2 & 0\\
+1 & 1 & 1 & -2
+\end{array}\right]
+\]
+
+2. Let $\mathbf{X}^{(1)}=[X_{1},X_{2}]'$ and $\mathbf{X}^{(2)}=[X_{3},X_{4}]'$.
+Under Case II, find $Cov(\mathbf{A}\mathbf{X}^{(1)},\mathbf{BX^{\mathbf{(2)}}})$
+where 
+\[
+\mathbf{A}=[-1,3]\,\,\,\text{and}\,\,\,\mathbf{B}=\left[\begin{array}{cc}
+1 & 0\\
+-1 & 2
+\end{array}\right]
+\]
