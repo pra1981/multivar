@@ -1,0 +1,241 @@
+---
+title: "02 - Review of Basic Matrix Results"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+classoption: t
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3,
+  fig.width = 4,
+  fig.align = "center",
+  cache = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Review of Basic Matrix Results
+
+Given matrices $\mathbf{A}$ and $\mathbf{B}$ of appropriate dimensions  
+
+1. Transposition: $(\mathbf{A}+\mathbf{B})'=\mathbf{A}'+\mathbf{B}'\,\,\,\,\,(\mathbf{AB})'=(\mathbf{B}'\mathbf{A}')$ 
+
+2. Trace: Given a square matrix $\mathbf{A}$ 
+  * $tr(\mathbf{A})=\sum diag(\mathbf{A})$  
+  * $tr(k\mathbf{A})=k\cdot tr(\mathbf{A})\,\,\,,\,\,\,tr(\mathbf{A}')=tr(\mathbf{A})$  
+  * $tr(\mathbf{A}+\mathbf{B})=tr(\mathbf{A})+tr(\mathbf{B}),\,\,\,\,tr(\mathbf{AB})=tr(\mathbf{BA})$  
+  
+3. Determinant  
+  * $|\mathbf{A}'|=|\mathbf{A}|,\,\,\,|k\mathbf{A}|=k^{n}|\mathbf{A}|,\,\,\,|A^{-1}|=1/|\mathbf{A}|$  
+  * $\left|\begin{array}{cc}
+\mathbf{T} & \mathbf{U}\\
+\mathbf{V} & \mathbf{W}
+\end{array}\right|=|\mathbf{T}|\cdot|\mathbf{W}-\mathbf{V}\mathbf{T}^{-1}\mathbf{U}|$  
+  * $\left|\begin{array}{cc}
+\mathbf{T} & \mathbf{0}\\
+\mathbf{0} & \mathbf{W}
+\end{array}\right|=|\mathbf{T}|\cdot|\mathbf{W}|$
+
+
+## Inverse Matrices
+
+1. Inverse of a sum of Matrices:
+\[
+(\mathbf{R}+\mathbf{STU})^{-1}=\mathbf{R}^{-1}-\mathbf{R}^{-1}\mathbf{S}(\mathbf{T}^{-1}+\mathbf{U}\mathbf{R}^{-1}\mathbf{S})^{-1}\mathbf{U}\mathbf{R}^{-1}
+\]  
+
+2. Inverse of a partitioned matrix:
+\[ 
+\left(\begin{array}{cc}
+\mathbf{T} & \mathbf{U}\\
+\mathbf{V} & \mathbf{W}
+\end{array}\right)^{-1}=\left(\begin{array}{cc}
+\mathbf{T}^{-1}+\mathbf{T}^{-1}\mathbf{U}\mathbf{Q}^{-1}\mathbf{V}\mathbf{T}^{-1} & -\mathbf{T}^{-1}\mathbf{U}\mathbf{Q}^{-1}\\
+-\mathbf{Q}^{-1}\mathbf{V}\mathbf{T}^{-1} & \mathbf{Q}^{-1}
+\end{array}\right)
+\]
+where $\mathbf{Q}=\mathbf{W}-\mathbf{V}\mathbf{T}^{-1}\mathbf{U}$.  
+
+## Linear Independence
+
+1. A list of $v_1, \ldots, v_m$ vectors in $\mathbb{R}^p$ is called **linearly independent** if the only choice of scalars $c_1, \ldots, c_m \in \mathbb{R}$ that makes $c_1 v_1 + \cdots + c_k v_k$ equal 0 vector is $c_1 = \cdots = c_m = 0$.
+
+&nbsp;
+
+2. The (subset) columns $v_1, \ldots, v_j$ of matrix $\mathbf{A}$ is **linearly independent** if the only choice of scalars $c_1, \ldots, c_j \in \mathbb{R}$ that makes $c_1 v_1 + \cdots + c_j v_j$ equal 0 vector is $c_1 = \cdots = c_j = 0$.
+
+&nbsp;
+
+3. The rank of matrix $\mathbf{A}$ is the maximum number of linearly independent columns of $\mathbf{A}$.
+
+
+
+## Eigenvalues and Eigenvectors
+
+1. A scalar $\lambda$ is said to be an **eigenvalue** of $p\times p$
+matrix $\mathbf{A}$ if there exists an $p\times1$ vector $x$ such
+that 
+\[
+\mathbf{Ax}=\lambda\mathbf{x}
+\]
+then $x$ is an **eigenvector** of $\mathbf{A}$. By Cramer's Rule, the eigenvalues $\lambda$ of $\mathbf{A}$ satisfies the characteristic equation
+$$
+|\mathbf{A} - \lambda I| = 0 \quad (\text{Why?})
+$$
+
+* There is a correspondence between square matrices $\mathbf{A}$ and linear transformations $T$ defined by $T(x) = \mathbf{A}x$.  
+
+* Geometrically an eigenvector of $\mathbf{A}$ points in a direction that is stretched by the linear transformation and the eigenvalue is the factor by which it is stretched. If the eigenvalue is negative, the direction is reversed.
+
+## 
+
+2. Given $\mathbf{A}$ with distinct eigenvalues $\lambda_{1},\lambda_{2},\ldots,\lambda_{k}$,
+with multiplicities $t_{1},t_{2},\ldots,t_{k}$.    
+* $Rank(A)$ equals the number of nonzero eigenvalues  
+* $tr(A)=\sum_{i=1}^{k}t_{i}\lambda_{i}$    
+* $|A|=\prod_{i=1}^{k}\lambda_{i}^{t_{i}}$
+
+```{r}
+(A <- matrix(c(13, -4, 2, -4, 11, -2, 2, -2, 8), 3, 3,
+             byrow=TRUE))
+# Use `eigen()` to get the eigenvalues/eigenvectors 
+# pairs. Returns a named list.
+ev <- eigen(A)
+```
+
+##
+
+```{r}
+(values <- ev$values) # extract eigenvalues
+(vectors <- ev$vectors) # extract eigenvectors
+```
+
+The eigenvalues are always returned in decreasing order, and each column of `vectors` corresponds to the elements in `values`.
+
+> [Visualizing Eigenvectors and Eigenvalues](http://setosa.io/ev/eigenvectors-and-eigenvalues/)[^1]
+
+[^1]: [http://setosa.io/ev/eigenvectors-and-eigenvalues/](http://setosa.io/ev/eigenvectors-and-eigenvalues/)
+
+
+
+## Special Matrices
+
+$\mathbf{A}$ is a real symmetric matrix if $\mathbf{A}^T = \mathbf{A}$ and all entries in $\mathbf{A}$ are real numbers.
+
+Properties of a a real symmetric matrix $\mathbf{A}$  
+* all eigenvalues are real    
+* eigenvectors corresponding to a distinct eigenvalues are orthogonal, $x^T_i x_j = 0$ if $\lambda_i \neq \lambda_j$
+
+$$
+\begin{aligned}
+\text{positive definite} & \iff\mathbf{x}'\mathbf{A}\mathbf{x}>0\,\,\,\text{for all vector}\,\,\mathbf{x}\,\,\,\\
+ & \iff\text{all eigenvalues of}\,\mathbf{A}\,\,\text{are}\,\,>0\\
+ & \iff\text{is non-singular}
+\end{aligned}
+$$ 
+
+$$
+\begin{aligned}
+\text{positive semi-definite} & \iff\mathbf{x}'\mathbf{A}\mathbf{x}\geq0\,\,\,\text{for all vector}\,\,\mathbf{x}\,\,\,\\
+ & \iff\text{all eigenvalues of}\,\mathbf{A}\,\,\text{are}\,\,\geq0
+\end{aligned}
+$$
+## Verify properties of eigenvalues/eigenvectors.
+
+Eigenvectors are orthogonal, $V'V = I$
+```{r}
+t(vectors)%*%vectors # same as `crossprod(vectors)`
+zapsmall(crossprod(vectors)) # rounding small #'s
+```
+
+
+## Trace and Determinant of a Matrix in R
+
+```{r message=FALSE}
+library(matrixcalc) # load `matrixcalc` package
+matrix.trace(A)  # trace
+sum(values) # verify with sum of eigenvalues
+det(A) # determinant of a matrix
+prod(values) # verify with product of eigenvalues
+```
+
+
+## Rank and Inverse of a Matrix
+
+```{r warning=FALSE}
+matrix.rank(A) # rank of a matrix, need `matlib`
+sum(values != 0) # number of non-zero eigenvalues
+(A.inv <- matrix.inverse(A)) # inverse
+```
+
+## 
+
+Inverse of $A$: $A^{-1} A = I$
+```{r}
+zapsmall(A.inv %*% A) # check
+```
+Check whether $A$ Positive Definite and Positive Semi-Definite
+```{r }
+c(is.positive.definite(A), is.positive.semi.definite(A))
+```
+
+
+
+
+## Singular, Idempotent, Orthogonal Matrix
+
+
+**Singular Matrix**: $\mathbf{A}$ $k\times k$ matrix is singular if
+$Rank(\mathbf{A})<k$
+
+**Idempotent matrix**: Let $\mathbf{A}$ be a $k\times k$ matrix, $\mathbf{A}$
+is idempotent if 
+\[
+\mathbf{A}\cdot\mathbf{A}=\mathbf{A}
+\]
+
+**Orthogonal matrix**: A square matrix $A$ is orthogonal if 
+\[
+\mathbf{A}'\mathbf{A}=\mathbf{A}\mathbf{A}'=\mathbf{I_{k}}
+\]
+if $\mathbf{A}$ is non-singular $\mathbf{A}'=\mathbf{A}^{-1}$
+
+
+
+## New Matrix Verification
+
+```{r}
+B <- matrix( c( 2, -1, 2, -1, 2, -1, 2, -1, 2 ),
+             nrow=3, byrow=TRUE )
+c(is.positive.definite(B), is.positive.semi.definite(B))
+eigen(B)$values # one eigenvalue is zero
+c(is.singular.matrix(B), is.idempotent.matrix(B))
+```
+
+## Review other matrix results.
+ 
+1. Our Textbook
+
+2. [The Matrix Cookbook](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274) by Petersen and Pedersen (2012)[^2]
+
+3. [Linear Algebra Abridged](http://linear.axler.net/LinearAbridged.pdf) by Sheldon Axler (2016)[^3]
+
+
+
+
+
+[^2]: [http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=3274)
+
+[^3]: [http://linear.axler.net/LinearAbridged.pdf](http://linear.axler.net/LinearAbridged.pdf)
