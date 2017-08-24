@@ -1,0 +1,134 @@
+---
+title: "Stat 589, Fall 2017, Homework 1"
+author: "Your Name"
+date: "Due Date: August 31, 2017, 20 points"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Directions  
+
+  * Download the (`.Rmd`) file version of this homework from Github. Right click the link and "Save as..." to your desired folder. 
+  
+  * Change the file extension to `.Rmd`. This is important otherwise your file will not be converted to word document.  
+  
+  * This RMarkdown `(.Rmd)` file type is used widely to share R codes and reproduce statistical results. More information is found on this [page](<http://rmarkdown.rstudio.com/articles_docx.html>).
+      - Open this file using RStudio.
+    
+      - Write your name on the header configuration at the top. Replace also the file output into `word_document` so that you can generate a word document instead of an html.
+    
+      - Write your R code inside the [code chunks](<http://rmarkdown.rstudio.com/authoring_rcodechunks.html>) after each question.
+    
+      - Write your comments after the `#` sign.
+    
+      - To generate the word document output, click the button `Knit` and wait for the word document to appear.
+    
+      - RStudio will prompt you to install the `knitr` package.
+    
+  * Submit your completed laboratory exercise using Blackboard's Turnitin feature. Your Turnitin upload link is found on your [Blackboard](<https://bb.siue.edu/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_35_1>) course shell under the Laboratory folder.
+
+
+***
+
+
+
+**Question 1**. Given the random vector 
+$$
+\mathbf{X}=[X_{1},X_{2},X_{3},X_{4},X_{5}]'
+$$
+with mean  
+$$
+\mu=[2,4,-1,3,0]'
+$$ 
+and variance-covariance matrix
+\[
+\Sigma=\left[\begin{array}{ccccc}
+4 & -1 & \frac{1}{2} & -\frac{1}{2} & 0\\
+-1 & 3 & 1 & -1 & 0\\
+\frac{1}{2} & 1 & 6 & 1 & -1\\
+-\frac{1}{2} & -1 & 1 & 4 & 0\\
+0 & 0 & -1 & 0 & 2
+\end{array}\right]
+\]
+Let $\mathbf{X}^{(1)}=[X_{1},X_{2}]'$ and  $\mathbf{X}^{(2)}=[X_{3},X_{4},X_{5}]'$.
+Also, let 
+\[
+\mathbf{A}=\left[\begin{array}{cc}
+1 & -1\\
+1 & 1
+\end{array}\right]\,\,\,\,\text{and}.\,\,\,\,\mathbf{B}=\left[\begin{array}{ccc}
+1 & 1 & 1\\
+1 & 1 & -2
+\end{array}\right]
+\]
+    Use R to find the following  
+        i) $\Sigma^{-1}$ and $\Sigma^{1/2}$  
+        ii) eigenvalvalues and eigenvectors of $\Sigma$  
+        iii) $E(\mathbf{A}\mathbf{X}^{(1)})$   
+        iv) $Cov(\mathbf{A}\mathbf{X}^{(1)})$  
+        v) $E(\mathbf{B}\mathbf{X}^{(2)})$   
+        vi) $Cov(\mathbf{B}\mathbf{X}^{(2)})$  
+        vii) $Cov(\mathbf{A}\mathbf{X}^{(1)},\mathbf{B}\mathbf{X}^{(2)})$
+
+#### Code chunk
+```{r} 
+# Insert your code for this question after this line
+
+
+# last R code line for this question
+```
+  
+***
+
+**Question 2**. Using the vector $\mathbf{b}=[-4,1]'$ and $\mathbf{d}=[1,1]'$, verify
+the extended Cauchy-Scwarz inequality $(\mathbf{b}'\mathbf{d})^{2}\leq(\mathbf{b}'\mathbf{B}\mathbf{b})(\mathbf{d}'\mathbf{B}^{-1}\mathbf{d})$
+if
+\[
+B=\left[\begin{array}{cc}
+2 & -2\\
+-2 & 5
+\end{array}\right].
+\]
+
+#### Code chunk
+```{r} 
+# Insert your code for this question after this line
+
+
+# last R code line for this question
+```
+
+***
+
+**Question 3**. Refer to the data set `T1-7.DAT`. The data consists of average ratings over the course of treatment for patients undergoing radiotherapy.    
+
+| variable | details                            |
+|----------|------------------------------------|  
+| $x_{1}$ | number of symptoms, such as sore throat or nausea |
+| $x_{2}$ | amount of activity, on a 1-5 scale |
+| $x_{3}$ | amount of sleep, on a 1-5 scale  |
+| $x_{4}$ | amount of food consumed, on a 1-3 scale |   
+| $x_{5}$ | appetite, on a 1-5 scale |
+| $x_{6}$ | skin reaction, on a 0-3 scale |
+
+
+  i) Check the structure of the data. Display the first 4 rows and last 5 rows.
+  
+  ii) Describe the data by summarizing each variable numerically.   
+          
+  iii) Construct a scatterplot matrix for all the variables in the data. Describe any possible linear relationships between pairs of variables. Use the function `GGally::ggpairs`.
+          
+  iv) Find the sample covariance matrix $\mathbf{S}_{n}$ and $\mathbf{R}$ arrays. Interpret the pairwise correlations.   
+
+#### Code chunk
+```{r} 
+# Insert your code for this question after this line
+
+
+# last R code line for this question
+```
+
+***
