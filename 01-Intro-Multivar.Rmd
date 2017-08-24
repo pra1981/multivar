@@ -4,11 +4,12 @@ subtitle: "Junvie Pailden"
 author: "SIUE, F2017, Stat 589"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
-  beamer_presentation:
-    theme: "Boadilla"
-    colortheme: "seagull"
-    fonttheme: "serif"
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
   #ioslides_presentation: default
+classoption: t
 ---
 
 ```{r setup, include=FALSE}
