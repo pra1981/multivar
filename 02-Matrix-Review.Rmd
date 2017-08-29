@@ -152,6 +152,8 @@ $$
  & \iff\text{all eigenvalues of}\,\mathbf{A}\,\,\text{are}\,\,\geq0
 \end{aligned}
 $$
+
+
 ## Verify properties of eigenvalues/eigenvectors.
 
 Eigenvectors are orthogonal, $V'V = I$
