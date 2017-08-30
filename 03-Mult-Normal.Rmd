@@ -1,0 +1,360 @@
+---
+title: "03 - Multivariate Normal Distribution"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Multivariate Normal Distribution
+
+$\mathbf{X}=[X_{1},\ldots,X_{p}]'$ has a $p$-dimensional normal
+distribution with $\mathbf{\mu}=E(\mathbf{X})$ and $\Sigma=Var(\mathbf{X})$.
+
+Density function
+\[
+\phi(\mathbf{x})=\frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}e^{-\frac{1}{2}(\mathbf{x}-\mu)'\Sigma^{-1}(\mathbf{x}-\mu)}
+\]
+
+The quantity $(\mathbf{x}-\mu)'\Sigma^{-1}(\mathbf{x}-\mu)$ is called  
+
+-  a squared Mahalanobis distance of $\mathbf{x}$ from $\mu$  
+- a quadratic form   
+- statistical distance of \textbf{$\mathbf{x}$ }from $\mu$
+
+Notation:  $\mathbf{X}\sim N_{p}(\mu,\Sigma)$
+
+
+## Multivariate Normal Distribution
+
+The density function does not exist when   
+
+- $\Sigma$ is not positive definite  
+- $|\Sigma|=0$  (determinant is zero)
+- $\Sigma^{-1}$ does not exists (singular)
+
+We assume that $\Sigma$ is positive definite, i.e. 
+$$\mathbf{a}'\Sigma\mathbf{a}>0$$
+for every non-zero $p\times1$ vector $\mathbf{a}$ of real numbers.
+
+The MVN distribution belongs to the family of elliptical distributions. In two and three dimensional case, the joint distribution forms an ellipse and an ellipsoid.
+
+## MVN Computations in R using `mvtnorm` package
+- `dmvnorm` to compute density function values  
+- `pmvnorm` to compute probability values  
+- `rmvnorm` to generate values
+
+```{r}
+library(mvtnorm)
+# density at (0,0) of standard bivariate MVN 
+dmvnorm(x = c(0,0)) 
+# density at (0,0) of bivariate MVN with mean (1,1)
+# cov diag(2,2)
+dmvnorm(x = c(0,0), mean=c(1,1), sigma = diag(2,2)) 
+```
+
+## 
+
+Assume that $\mathbf{X} = [X_1, X_2, X_3]'$ is MVN with mean $\mu = [0,0]'$ and covariance 
+$$
+\Sigma = 
+\begin{bmatrix}
+1 & 3/5 & 1/3 \\
+3/5 & 1 & 11/15 \\
+1/3 & 11/15 & 1
+\end{bmatrix}
+$$
+We are interested in the probability
+$$
+\Pr(-\infty < X_1 \leq 1, -\infty < X_2 \leq 4, -\infty < X_3 \leq 2)
+$$
+```{r}
+sigma1 <- matrix(c(1, 3/5, 1/3, 3/5, 1, 
+                   11/15, 1/3, 11/15, 1), nrow = 3)
+pmvnorm(mean = c(0, 0, 0), sigma = sigma1, 
+        lower = c(-Inf, -Inf, -Inf), upper = c(1, 4, 2))
+```
+
+
+## Geometry for the Bivariate Normal Distribution 
+
+* Consider $\mathbf{X}=[X_{1},X_{2}]' \sim N_{p}(\mu,\Sigma)$, where $\mu=[\mu_{1},\mu_{2}]'$ and  
+
+$$
+\Sigma=\left[\begin{array}{cc}
+\sigma_{11} & \sigma_{12}\\
+\sigma_{12} & \sigma_{22}
+\end{array}\right]=\left[\begin{array}{cc}
+\sigma_{11} & \rho\sigma_{1}\sigma_{2}\\
+\rho\sigma_{1}\sigma_{2} & \sigma_{22}
+\end{array}\right]
+$$   where $\rho=\frac{\sigma_{12}}{\sigma_{1}\sigma_{2}}$   and $\sigma_{1}=\sqrt{\sigma_{11}}$,
+  $\sigma_{2}=\sqrt{\sigma_{22}}$. 
+
+* We can write
+\[
+|\Sigma|=\sigma_{11}\sigma_{22}(1-\rho^{2}),\,\,\,\,\,\Sigma^{-1}=\frac{1}{|\Sigma|}\left[\begin{array}{cc}
+\sigma_{22} & -\rho\sigma_{1}\sigma_{2}\\
+-\rho\sigma_{1}\sigma_{2} & \sigma_{11}
+\end{array}\right]
+\]
+
+## Bivariate Normal Density Function
+
+
+\[
+\begin{aligned}
+\phi(x_1,&x_2) = \\
+&\frac{\exp \left\{ -\frac 1{2(1-\rho ^2)}\left[ \left( \frac{x_1-\mu_1%
+}{\sigma_1}\right) ^2-2\rho \left( \frac{x_1-\mu _1}{\sigma _1}\right) \left( 
+\frac{x_2-\mu _2}{\sigma _2}\right) +\left( \frac{x_2-\mu _2}{\sigma _2}\right)
+^2\right] \right\} }{2\pi \sigma_1\sigma _2\sqrt{1-\rho ^2}} 
+\end{aligned}
+\]
+
+* This density is well defined if $-1<\rho<1$.  
+
+* If $\rho=0$, then $\phi(x_{1},x_{2})=\phi(x_{1})\cdot\phi(x_{2})$
+where $\phi(x_{i}|\mu_{i},\sigma_{i})$ is the pdf of univariate normal
+with mean $\mu_{i}$ and standard deviation $\sigma_{i}$. 
+
+> Uncorrelated $\iff$ independence (only for multivariate normal)
+
+
+## Bivariate Normal Density Function
+
+The density is constant for $\mathbf{x}=[x_{1},x_{2}]'$ points for
+which ($c$ is constant) 
+
+$$
+\begin{aligned}
+c & =\left[\left(\frac{x_{1}-\mu_{1}}{\sigma_{1}}\right)^{2}-2\rho\left(\frac{x_{1}-\mu_{1}}{\sigma_{1}}\right)\left(\frac{x_{2}-\mu_{2}}{\sigma_{2}}\right)+\left(\frac{x_{2}-\mu_{2}}{\sigma_{2}}\right)^{2}\right]
+\end{aligned}
+$$
+
+
+*  This is an equation for an ellipse centered at $\mu=[\mu_{1},\mu_{2}]'$.  
+* What are the lengths and positions of the major axes of the ellipsoids corresponding to contours of constant density $(\rho\neq0)$?
+
+
+
+## Bivariate Normal, Eigenvalues
+
+Eigenvalues of $\Sigma$ for Bivariate Normal (when $\sigma_{11}=\sigma_{22})$
+are the solutions to
+
+$$
+\begin{aligned}
+0 & =|\Sigma-\lambda I|=\left|\begin{array}{cc}
+\sigma_{11}-\lambda & \sigma_{12}\\
+\sigma_{12} & \sigma_{11}-\lambda
+\end{array}\right|\\
+ & =(\sigma_{11}-\lambda)^{2}-\sigma_{12}^{2}\\
+ & =(\sigma_{11} - \lambda -\sigma_{12})(\sigma_{11} - \lambda +\sigma_{12})
+\end{aligned}
+$$
+
+The eigenvalues are
+$$
+\begin{aligned}
+\lambda_{1} & =\sigma_{11}+\sigma_{12}\\
+\lambda_{2} & =\sigma_{11}-\sigma_{12}
+\end{aligned}
+$$
+
+
+## 
+
+ The first eigenvalue-eigenvector pair is
+\[
+\lambda_{1}=\sigma_{11}+\sigma_{12},\,\,\,e_{1}=\left[\begin{array}{c}
+\frac{1}{\sqrt{2}}\\
+\frac{1}{\sqrt{2}}
+\end{array}\right]
+\]
+
+The second eigenvalue-eigenvector pair is
+\[
+\lambda_{2}=\sigma_{11}-\sigma_{12},\,\,\,e_{1}=\left[\begin{array}{c}
+\frac{1}{\sqrt{2}}\\
+-\frac{1}{\sqrt{2}}
+\end{array}\right]
+\]
+
+When $\sigma_{12}>0$, $\lambda_{1}$ is the largest eigenvalue, and its associated eigenvector lies in the 45 deg line through the $\mu=[\mu_{1},\mu_{2}]'$. 
+
+The ratio of the lengths of the axes is 
+\[
+\frac{\text{length of the major axis}}{\text{length of the minor axis}}=\frac{\sqrt{\lambda_{1}}}{\sqrt{\lambda_{2}}}
+\]
+
+
+
+
+## Example: Bivariate Normal Distribution
+
+Consier the Bivariate Normal Distribution with
+
+```{r}
+mu0 <- c(0, 0) # population mean
+mu0
+# pop'n covariance matrix
+# sigma11 = sigma22 = 1, rho = sigma12 = 0.79
+Sigma0 <- matrix(c(1, .79, .79, 1), 2) 
+Sigma0
+```
+
+
+## Eigenvalues and eigenvectors of the covariance matrix
+
+
+```{r}
+e <- eigen(Sigma0) # compute eigenvalues/eigenvectors
+lambda <- e$values  # eigenvalues only
+lambda
+evec <- e$vector  # eigenvectors only
+evec
+```
+
+
+
+##
+
+Since $\sigma_{11} = \sigma_{22} = 1$ with
+$\sigma_{12} = 0.79 > 0$ and $\lambda_1 = 1.79$ is largest, then the first eigenvector lies in the 45 deg line through the mean $(0,0)$.
+
+The length of the major axis is proportional to the root of the largest eigenvalue.
+
+```{r}
+sqrt(lambda[1])/sqrt(lambda[2])
+```
+Major-axis is close to thrice as long as the minor-axis.
+
+##
+
+```{r 03-fg1}
+# ellipse function is in mixtools package
+mixtools::ellipse(mu0, Sigma0, newplot = TRUE, 
+            type = "l", col = "red") # curve, color
+# first eigenvector, major-axis is 2.92 times longer
+arrows(0, 0, 2.92*evec[1,1], 2.92*evec[2,1], col = "blue") 
+# second eigenvector
+arrows(0, 0, evec[1,2], evec[2,2], col = "green")
+```
+
+
+
+
+## Generating Multivariate Normal Samples
+
+Use `mvtnorm::rmvnorm` generate mult. normal sample points.
+
+```{r }
+set.seed(21) # set a seed # to get the same points
+# generate 100 points using `mvnorm`
+X.samp <- rmvnorm(100, mean = mu0, sigma = Sigma0)
+colnames(X.samp) <- c("x1", "x2") # change colnames
+colMeans(X.samp) # sample means
+cov(X.samp)   # sample covariance
+```
+
+
+##
+
+```{r 03-fg2}
+plot(X.samp, # sample data
+     pch = 20, # solid dot points
+     xlim = c(-3, 3), ylim = c(-3, 3)) # set axis limits
+```
+
+## Add the eigenvectors and 95% ellipse band
+
+```{r 03-fg3, message=FALSE, echo = FALSE}
+library(mixtools) # ellipse function
+# Function to draw ellipse for bivariate normal data
+ellipse_bvn <- function(bvn, alpha){
+  Xbar <- apply(bvn,2,mean)
+  S <- cov(bvn)
+  ellipse(Xbar, S, alpha,  col="red", lwd = 2)
+}
+
+plot(X.samp, pch = 20,
+     xlim = c(-3, 3), ylim = c(-3, 3), col = "grey30")
+ellipse_bvn(X.samp, alpha = 0.05)
+
+arrows(0, 0, 2.92*evec[1,1], 2.92*evec[2,1], col = "red", lwd = 2)
+arrows(0, 0, evec[1,2], evec[2,2], col = "blue", lwd = 2)
+```
+
+
+
+
+
+## Kernel Density Estimation (KDE)
+
+* Probability histograms are density estimates in the sense that it approximates the shape of true density of the data.
+
+\itemsep0em
+
+* KDE allows us to estimate (using kernels or small density functions) the density from which each sample was drawn.
+
+\itemsep0em
+
+* Check this [link](https://web.as.uky.edu/statistics/users/pbreheny/621/F10/notes/10-28.pdf) for more information.
+
+\itemsep0em
+
+* We use the `kde2d()` function in the `MASS` package to construct KDE's for bivariate distributions.
+
+
+## Apply the KDE
+
+```{r 03-fg4, fig.width=3, fig.height=3}
+# we obtain a kernel density estimate of X.samp
+X.kde <- MASS::kde2d(X.samp[,1], X.samp[,2], n = 100)
+str(X.kde) # check structure of kde output
+```
+* The points $(x,y)$ forms the grid of points over the data support.
+
+* The value $z$ is the estimate of the bivariate normal density $\phi(x,y)$ at specific points $(x,y)$.
+
+## Plot the contours
+
+```{r }
+# plot the contours of the kde output
+contour(X.kde)
+```
+
+
+
+## Fancier 2d Visualization
+
+```{r 03-fg5}
+image(X.kde) # use image function to create a base plot
+contour(X.kde, add = T) # add the contours
+```
+
+
+
+
