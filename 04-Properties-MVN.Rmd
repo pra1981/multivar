@@ -1,0 +1,428 @@
+---
+title: "04 - Properties of Multivariate Normal Distribution"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+```
+
+## Properties of Multivariate Normal Distribution
+
+
+1. If $\mathbf{X}\sim N_{p}(\mu,\Sigma)$ , then any linear combination
+of variables $\mathbf{a}'\mathbf{X}=a_{1}X_{1}+\cdots+a_{p}X_{p}\sim N(\mathbf{a}'\mu,\mathbf{a}'\Sigma\mathbf{a})$. 
+
+\itemsep0em
+
+2.  If $\mathbf{a}'\mathbf{X}\sim N(\mathbf{a}'\mu,\mathbf{a}'\Sigma\mathbf{a})$
+for every $\mathbf{a}$, then $\mathbf{X}$ must be $N_{p}(\mu,\Sigma)$.
+(Alternative definition of MVN)
+
+\itemsep0em
+
+3. If $\mathbf{X}\sim N_{p}(\mu,\Sigma)$, the $q$ linear combinations
+\[
+\mathbf{A}_{(q\times p)}\mathbf{X}_{(p\times1)}=\left[\begin{array}{c}
+a_{11}X_{1}+\cdots+a_{1p}X_{p}\\
+a_{21}X_{1}+\cdots+a_{2p}X_{p}\\
+\vdots\\
+a_{q1}X_{1}+\cdots+a_{qp}X_{p}
+\end{array}\right]\sim N_{q}(\mathbf{A}\mu,\mathbf{A}\Sigma\mathbf{A}')
+\]
+ All subsets of $\mathbf{X}$ are normally distributed.
+ 
+ 
+##  Properties of Multivariate Normal Distribution
+
+4. If $\mathbf{X}_{1}$ ($q_{1}\times1$) and $\mathbf{X}_{2}$ $(q_{2}\times1)$
+are independent, then $\Sigma_{12}=Cov(\mathbf{X}_{1},\mathbf{X}_{2})=0,$
+a $q_{1}\times q_{2}$ matrix of zeros.
+
+\itemsep0em
+
+5. If 
+$$
+\begin{bmatrix}
+\mathbf{X}_{1}\\
+\mathbf{X}_{2}
+\end{bmatrix} 
+\sim  
+N_{q_{1}+q_{2}}\left(
+\begin{bmatrix}
+\mathbf{\mu}_{1}\\
+\mathbf{\mu}_{2}
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_{11} & \Sigma_{12}\\
+\Sigma_{21} & \Sigma_{22}
+\end{bmatrix}
+\right),
+$$ 
+then $\mathbf{X}_{1}$ and $\mathbf{X}_{2}$ are independent if and only if $\Sigma_{12}=0$.
+
+\itemsep0em
+
+6. If $X_{1}$ and $X_{2}$ are independent and distributed as $N_{q_{1}}(\mu_{1},\Sigma_{11})$
+and $N_{q_2}(\mu_{2},\Sigma_{22})$, then 
+$$
+\begin{bmatrix}
+\mathbf{X}_{1}\\
+\mathbf{X}_{2}
+\end{bmatrix}
+\sim N_{q_{1}+q_{2}}\left(
+\begin{bmatrix}
+\mathbf{\mu}_{1}\\
+\mathbf{\mu}_{2}
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_{11} & 0 \\
+0 & \Sigma_{22}
+\end{bmatrix}
+\right)
+$$
+
+## Conditional Distribution
+
+* Let $\begin{bmatrix}
+\mathbf{X}_{1}\\
+\mathbf{X}_{2}
+\end{bmatrix}
+\sim N_{q_{1}+q_{2}}\left(\begin{bmatrix}
+\mathbf{\mu}_{1}\\
+\mathbf{\mu}_{2}
+\end{bmatrix},
+\begin{bmatrix}
+\Sigma_{11} & \Sigma_{12}\\
+\Sigma_{21} & \Sigma_{22}
+\end{bmatrix}\right)$, 
+and 
+$|\Sigma_{22}|>0$, \par
+where $\mathbf{X}_{1}$ ($q_{1}\times1$)
+and $\mathbf{X}_{2}$ $(q_{2}\times1)$.
+
+\itemsep0em
+
+* Then the conditional distribution of $\mathbf{X}_{1}$, given that
+$\mathbf{X}_{2} = \mathbf{x}_{2}$, is normal and has
+
+$$
+\begin{aligned}
+E(\mathbf{X}_{1}|\mathbf{X}_{2}=\mathbf{x}_{2}) & =\mu_{1|2} \\
+& = \mu_{1}+\Sigma_{12}\Sigma_{22}^{-1}(\mathbf{x}_{2}-\mu_{2}) \\
+Cov(\mathbf{X}_{1}|\mathbf{X}_{2}=\mathbf{x}_{2}) & =\Sigma_{1|2} \\
+& =\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}\\
+\mathbf{X}_{1}|\mathbf{X}_{2}=\mathbf{x}_{2} & \sim N_{q_{1}}(\mu_{1|2},\Sigma_{1|2})\,\,\,\,\text{(usual notation)}
+\end{aligned}
+$$
+
+
+## Multivariate Normal Conditional Distribution
+
+1. All conditional distributions are (multivariate) normal.
+
+2. The conditional mean is of the form
+
+\[
+\begin{aligned}
+\mu_{1}+\beta_{1,q+1}(x_{q+1}-\mu_{q+1})+\cdots+\beta_{1,p}(x_{p}-\mu_{p})\\
+\vdots\\
+\mu_{q}+\beta_{q,q+1}(x_{q+1}-\mu_{q+1})+\cdots+\beta_{q,p}(x_{p}-\mu_{p})
+\end{aligned}
+\]
+where the $\beta$'s are defined by
+\[
+\Sigma_{12}\Sigma_{22}^{-1}=
+\begin{bmatrix}
+\beta_{1,q+1} & \beta_{1,q+2} & \cdots & \beta_{1,p}\\
+\beta_{2,q+1} & \beta_{2,q+2} &  & \beta_{2,p}\\
+\vdots & \vdots & \ddots & \vdots\\
+\beta_{q,q+1} & \beta_{q,q+2} & \cdots & \beta_{p,q+1}
+\end{bmatrix}
+\]
+
+3. The conditional variance, $\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$,
+do not depend on the value(s) of the conditioning variable.
+
+
+## Conditional Density of a Bivariate Normal Distribution
+
+1. If $f(x_{1},x_{2})$ is the bivariate normal density, show that $f(x_{1}|x_{2})$
+is 
+\[
+N\left(\mu_{1}+\frac{\sigma_{12}}{\sigma_{22}}(x_{2}-\mu_{2}), ~ \sigma_{11}-\frac{\sigma_{12}^{2}}{\sigma_{22}}\right).
+\]
+
+\itemsep0em
+
+> Example Bivariate Normal
+\[
+\begin{bmatrix}
+X_{1}\\
+X_{2}
+\end{bmatrix}
+\sim N_{2}\left(\begin{bmatrix}
+3\\
+5
+\end{bmatrix},
+\begin{bmatrix}
+1.2 & 1\\
+1 & 1.2
+\end{bmatrix}\right)
+\]
+
+\itemsep0em
+
+2. What is mean and variance of  $X_{1}|X_{2}=4$?   
+3. What is the distribution of  $X_{1}|X_{2}=4$?  
+4. Find $\Pr(X_{1}\leq3.5|X_{2}=4)$.
+
+
+## Spectral Decomposition (SD)
+
+Let \textbf{$\mathbf{A}$} be a $k\times k$ positive definite symmetric matrix, the SD of \textbf{$\mathbf{A}$} is
+\[
+\mathbf{A}=\lambda_{1}\mathbf{e}_{1}\mathbf{e}'_{1}+\lambda_{2}\mathbf{e}_{2}\mathbf{e}'_{2}+\cdots+\lambda_{k}\mathbf{e}_{k}\mathbf{e}'_{k}=\sum_{i=1}^{k}\lambda_{i}\mathbf{e}_{i}\mathbf{e}'_{i}=\mathbf{P}\Delta\mathbf{P}'
+\]
+where $\lambda_{1},\lambda_{2},\ldots,\lambda_{k}>0$  are eigenvalues 
+of $\mathbf{A}$ and $\mathbf{e}_{1},\mathbf{e}_{2},\ldots,\mathbf{e}_{k}$ are
+the associated normalized eigenvectors ($\mathbf{e}'_{i}\mathbf{e}_{i}=1,\mathbf{e}'_{i}\mathbf{e}_{j}=0$,
+for $i\neq j$).
+$$
+\mathbf{P}=[\mathbf{e}_{1},\mathbf{e}_{2},\ldots,\mathbf{e}_{k}], \quad \mathbf{PP}'=\mathbf{P'P}=\mathbf{I}
+$$
+
+\[
+\Delta = \begin{bmatrix}
+\lambda_{1} & 0 & \cdots & 0\\
+0 & \lambda_{2} & \cdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \cdots & \lambda_{k}
+\end{bmatrix}
+\]
+
+$$
+\begin{aligned}
+A^{-1} & =\mathbf{P}\Delta^{-1}\mathbf{P}'=\sum_{i=1}^{k}\frac{1}{\lambda_{i}}\mathbf{e}_{i}\mathbf{e}'_{i}
+\end{aligned}
+$$
+
+
+## Square Root of a Positive Definite Matrix
+
+$$
+\begin{aligned}
+A^{1/2} & =\mathbf{P}\Delta^{1/2}\mathbf{P}'=\sum_{i=1}^{k}\sqrt{\lambda_{i}}\mathbf{e}_{i}\mathbf{e}'_{i}\\
+A^{-1/2} & =\mathbf{P}\Delta^{-1/2}\mathbf{P}'=\sum_{i=1}^{k}\frac{1}{_{\sqrt{\lambda_{i}}}}\mathbf{e}_{i}\mathbf{e}'_{i}
+\end{aligned}
+$$
+
+Properties:
+
+1. $(\mathbf{A}^{1/2})'=\mathbf{A}^{1/2}$ (symmetric)  
+2. $\mathbf{A}^{1/2}\mathbf{A}^{1/2}=\mathbf{A}$  
+3. $\mathbf{A}^{1/2}\mathbf{A}^{-1/2}=\mathbf{A}^{-1/2}\mathbf{A}^{1/2}=\mathbf{I}$
+
+
+##  Example
+
+\[
+\mathbf{X}=\begin{bmatrix}
+X_{1}\\
+X_{2}\\
+X_{3}
+\end{bmatrix}\sim N_{2}\left( \begin{bmatrix}
+3\\
+2\\
+5
+\end{bmatrix}, \begin{bmatrix}
+2 & 1 & 0\\
+1 & 2 & -1\\
+0 & -1 & 2
+\end{bmatrix}\right)
+\]
+
+Find the following:  
+
+1.  $tr(\Sigma)$  
+2.  $det(\Sigma)$  
+3.  eigenvalue and eigenvector of $\Sigma$ 
+4.  square root of $A = A^{1/2}$
+
+
+## Example: Question 1
+
+```{r}
+(Sigma <- cbind(c(2,1,0), c(1,2,-1), c(0,-1,2)))
+library(matrixcalc) # load matrixcalc
+matrix.trace(Sigma) # 1) compute the trace
+det(Sigma) # 2) compute determinant
+```
+
+## 
+
+```{r}
+(r <- eigen(Sigma)) # 3) Compute the eigenvalues/eigenvectors
+l1 <- sqrt(r$values[1]) 
+l2 <- sqrt(r$values[2]) 
+l3 <- sqrt(r$values[3]) 
+v1 <- r$vector[,1] 
+v2 <- r$vector[,2] 
+v3 <- r$vector[,3]
+```
+
+
+## Compute square root of Sigma
+
+```{r}
+# 4) Square root of A using previous formula
+Sigma.root <- l1*v1%*%t(v1) + l2*v2%*%t(v2) + l3*v3%*%t(v3)
+Sigma.root
+zapsmall(Sigma.root %*% Sigma.root)
+```
+
+## Quadratic Forms
+
+1. $(\mathbf{X}-\mathbf{\mu})'\Sigma^{-1}(\mathbf{X}-\mu)$ is distributed
+as $\chi_{p}^{2}$, where $\chi_{p}^{2}$ denotes the chi-square distribution
+with $p$ degrees of freedom.
+
+\itemsep0em
+
+2. The $N_{p}(\mu,\Sigma)$ distribution assigns probabilty $1-\alpha$
+to the solid ellipsoid 
+\[
+\{\mathbf{x}:(\mathbf{x}-\mu)'\Sigma^{-1}(\mathbf{x}-\mu)\leq\chi_{p}^{2}(\alpha)\}
+\]
+where $\chi_{p}^{2}(\alpha)$ denotes the upper $(100\alpha)$th
+percentile of the $\chi_{p}^{2}$ distribution.
+
+\itemsep0em
+
+3.  If $p=2$, find $Pr((\mathbf{X}-\mu)'\Sigma^{-1}(\mathbf{X}-\mu)\leq4.61)$.
+
+```{r}
+# See Table 3 in appendix
+pchisq(4.61, df=2)
+```
+
+
+## Maximum Likelihood Estimation
+
+Suppose $\mathbf{X}_{1},\ldots,\mathbf{X}_{n}$ are
+IID $N_{p}(\mu,\Sigma)$, $\Sigma^{-1}$ exists. Then, the likelihood
+function of $(\mu,\Sigma)$ is 
+$$
+\begin{aligned}
+L(\mu,\Sigma) & =\{\text{joint density of }\mathbf{X}_{1},\mathbf{X}_{2},\ldots,\mathbf{X}_{n}|~ \mu, ~\Sigma\}\\
+ & =\prod_{i=1}^{n}\left[\frac{\exp\{-\frac{1}{2}(\mathbf{X}_{j}-\mu)'\Sigma^{-1}(\mathbf{X}_{j}-\mu)}{(2\pi)^{\frac{np}{2}}|\Sigma|^{\frac{1}{2}}}\right]\\
+ & =\frac{\exp\{-\frac{1}{2}\sum_{j=1}^{n}(\mathbf{X}_{j}-\mu)'\Sigma^{-1}(\mathbf{X}_{j}-\mu)}{(2\pi)^{\frac{np}{2}}|\Sigma|^{\frac{1}{2}}}
+\end{aligned}
+$$
+$\hat{\mu}$ and $\hat{\Sigma}$ are the values which maximize $L$.
+
+
+##  Maximum Likelihood Estimator
+
+Let $\mathbf{X}_{1},\ldots,\mathbf{X}_{n}$ be a random sample (same as IID) from a multivariate
+normal population with mean $\mu$ and covariance $\Sigma$. 
+
+Then
+\[
+\hat{\mu}=\bar{\mathbf{X}}\,\,\text{and }\,\,\hat{\Sigma}=\frac{1}{n}\sum_{j=1}^{n}(\mathbf{X}_{j}-\bar{\mathbf{X}})(\mathbf{X}_{j}-\bar{\mathbf{X}})'=\frac{(n-1)}{n}\mathbf{S}
+\]
+are the maximum likelihood estimators of $\mu$ and $\Sigma$, respectively.
+(\emph{Refer to pages 168 to 172 for the proof})
+
+
+## The Wishart Distribution
+
+- The sampling distribution of the sample covariance matrix is called the Wishart distribution. Let 
+$$
+\mathbf{W}  =(n-1)\mathbf{S}=\sum(\mathbf{X}_{i}-\bar{\mathbf{X}})(\mathbf{X}_{i}-\bar{\mathbf{X}})'
+$$
+
+- The dist'n of the random matrix $\mathbf{W}$  is the Wishart distribution, denoted by $W_{p}(n-1,\Sigma)$ with $df=n-1$.
+$$
+\begin{aligned}
+  \mathbf{W} & \sim W_{p}(n-1,\Sigma) \\
+  E(\mathbf{W}) &= (n-1)\Sigma \\
+  Cov(\mathbf{W}) &= 2(n-1) \Sigma \otimes \Sigma
+\end{aligned}
+$$
+
+- The Wishart distribution is the multivariate antilog to the Chi-square distribution and it has similar uses.
+
+> More information on Wishart Distribution's in this [__link__](https://projecteuclid.org/download/pdf_1/euclid.lnms/1196285114).
+
+
+
+## The Sampling Distribution of $\bar{\mathbf{X}}$ and $\mathbf{S}$
+
+If $\mathbf{X}_{1},\ldots,\mathbf{X}_{n}\sim N_{p}(\mu,\Sigma)$, (IID), 
+
+\itemsep0em
+
+* Sampling Dist'n of $\bar{\mathbf{X}}$
+
+ $$
+ \bar{\mathbf{X}}\sim N_{p}(\mu,(1/n)\Sigma)
+ $$
+
+* Quadratic Forms
+
+$$
+n(\bar{\mathbf{X}}-\mu)'\mathbf{\Sigma}^{-1}(\bar{\mathbf{X}}-\mu)\sim\chi_{p}^{2}
+$$
+
+\itemsep0em
+
+$$
+\mathbf{W}=(n-1)\mathbf{S} \sim W_{p}(n-1,\Sigma)
+$$
+
+\itemsep0em
+
+$$
+\bar{\mathbf{X}}\quad \text{and} \quad \mathbf{S}\quad \text{are independent.}
+$$
+
+
+## Large-Sample Behavior of $\bar{\mathbf{X}}$ and $\mathbf{S}$
+
+Let $\mathbf{X}_{1},\ldots,\mathbf{X}_{n}$ be indep
+obs from a pop'n with mean $\mu$ and finite (nonsingular)
+covariance $\Sigma$. Then
+
+* (Central Limit Theorem)
+\[
+\sqrt{n}(\bar{\mathbf{X}}-\mu)\text{ \,\,\ is approx \,\,}N_{p}(0,\Sigma)
+\]
+
+* and
+\[
+n(\bar{\mathbf{X}}-\mu)'\mathbf{S}^{-1}(\bar{\mathbf{X}}-\mu)\text{ \,\,\ is approx}\,\,\,\chi_{p}^{2}
+\]
+
+* equivalently
+\[
+n(\bar{\mathbf{X}}-\mu)'\mathbf{S}^{-1}(\bar{\mathbf{X}}-\mu)\text{ \,\,\ is approx}\,\,\,\frac{p(n-1)}{n-p}F_{p,n-p}
+\]
+for $n-p$ large.
