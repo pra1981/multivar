@@ -293,8 +293,8 @@ v3 <- r$vector[,3]
 
 ```{r}
 # 4) Square root of A using previous formula
-Sigma.root <- l1*v1%*%t(v1) + l2*v2%*%t(v2) + l3*v3%*%t(v3)
-Sigma.root
+(Sigma.root <- l1*v1%*%t(v1) + 
+             l2*v2%*%t(v2) + l3*v3%*%t(v3))
 zapsmall(Sigma.root %*% Sigma.root)
 ```
 
@@ -352,6 +352,79 @@ are the maximum likelihood estimators of $\mu$ and $\Sigma$, respectively.
 (\emph{Refer to pages 168 to 172 for the proof})
 
 
+## `mvnmle` for Multivariate Normal MLE in R
+
+```{r}
+library(mvnmle)
+library(mvtnorm)
+set.seed(21)
+Sigma0 <- matrix(c(1, .79, .79, 1), 2) # popn covariance
+X <- rmvnorm(20, mean = c(0, 0), sigma = Sigma0) # n= 20 
+par.est <- mlest(X) # use mlest() to get mean/cov est
+par.est$muhat
+par.est$sigmahat
+```
+
+
+
+## MLE are consistent estimators
+
+As $n$ increases the estimates converge to the value that the estimator is designed to estimate.
+
+```{r}
+set.seed(21)
+X <- rmvnorm(100, c(0, 0), Sigma0) # n = 100 
+par.est <- mlest(X) 
+par.est$muhat
+par.est$sigmahat
+```
+
+## MLE are consistent estimators
+
+As $n$ increases the estimates converge to the value that the estimator is designed to estimate.
+
+```{r}
+set.seed(21)
+X <- rmvnorm(1000, c(0, 0), Sigma0) # n = 1000 
+par.est <- mlest(X) 
+par.est$muhat
+par.est$sigmahat
+```
+
+
+
+## Missing Values
+
+The `apple` data (in `mvnmle`) provides the number of apples (in 100s) on 18 different apple trees. For 12 trees, the percentage of apples with worms (x 100) is also given.
+
+```{r}
+data(apple) # load data
+str(apple)
+# is.na() checks for missing values (NA) in each column, 
+# colSums(is.na()) counts the number of NA in each column
+colSums(is.na(apple)) 
+```
+
+## 
+
+```{r}
+apple.est <- mlest(apple) # use mlest() to get MLE's
+apple.est$muhat
+apple.est$sigmahat
+```
+
+
+##
+
+```{r}
+# verify
+colMeans(apple, na.rm = TRUE)  # remove rows with NA's
+cov(apple, use = "complete")   # remove rows with NA's
+
+```
+
+
+
 ## The Wishart Distribution
 
 - The sampling distribution of the sample covariance matrix is called the Wishart distribution. Let 
@@ -371,6 +444,27 @@ $$
 - The Wishart distribution is the multivariate antilog to the Chi-square distribution and it has similar uses.
 
 > More information on Wishart Distribution's in this [__link__](https://projecteuclid.org/download/pdf_1/euclid.lnms/1196285114).
+
+
+## Wishart Dist in R
+
+```{r}
+## Artificial
+(S <- toeplitz((5:1)/5))
+
+```
+
+
+## 
+```{r}
+set.seed(11)
+R <- rWishart(500, df = 5, Sigma = S) # generate 500 sample units
+dim(R)  #  array 5 5 500
+mR <- apply(R, 1:2, mean)  # ~= E[ Wish(S, 5) ] = 5 * S
+round(mR, digits = 2) # round
+```
+
+
 
 
 
