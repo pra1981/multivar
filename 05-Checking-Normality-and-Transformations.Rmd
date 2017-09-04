@@ -1,0 +1,322 @@
+---
+title: "05 - Checking Normality, Transformations to Near Normality"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+##  Investigating Univariate Normality  
+
+* Could check each of the $p$ variables for normality. Should not be
+the sole approach because variables are correlated and normality of
+individual variables does not guarantee multivariate normality.   
+
+* However, multivariate normality implies individual normality. Thus,
+if one of the variables is not univariate normal, then the vector
+is not multivariate normal.  
+
+* One check Q-Q (Quantile-Quantile) plot or normal probability plot for each variable. If normal, then the Q-Q plot is a straight line -
+subjective.
+
+
+## Constructing Q-Q plots
+
+* Order the original observations to get $x_{(1)},x_{(2)},\ldots,x_{(n)}$
+and their corresponding probability values $(1-\frac{1}{2})/n,(2-\frac{1}{2})/n,\ldots,(n-\frac{1}{2})/n$;  
+
+&nbsp;
+
+* Calculate the standard normal quantiles $q_{(1)},q_{(2)},\ldots,q_{(n)}$;
+and  
+
+&nbsp;
+
+* Plot the pairs of observations $(q_{(1)},x_{(1)}),(q_{(2)},x_{(2)}),\ldots,(q_{(n)},x_{(n)})$, and examine the ``straightness'' of the outcome.
+
+
+## Investigating Bivariate Normality
+
+* Check the scatter plot of each pair of the p variables.   
+
+&nbsp;
+
+* The points on each scatter plot should form approximately an ellipse
+since the contours of Bivariate Normal Distributions are ellipses.  
+
+&nbsp;
+
+* The set of generalized distances from each point to the center of the points is chi-square - Check using a chi-square plot.
+
+
+## Example: Reaven and Miller (1979)
+
+Reaven and Miller measured five variables in a comparison of normal patients and diabetics. We use partial data for normal patients only. The three variables of major interest were
+
+* $X_{1}$= glucose intolerance,  
+* $X_{2}$ = insulin response to oral glucose,  
+* $X_{3}$= insulin resistance.   
+
+
+The two additional variables of minor interest were   
+* $Y_{1}$ = relative weight,   
+* $Y_{2}$ = fasting plasma glucose.  
+
+
+## 
+
+```{r}
+# load data set
+patients <- read.csv("patients.csv", header = TRUE) 
+str(patients) # structure
+```
+
+## Descriptive Summary Statistics
+
+```{r}
+data.frame(Mean = colMeans(patients),
+           Median = apply(patients, 2, median),
+           Variance = apply(patients, 2, var))
+```
+
+
+## Check each variable, scatterplots, density estimates, QQ-Plots
+```{r eval = FALSE}
+GGally::ggpairs(patients) # ggpairs() in package GGally
+
+par(mfcol = c(2,3)) # 2x3 panel
+for (p in 1:5){ # for loop qqplot for each variable
+  qqnorm(patients[ , p],   # qqplot - normal
+         main = paste(colnames(patients)[p]),
+         cex = 0.8, cex.lab = 0.7, pch = 20)  
+  # use variable name as title
+  qqline(patients[ , p], col = "red") # draw line
+}
+```
+
+##
+
+```{r echo = FALSE, fig.width = 4}
+GGally::ggpairs(patients)
+```
+
+
+
+##
+
+```{r echo = FALSE, fig.width = 4.5}
+par(mfcol = c(2,3))
+for (p in 1:5){ # for loop qqplot for each variable
+  qqnorm(patients[ , p],   # qqplot - normal
+         main = paste(colnames(patients)[p]),
+         cex = 0.8, cex.lab = 0.7, pch = 20)  
+  # use variable name as title
+  qqline(patients[ , p], col = "red") # draw line
+}
+```
+
+## Univariate Normality Test
+
+* The Kolmogorov-Smirnov (KS) test is used to decide if a sample comes from a population with a specific distribution.  
+     - test statistic does not depend on the underlying cumulative distribution function being tested  (non-parametric)  
+     - exact test, not based on large-sample approximation
+     - applies to continuous variables
+     - tends to be more sensitive near the center of the distribution than at the tails.
+     
+* Null Hypothesis: The data follow a specified distribution
+
+$$
+D = \max_{1 \leq i \leq n} \left( 
+F(Y_i) - \frac{i-1}{n}, \frac{i}{n} - F(Y_i)
+\right)
+$$  
+      - $F$ is the theoretical CDF being tested (normal CDF if testing for normality)
+
+## 
+
+```{r}
+x1 <- rexp(100) # sample from std. exponential dist'n
+ks.test(x1, "pnorm") 
+x2 <- rt(100, df = 3) # sample from t-dist with df = 3
+ks.test(x2, "pnorm") # data has same center as normal
+```
+
+## Anderson-Darling Test
+
+
+Anderson-Darling test is a KS-test variant which is sensitive to tail distribution variation/changes.
+
+```{r}
+# if not installed, run install.packages("nortest") in your console
+nortest::ad.test(x2) # need nortest package
+```
+
+
+## Reaven and Miller (1979) Data
+
+```{r}
+tstat <- pval <- rep(NA, 5)
+for(p in 1:5){
+  test.out <- nortest::ad.test(patients[ , p])
+  tstat[p] <- test.out$statistic
+  pval[p] <- test.out$p.value
+}
+data.frame(variable = colnames(patients), 
+           AD.statistic = tstat, p.value = pval)
+
+```
+
+## Assessing Multivariate Normality - Chi-Square Plot
+
+1.  Compute the generalized squared (Mahalanobis) distance from each $\mathbf{X}_{i}$
+to $\bar{\mathbf{X}}$ given by
+\[
+D_{i}^{2}=(\mathbf{X}_{i}-\bar{\mathbf{X}})'\mathbf{S}^{-1}(\mathbf{X}_{i}-\bar{\mathbf{X}})
+\]  
+2. List $D_{i}^{2}$ from low to high. If $\mathbf{X}_{i}$ are multivariate
+normal, then $D_{i}^{2}$ has a Chi-Squared distribution.)  
+3. Form a $Q-Q$ plot based on the Chi-Squared distribution.
+\end{enumerate}
+If the line to a straight line, then it is reasonable to assume multivariate
+normal.
+
+
+## Chi-Square plots
+
+```{r}
+ChiSq.plot <- function(data, main = "Chi-Square Plot"){ 
+  # function for drawing chi-square plots
+  x <- as.matrix(data) 
+  n <- nrow(data) 
+  xbar <- colMeans(data) # col means
+  S <- var(data) # covariance matrix
+  di2 <- rep(0,n) # storage for MD
+  for (i in 1:n){     # MD distance for each observation
+    di2[i] <- t(x[i,]-xbar) %*% solve(S) %*% (x[i,]-xbar)}   
+  CP.dat <- data.frame(expvals = qchisq((1:n)/(n+1),5) , 
+                     obsvals = sort(di2))
+  plot(CP.dat, pch =20, main = main, # plot the points
+       xlab = "Obs Mahal Dist", ylab = "Theor Mahal Dist")  
+  lines(c(0,20), c(0,20), col="red")
+}
+```
+
+
+##
+
+```{r}
+ChiSq.plot(patients)
+```
+
+
+## Multivariate Normal Goodness of Fit Test - Energy Test
+
+The E-test of multivariate normality was proposed and implemented by [Szekely and Rizzo (2005)](http://personal.bgsu.edu/~mrizzo/energy/MVN-GOF-2005.pdf). 
+The E-test of multivariate normality is implemented by parametric bootstrap with R replicates.
+
+```{r}
+# mvnorm.etest() is in energy package
+# R is number of bootstrap replicates
+energy::mvnorm.etest(patients, R = 199)  
+```
+
+
+## Radiation Levels Data
+
+* The quality control department of a manufacturer of microwave ovens is required by the federal government to monitor the amount of radiation emitted when the doors of the ovens are closed. 
+
+* Observations of the radiation emitted through closed and open doors of $n=42$ randomly selected ovens were made.
+
+
+
+```{r}
+radiation <- read.table("radiation.txt", header = F)
+colnames(radiation) <- c("closed","open")
+moments::skewness(radiation) 
+# both variables are skewed to the right
+```
+
+## Radiation Data Scatterplot
+
+```{r fig.height = 2.7 }
+GGally::ggpairs(radiation)
+```
+
+
+
+
+## Radiation Data, MVN Goodness of Fit Test
+
+```{r}
+energy::mvnorm.etest(radiation, R = 500)
+```
+
+## Box-Cox Transformations
+
+* A Box-Cox transformation of a variable $x$ is defined as
+\[
+x^{(\lambda)}=\begin{cases}
+\frac{x^{\lambda}-1}{\lambda} & \,\,\lambda\neq0\\
+\ln x & \,\,\lambda=0
+\end{cases}
+\]
+which is continuous in $\lambda$ for $x>0$.  
+
+* These transformations are data based in the sense that it is only the appearance of the data that influences the choice of an appropriate transformation index by $\lambda$.  
+
+* Given observations $x_{1},\ldots,x_{n}$ , the Box-Cox solution for the choice of an appropriate power $\lambda$ is the solution that maximizes the expression
+\[
+\ell(\lambda)=-\frac{n}{2}\ln\left[\frac{1}{n}\sum_{j=1}^{n}(x_{j}^{(j)}-\bar{x^{(\lambda)})^{2}}\right]+(\lambda-1)\sum_{j=1}^{n}\ln x_{i}
+\]
+
+
+## Box-Cox Transformations in R
+
+```{r}
+library(car)
+# compute appropriate power transformation
+lam <- powerTransform(radiation)
+summary(lam)
+```
+
+## Transformed the Radiation Data
+
+```{r}
+coef(lam)
+radiation.transformed <- bcPower(with(radiation,
+                    cbind(closed, open)), coef(lam))
+
+moments::skewness(radiation.transformed) # skewness
+```
+
+
+## Transformed Radiation Data Scatterplot
+
+```{r fig.height = 2.7 }
+GGally::ggpairs(data.frame(radiation.transformed))
+```
+
+
+
