@@ -154,14 +154,32 @@ F(Y_i) - \frac{i-1}{n}, \frac{i}{n} - F(Y_i)
 $$  
       - $F$ is the theoretical CDF being tested (normal CDF if testing for normality)
 
-## 
+## Sample from Exponential Distribution, Skewed
 
-```{r}
+```{r fig.height=2}
 x1 <- rexp(100) # sample from std. exponential dist'n
+moments::skewness(x1) # skewed to the right
 ks.test(x1, "pnorm") 
-x2 <- rt(100, df = 3) # sample from t-dist with df = 3
-ks.test(x2, "pnorm") # data has same center as normal
 ```
+
+## Sample from t-distribution, Symmetric, Heavy-Tails
+
+```{r fig.height=2}
+set.seed(21)
+x2 <- rt(100, df = 3) # sample from t-dist with df = 3
+moments::skewness(x2) # symmetric
+ks.test(x2, "pnorm") 
+# ks.test did not detect non-normality
+```
+
+##
+
+```{r fig.width=4.75}
+par(mfcol = c(1,2))
+hist(x1, xlab = "Skewed Data", main = "")
+hist(x2, xlab = "Heavy Tailed Data", main = "")
+```
+
 
 ## Anderson-Darling Test
 
@@ -169,7 +187,6 @@ ks.test(x2, "pnorm") # data has same center as normal
 Anderson-Darling test is a KS-test variant which is sensitive to tail distribution variation/changes.
 
 ```{r}
-# if not installed, run install.packages("nortest") in your console
 nortest::ad.test(x2) # need nortest package
 ```
 
