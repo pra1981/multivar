@@ -373,11 +373,25 @@ As $n$ increases the estimates converge to the value that the estimator is desig
 
 ```{r}
 set.seed(21)
-X <- rmvnorm(100, c(0, 0), Sigma0) # n = 100 
+X <- rmvnorm(20, c(0, 0), Sigma0) # n = 20 
 par.est <- mlest(X) 
 par.est$muhat
 par.est$sigmahat
 ```
+
+
+## MLE are consistent estimators
+
+As $n$ increases the estimates converge to the value that the estimator is designed to estimate.
+
+```{r}
+set.seed(21)
+X <- rmvnorm(100, c(0, 0), Sigma0) # n = 100
+par.est <- mlest(X) 
+par.est$muhat
+par.est$sigmahat
+```
+
 
 ## MLE are consistent estimators
 
