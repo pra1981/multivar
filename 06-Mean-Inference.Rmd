@@ -1,0 +1,355 @@
+---
+title: "06 - Inference on the Mean Vector"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Multivariate vs Univariate Tests
+
+> The number of parameters in multivariate tests can be large:  $p$ - means; $p$ - variances; $p \choose 2$ covariances.   
+
+Arguments for multivariate tests:  
+
+* If we use $p$ univariate tests - it will inflate the overall Type I error rate $\alpha$, whereas multivariate test preserves exact $\alpha$.  
+* For example, if we run $p=10$ univariate tests on the mean at $\alpha$ = .05.  Let $H^i_{0}: \mu_i = \mu_{i0}$, $i=1,\ldots,10$.
+
+$$
+\begin{aligned}
+P(&\text{overall Type 1 error}) \\
+& = P\{ (\text{Reject }H^1_{0}) \cup \cdots \cup (\text{Reject }H^{10}_{0})\} \\
+& = 1 - P\{(\text{Fail to Reject }H^1_{0}) \cap \cdots \cap (\text{Fail to Reject }H^{10}_{0})\} \\
+& = 1 - 0.95^{10} = 0.40 \quad \{\text{if variables are uncorrelated - rare}\} \\
+& = \text{between .05 and .40} \quad \{\text{if variables are correlated}\}
+\end{aligned}
+$$
+
+## Multivariate vs Univariate Tests
+
+* Univariate tests completely ignore correlations.  
+* Multivariate tests make direct use of the correlations.  
+* Multivariate tests are more powerful in many cases  
+
+> Power = probability reject $H_{0}$ when it is false
+
+* Many multivariate tests involving means have as a byproduct the construction of linear combinations of variables that reveal more about how the variables unite to reject the null hypothesis.
+
+
+## Univariate t-test on $H_{0}: \quad \mu=\mu_{0}$
+
+* We will look only at the two-tailed test because 1 tailed tests do not readily generalize to the multivariate situation.
+
+* $X_{1},X_{2},\ldots,X_n \sim N(\mu,\sigma^{2})$, where $\sigma^{2}$
+is unknown, the appropriate test statistic is
+\[
+t=\frac{(\bar{X}-\mu_{0})}{s/\sqrt{n}}
+\]  
+where $\bar{X}=\frac{1}{n}\sum_{i=1}^{n}X_{i}$ and $s^{2}=\frac{1}{n-1}\sum_{j=1}^{n}(X_{i}-\bar{X})^{2}$.
+
+* The test statistic $t$ has a student's $t$-distn with $n-1$ degrees of freedom.  
+* We reject $H_{0}$, that $\mu_{0}$ is a plausible value of $\mu$, if $|t|$ is exceeds a specified percentage point of a t-distn with $n-1$ df. 
+
+
+
+## Multivariate Hotelling Test on $H_{0}: \quad \mu=\mu_{0}$
+
+* The square of $t$ (square distance) can be written as
+\[
+t^{2}=\frac{(\bar{X}-\mu_{0})^{2}}{s^{2}/n}=n(\bar{X}-\mu_{0})(s^{2})^{-1}(\bar{X}-\mu_{0})
+\]
+
+* A multivariate generalization of the squared distance
+
+$$
+\begin{aligned}
+T^{2} & =(\bar{\mathbf{X}}-\mu_{0})'\left(\frac{1}{n}\mathbf{S}\right)^{-1}(\bar{\mathbf{X}}-\mu_{0}) \\
+& =n(\bar{\mathbf{X}}-\mu_{0})'\mathbf{S}^{-1}(\bar{\mathbf{X}}-\mu_{0})
+\end{aligned}
+$$
+
+* The statistic $T^{2}$ is called Hotelling's $T^{2}$. If the observed $T^{2}$ is too large, the hypothesis $H_{0}:\mu=\mu_{0}$ is rejected.
+
+
+
+
+## Hotelling Test for $H_{0}:$$\mu=\mu_{0}$ vs $H_{1}:$$\mu\neq\mu_{0}$}
+
+
+* Under $H_{0}:$$\mu=\mu_{0}$, 
+$$
+T^{2}\,\,\text{is distributed as}\,\,\,\frac{(n-1)p}{(n-p)}F_{p,n-p}
+$$
+where $F_{p,n-p}$ denotes a r.v. with an F-distribution with $p$ and $n-p$ df's.
+
+* At the $\alpha$ level of significance, we reject $H_{0}$ in favor of $H_{1}$ if the observed
+\[
+T^{2}=n(\bar{\mathbf{X}}-\mu_{0})'\mathbf{S}^{-1}(\bar{\mathbf{X}}-\mu_{0})>\frac{(n-1)p}{(n-p)}F_{p,n-p}(\alpha)
+\]
+where $F_{p,n-p}(\alpha)$ is the upper $(100\alpha)th$ percentile of the $F_{p,n-p}$ distribution.
+
+
+## Properties of Hotelling $T^{2}$ test
+
+* $n-1$ must be greater than $p$. If not, $\mathbf{S}$ is singular and no inverse exists.
+
+&nbsp;
+
+* The distribution of Hotelling's $T^{2}$ when $H_{0}$ is true and
+$X_{i}\sim N_{p}(\mu,\Sigma)$ has two parameters - $v$ and $p$.  
+&nbsp;
+* In the one sample case, $v=n-1$. In the two sample case, $v=n_{1}+n_{2}-1$, where $n_{1}$and $n_{2}$ are the sample sizes of samples 1 and 2, respectively.  
+&nbsp;
+* Test is always 2-sided.  
+&nbsp;
+* In the multivariate case, $T_{p,n-1}^{2}=\frac{(n-1)p}{n-p}F_{p,n-p}$.
+Thus, if there are no $T^{2}$ table, we can use $F$ tables.
+
+
+
+## Invariance of $T^{2}$ statistic
+
+Suppose there are changes in the units of measurements for $\mathbf{X}$ of the form
+\[
+\mathbf{Y}_{(p\times1)}=\mathbf{C}_{(p\times p)}\mathbf{X}_{(p\times1)}+\mathbf{d}_{(p\times1)},\,\,\,\mathbf{C}\,\,\text{nonsingular}
+\]
+
+This happens usually when variable $X_{i}$ is transformed to $a_{i}(X_{i}-b_{i})$, where $a_{i}>0,b_{i}$ are constants.
+
+Given observations $\mathbf{x}_{1},\mathbf{x}_{2},\ldots,\mathbf{x}_{n}$,
+we have
+\[
+\bar{\mathbf{y}}=\mathbf{C}\bar{\mathbf{x}}+\mathbf{d}\,\,\,\,\,\,\text{and}\,\,\,\,\,\,\mathbf{S}_{y}=\frac{1}{n-1}\sum_{i=1}^{n}(\mathbf{y}_{j}-\bar{\mathbf{y}})(\mathbf{y}_{\mathbf{j}}-\bar{\mathbf{y}})'=\mathbf{CS}\mathbf{C}'
+\]
+
+\[
+\mu_{\mathbf{Y}}=E(\mathbf{Y})=E(\mathbf{CX+d})=E(\mathbf{CX})+\mathbf{d}=\mathbf{C\mu}+\mathbf{d}
+\]
+
+
+## Invariance of $T^{2}$ statistic
+
+Thus, $\mathbf{T}^{2}$with the $\mathbf{y}'s$ and a hypothesis value
+$\mu_{\mathbf{Y},0}=\mathbf{C\mu_{0}}+\mathbf{d}$ is
+\begin{align*}
+T^{2} & =n(\bar{\mathbf{y}}-\mu_{\mathbf{Y},0})'\mathbf{S}^{-1}(\bar{\mathbf{y}}-\mu_{\mathbf{Y},0})\\
+ & =n\left(\mathbf{C}(\bar{\mathbf{x}}-\mu_{0})\right)'(\mathbf{CSC}')^{-1}\mathbf{C}(\bar{\mathbf{x}}-\mu_{0})\\
+ & =n(\bar{\mathbf{x}}-\mu_{0})'\mathbf{C}'(\mathbf{CSC}')^{-1}\mathbf{C}(\bar{\mathbf{x}}-\mu_{0})\\
+ & =n(\bar{\mathbf{x}}-\mu_{0})'\mathbf{S}^{-1}(\bar{\mathbf{x}}-\mu_{0})
+\end{align*}
+
+
+## Unrestricted Maximum MVN Likelihood and MLE's
+
+* The maximum of the multivariate normal likelihood with no restriction on the values of  $\mu$ and $\Sigma$ is
+\[
+\max_{\mu,\Sigma}L(\mu,\Sigma)=\frac{1}{(2\pi)^{np/2}|\hat{\Sigma}|^{n/2}}\exp\left(-\frac{1}{2}\sum_{j=1}^{n}(\mathbf{x}_{j}-\hat{\mu})'\Sigma^{-1}(\mathbf{x}_{j}-\hat{\mu})\right)
+\]
+where 
+$$
+\hat{\mu}= n^{-1}\sum_{j=1}^{n}\mathbf{x}_{j}, \quad \hat{\Sigma}=n^{-1}\sum_{j=1}^{n}(\mathbf{x}_{j}-\bar{\mathbf{x}})(\mathbf{x}_{j}-\bar{\mathbf{x}})'  
+$$ 
+are the maximum likelihood estimates (MLE) of $\Sigma$ and $\mu$, respectively.  
+* We can interpret $\hat{\mu}$ and $\hat{\Sigma}$ as choices for $\mu$ and $\Sigma$ that best explain the observed values of the random variable.
+
+
+## Linear Algebra Review
+
+(Result 4.9) Let $\mathbf{A}$ be a $k\times k$ symmetric matrix and $\mathbf{x}$ be a $k\times1$ vector. Then  
+
+1. $\mathbf{x'Ax}=tr(\mathbf{x'Ax})=tr(\mathbf{Axx'})$  
+2. $tr(\mathbf{A})=\sum_{i=1}^{k}\lambda_{i}$, where the $\lambda_{i}$ are the eigenvalue of $\mathbf{A}$.  
+
+(Result 4.10) Given a $p\times p$ symmetric positive definite matrix
+$\mathbf{B}$ and a scalar $b>0$ , it follows that
+\[
+\frac{1}{|\Sigma|^{b}}e^{-tr(\Sigma^{-1}\mathbf{B})/2}\leq\frac{1}{|\mathbf{B}|^{b}}(2b)^{pb}e^{-bp}
+\]
+for all positive definite $\Sigma_{(p\times p)}$ , with equality holding only for $\Sigma=(1/2b)\mathbf{B}$.
+
+
+## Restricted MVN Likelihood under $H_{0}:\mu=\mu_{0}$ 
+
+* Under the hypothesis $H_{0}:\mu=\mu_{0}$, the MVN likelihood is
+\[
+L(\mu_{0},\Sigma)=\frac{1}{(2\pi)^{np/2}|\Sigma|^{n/2}}\exp\left(-\frac{1}{2}\sum_{j=1}^{n}(\mathbf{x}_{j}-\mu_{0})'\Sigma^{-1}(\mathbf{x}_{j}-\mu_{0})\right)
+\]  
+
+* The mean $\mu_{0}$ is now fixed, but $\Sigma$ can be varied to find the value that is ``most likely'' to have led, with $\mu_{0}$ fixed, to the observed sample.   
+
+
+## 
+
+* This value is obtained by maximizing $L(\mu_{0},\Sigma)$ with respect to $\Sigma$. Applying Result 4.9 on the exponent, we have
+\begin{align*}
+-\frac{1}{2}\sum_{j=1}^{n}&(\mathbf{x}_{j}-\mu_{0})'\Sigma^{-1}(\mathbf{x}_{j}-\mu_{0})  \\ &=-\frac{1}{2}\sum_{j=1}^{n}tr\left[\Sigma^{-1}(\mathbf{x}_{j}-\mu_{0})(\mathbf{x}_{j}-\mu_{0})'\right]\\
+ & =-\frac{1}{2}tr\left[\Sigma^{-1}\left(\sum_{j=1}^{n}(\mathbf{x}_{j}-\mu_{0})(\mathbf{x}_{j}-\mu_{0})'\right)\right]
+\end{align*}
+
+
+
+## Restricted MVN Maximum Likelihood under $H_{0}:\mu=\mu_{0}$
+
+* Let $B=\sum_{j=1}^{n}(\mathbf{x}_{j}-\mu_{0})(\mathbf{x}_{j}-\mu_{0})'$
+and \textbf{$b=n/2$, }and applying Result 4.10, we have
+\begin{align*}
+L(\mu_{0},\Sigma)=\frac{1}{(2\pi)^{pb}|\Sigma|^{b}}e^{-\frac{1}{2}tr\left[\Sigma^{-1}\mathbf{B}\right]} & \leq\frac{1}{(2\pi)^{pb}|\mathbf{B}|^{b}}(2b)^{pb}e^{-bp}\\
+ & =\frac{1}{(2\pi)^{np/2}|\mathbf{B}|^{n/2}}(n)^{np/2}e^{-np/2}\\
+ & =\frac{1}{(2\pi)^{np/2}\left(n^{-p}|\mathbf{B}|\right)^{n/2}}e^{-np/2}\\
+ & =\frac{1}{(2\pi)^{np/2}|\hat{\Sigma}_{0}|^{n/2}}e^{-np/2}\\
+ & =\max_{\Sigma}L(\mu_{0},\Sigma)
+\end{align*}
+
+where $\hat{\Sigma}_{0}=n^{-1}\sum_{j=1}^{n}(\mathbf{x}_{j}-\mu_{0})(\mathbf{x}_{j}-\mu_{0})'$.
+
+
+## Likelihood Ratio Statistic
+
+* There is a general principle in constructing test procedures called the \textbf{likelihood ratio method}.    The $T^{2}$-statistic can be derived as the likelihood ratio test
+of $H_{0}:\mu=\mu_{0}$.  
+
+* To determine whether $\mu_{0}$ is a plausible value of $\mu$, the
+maximum of $L(\mu_{0},\Sigma)$ is compared with the unrestricted
+maximum of $L(\mu,\Sigma)$.  
+
+* The resulting ratio is called the likelihood ratio statistic
+\begin{align*}
+\text{Likelihood ratio = \ensuremath{\Lambda}} & =\frac{\max_{\Sigma}L(\mu_{0},\Sigma)}{\max_{\mu,\Sigma}L(\mu,\Sigma)}\\
+ & =\frac{\frac{1}{(2\pi)^{np/2}|\hat{\Sigma}_{0}|^{n/2}}e^{-np/2}}{\frac{1}{(2\pi)^{np/2}|\hat{\Sigma}|^{n/2}}e^{-np/2}}\\
+ & =\left(\frac{|\hat{\Sigma}|}{|\hat{\Sigma}_{0}|}\right)^{n/2}
+\end{align*}
+
+
+## Wilks Lambda Statistic
+
+* The equivalent statistic $\Lambda^{2/n}=|\hat{\Sigma}|/|\hat{\Sigma}_{0}|$
+is called the Wilk's lambda.  
+* The likelihood ratio test of $H_{0}:\mu=\mu_{0}$ against $H_{1}:\mu\neq\mu_{0}$
+rejects $H_{0}$ if 
+\[
+\Lambda=\left(\frac{|\hat{\Sigma}|}{|\hat{\Sigma}_{0}|}\right)^{n/2}=\left(\frac{|\sum_{j=1}^{n}(\mathbf{x}_{j}-\bar{\mathbf{x}})(\mathbf{x}_{j}-\bar{\mathbf{x}})'|}{|\sum_{j=1}^{n}(\mathbf{x}_{j}-\mu_{0})(\mathbf{x}_{j}-\mu_{0})'|}\right)^{n/2}<c_{\alpha}
+\]
+where $c_{\alpha}$ is the lower $(100\alpha)th$ percentile of the
+distribution of $\Lambda$.  
+* Determining the distribution of $\Lambda$ is complicated, but, fortunately,
+we can write $\Lambda$ in terms of the Hotelling's $T^{2}$ statistic.   
+* Under $H_{0}:\mu=\mu_{0}$,
+\begin{align*}
+\Lambda^{2/n} & =\left(1+\frac{T^{2}}{(n-1)}\right)^{-1}\,,\,\,\text{or}\\
+T^{2} & =\frac{(n-1)|\hat{\Sigma}_{0}|}{|\hat{\Sigma}|}-(n-1)
+\end{align*}
+
+
+Example: [Reaven and Miller (1979)](https://www.math.utk.edu/~fernando/Students/GregClark/pdf/Miller-Reaven-Diabetes.pdf)
+
+Reaven and Miller measured five variables in a comparison of normal patients and diabetics. We use partial data for normal patients only. The three variables of major interest were
+
+* $X_{1}$= glucose intolerance,  
+* $X_{2}$ = insulin response to oral glucose,  
+* $X_{3}$= insulin resistance.   
+
+
+The two additional variables of minor interest were   
+* $Y_{1}$ = relative weight,   
+* $Y_{2}$ = fasting plasma glucose.  
+
+
+## Reaven and Miller (1979): Descriptives Stats
+
+```{r}
+patients <- read.csv("patients.csv", header = TRUE) 
+data.frame(Mean = colMeans(patients),
+           Median = apply(patients, 2, median),
+           Variance = apply(patients, 2, var))
+X <- with(patients, cbind(GLUCOSE, INSULIN, RESIST))
+```
+
+## $\mu_0 = (300, 180, 90)$ hypothesized mean, boundary levels
+
+
+```{r echo = FALSE}
+mu0 <- c(300, 180, 90)
+pairs(rbind(X, mu0),
+      pch = rep(c(20,15), c(nrow(X), 1)),  # type of points
+      col = rep(c(1,2), c(nrow(X), 1)))
+```
+
+
+
+## 
+
+Test to see if the mean vector is different from specified vector
+$$
+H_0 : \mu=[300, 180, 90]' \ \ \text{vs} \ \ H_1 : \mu \neq [300, 180, 90]'
+$$
+
+```{r}
+n <- nrow(X) # sample size
+p <- ncol(X) # number of variables
+(Xbar <- colMeans(X)) # sample mean
+(S <- cov(X))  # sample covariance matrix
+Sinv <- matrixcalc::matrix.inverse(S)
+```
+
+
+## Using raw code to compute $T^2$
+
+```{r}
+# hypothesized mean 
+mu0 <- c(300, 180, 90) 
+# Hotelling T2
+T2 <- n*t(Xbar - mu0)%*%Sinv%*%(Xbar - mu0)
+# Critical Value at 5% level of significance
+cval <- ((n-1)*p/(n-p))*qf(1 - 0.05, df1 = p, df2 = n-p)
+# transformed T2 statistic, 
+# needed if compared to F crit value
+T2.F <- T2/((n-1)*p/(n-p)) 
+# Wilks Lambda
+W <- (1 + T2/(n-1))^(-n/2)
+```
+
+##
+
+```{r}
+data.frame(T2 = T2, df1 = p, df2 = n-p, 
+           Fcrit = cval, T2.trans = T2.F, Wilks = W)
+# Since T2 = 87 > critical value = 8.9, then we reject H0 
+# at 5% level of significance.
+```
+
+
+
+## Using `HotellingsT2()` from package `ICSNP`
+
+`HotellingsT2()` statistic is the transformed $T^2$ so that it has the unscaled F-distribution. 
+
+```{r}
+library(ICSNP) # install ICSNP package
+(patients.T2 <- HotellingsT2(X, mu = mu0))
+patients.T2$statistic
+```
+
+
