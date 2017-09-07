@@ -116,15 +116,14 @@ where $F_{p,n-p}(\alpha)$ is the upper $(100\alpha)th$ percentile of the $F_{p,n
 
 * $n-1$ must be greater than $p$. If not, $\mathbf{S}$ is singular and no inverse exists.
 
-&nbsp;
 
 * The distribution of Hotelling's $T^{2}$ when $H_{0}$ is true and
 $X_{i}\sim N_{p}(\mu,\Sigma)$ has two parameters - $v$ and $p$.  
-&nbsp;
+
 * In the one sample case, $v=n-1$. In the two sample case, $v=n_{1}+n_{2}-1$, where $n_{1}$and $n_{2}$ are the sample sizes of samples 1 and 2, respectively.  
-&nbsp;
+
 * Test is always 2-sided.  
-&nbsp;
+
 * In the multivariate case, $T_{p,n-1}^{2}=\frac{(n-1)p}{n-p}F_{p,n-p}$.
 Thus, if there are no $T^{2}$ table, we can use $F$ tables.
 
@@ -152,7 +151,7 @@ we have
 
 ## Invariance of $T^{2}$ statistic
 
-Thus, $\mathbf{T}^{2}$with the $\mathbf{y}'s$ and a hypothesis value
+Thus, $\mathbf{T}^{2}$ with the $\mathbf{y}'s$ and a hypothesis value
 $\mu_{\mathbf{Y},0}=\mathbf{C\mu_{0}}+\mathbf{d}$ is
 \begin{align*}
 T^{2} & =n(\bar{\mathbf{y}}-\mu_{\mathbf{Y},0})'\mathbf{S}^{-1}(\bar{\mathbf{y}}-\mu_{\mathbf{Y},0})\\
@@ -235,6 +234,9 @@ of $H_{0}:\mu=\mu_{0}$.
 maximum of $L(\mu_{0},\Sigma)$ is compared with the unrestricted
 maximum of $L(\mu,\Sigma)$.  
 
+
+## Likelihood Ratio Statistic
+
 * The resulting ratio is called the likelihood ratio statistic
 \begin{align*}
 \text{Likelihood ratio = \ensuremath{\Lambda}} & =\frac{\max_{\Sigma}L(\mu_{0},\Sigma)}{\max_{\mu,\Sigma}L(\mu,\Sigma)}\\
@@ -254,8 +256,11 @@ rejects $H_{0}$ if
 \]
 where $c_{\alpha}$ is the lower $(100\alpha)th$ percentile of the
 distribution of $\Lambda$.  
-* Determining the distribution of $\Lambda$ is complicated, but, fortunately,
-we can write $\Lambda$ in terms of the Hotelling's $T^{2}$ statistic.   
+
+
+## Wilks Lambda Statistic
+
+* Determining the distribution of $\Lambda$ is complicated, but, fortunately, we can write $\Lambda$ in terms of the Hotelling's $T^{2}$ statistic.   
 * Under $H_{0}:\mu=\mu_{0}$,
 \begin{align*}
 \Lambda^{2/n} & =\left(1+\frac{T^{2}}{(n-1)}\right)^{-1}\,,\,\,\text{or}\\
@@ -263,7 +268,9 @@ T^{2} & =\frac{(n-1)|\hat{\Sigma}_{0}|}{|\hat{\Sigma}|}-(n-1)
 \end{align*}
 
 
-Example: [Reaven and Miller (1979)](https://www.math.utk.edu/~fernando/Students/GregClark/pdf/Miller-Reaven-Diabetes.pdf)
+
+
+## Example: Reaven and Miller (1979) [link](https://www.math.utk.edu/~fernando/Students/GregClark/pdf/Miller-Reaven-Diabetes.pdf)
 
 Reaven and Miller measured five variables in a comparison of normal patients and diabetics. We use partial data for normal patients only. The three variables of major interest were
 
