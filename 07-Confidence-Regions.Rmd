@@ -123,7 +123,7 @@ LL <- Ybar - sqrt(cval)*sqrt(SY/n)
 UL <- Ybar + sqrt(cval)*sqrt(SY/n)
 data.frame(Mean.D = Ybar, Lower.lim = LL, Upper.lim = UL)
 ```
-The 95% simultaneous confidence interval for mu2-mu5 is (-25, 11). Since 0 is inside the confidence interval, then it is plausible that H0 holds.
+The 95% simultaneous confidence interval for $\mu_2-\mu_5$ is (-25, 11). Since 0 is inside the confidence interval, then it is plausible that H0 holds.
 
 
 ## Bonferroni Method of Multiple Comparisons
