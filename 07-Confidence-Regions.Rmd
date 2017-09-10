@@ -152,12 +152,12 @@ where $\alpha_{i}=\alpha/m$.
 
 ```{r}
 p <- 5; alpha <- 0.05
-tci <- qt(1-alpha/2,df=n-1) 
-bc.tci <- qt(1-alpha/(2*p),df=n-1) 
+tci <- qt(1 - alpha/2, df=n-1) 
+bc.tci <- qt(1 - alpha/(2*p), df=n-1) 
 T2ci <- sqrt(((n-1)*p/(n-p))*qf(0.95, df1=p, df2=n-p))
-CI <- function(cval,Xbar,S,n){
-cbind(Xbar-cval*sqrt(diag(S/n)), 
-      Xbar+cval*sqrt(diag(S)/n))}
+CI <- function(cval, Xbar, S, n){
+    cbind( Xbar - cval * sqrt(diag(S/n)) , 
+           Xbar + cval * sqrt(diag(S/n))) }
 # t-intervals
 t <- CI(tci, Xbar, S, n)
 # bonferroni corrected t-intervals
