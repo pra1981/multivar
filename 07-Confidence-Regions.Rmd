@@ -1,0 +1,192 @@
+---
+title: "07 - Confidence Regions for the Mean"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Confidence Regions for $\mu$
+
+* The set of of all $\mu$ satisfying this inequality form an ellipsoid.  
+
+* For $p>3$, this is hard to visualize and so this equality is of more mathematical interest than of practical use.  
+
+* The hypothesized mean value $\mu_{0}$ lies within the confidence region if the computed the generalized square distance satisfies 
+\[
+n(\bar{\mathbf{X}}-\mu_{0})'\mathbf{S}^{-1}(\bar{\mathbf{X}}-\mu_{0})\leq\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)
+\]  
+
+* This approach is analogous to testing 
+$$H_{0}:\mu=\mu_{0} \quad \text{vs} \quad H_{0}:\mu\neq\mu_{0}$$
+where $T^{2}$-test would not reject $H_{0}$ when $$T^{2}\leq\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha).$$
+
+
+## Simultaneous Confidence Statements for $\mathbf{a}'\mu$
+
+* A $100(1-\alpha)\%$ simultaneous confidence intervals involving the $(p\times1)$ vector $\mathbf{a}$ for $\mathbf{a}'\mu$ is
+\begin{align*}
+\mathbf{a}'\bar{\mathbf{X}}-\sqrt{\frac{(n-1)p}{(n-p)}F_{p,n-p}(\alpha)}& \sqrt{\frac{\mathbf{a}'\mathbf{S}\mathbf{a}}{n}}  \leq\mathbf{a}'\mu\leq\\
+ & \mathbf{a}'\bar{\mathbf{X}}+\sqrt{\frac{(n-1)p}{(n-p)}F_{p, n-p}(\alpha)}\sqrt{\frac{\mathbf{a}'\mathbf{S}\mathbf{a}}{n}}
+\end{align*}  
+
+* The Simultaneous $T^{2}$ confidence intervals for all $\mathbf{a}'\mu$ are just the shadows (projection), of the confidence ellipsoid on the component axes.
+
+
+
+## 
+
+ In particular, if we let $\mathbf{a'}=[0,\ldots,0,1,0,\ldots,0]$
+where 1 is on the $i$th row of $\mathbf{a}$, then a $100(1-\alpha)\%$
+confidence interval for $\mathbf{a'} \mu = \mu_{i}$ $(p = 1)$ is 
+\begin{align*}
+\bar{X}_{i}-\sqrt{\frac{(n-1)p}{(n-p)}F_{p, n-p}(\alpha)}& \sqrt{\frac{s_{ii}}{n}}  \leq\mu_{i}\leq\\
+ & \bar{X}_{i}+\sqrt{\frac{(n-1)p}{(n-p)}F_{p, n-p}(\alpha)}\sqrt{\frac{s_{ii}}{n}}
+\end{align*}
+\begin{align*}
+\bar{X}_{i}-\sqrt{F_{1, n-1}(\alpha)} \sqrt{\frac{s_{ii}}{n}}  \leq\mu_{i}\leq
+  \bar{X}_{i}+\sqrt{F_{1, n-1}(\alpha)}\sqrt{\frac{s_{ii}}{n}}
+\end{align*}
+\begin{align*}
+\bar{X}_{i}- t_{n-1}(\alpha/2) \sqrt{\frac{s_{ii}}{n}}  \leq\mu_{i}\leq
+  \bar{X}_{i}+t_{n-1}(\alpha/2) \sqrt{\frac{s_{ii}}{n}}
+\end{align*}
+
+
+## Simultaneous Confidence Statements for $\mathbf{a}'\mu$
+
+* We can also make statements about the differences $\mu_{i}-\mu_{k}$
+corresponding to $\mathbf{a}'=[0,\ldots,0,a_{i},0,\ldots,a_{k},\ldots,0]$,
+where $a_{i}=1$ and $a_{k}=-1$. In this case $(p = 2)$, $\mathbf{a'Sa}=s_{ii}-2s_{ik}+s_{kk}$,
+we have the interval 
+\begin{align*}
+(\bar{X}_{i}-\bar{X}_{k})-\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}} & \leq\mu_{i}\leq\\
+(\bar{X}_{i}-\bar{X}_{k})+\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}}
+\end{align*}  
+
+* Which set of intervals is better (smaller) depends on the relative sizes of $n$ and $p$, and even the number of means compared, say $m$ $\mu_{i}$'s.  
+
+* Perhaps the best way is to calculate both sets (critical values) and use the set yielding the narrower intervals.
+
+
+## Patients Example : Simultaneous Statenents
+
+Test to see if $\mu_2=\mu_5$.
+$$
+H_0 : \mu_2=\mu_5 \ \ \text{vs} \ \ H_1 : \mu_2 \neq \mu_5
+$$
+
+```{r}
+patients <- read.csv("patients.csv", header=TRUE)
+(Xbar <- colMeans(patients))
+S <- cov(patients) # cov matrix
+n <- nrow(patients)
+```
+We want to see if $\mu_2=\mu_5$.
+$$
+H_0 : \mu_2=\mu_5 \ \ \text{vs} \ \ H_1 : \mu_2 \neq \mu_5
+$$
+
+## 
+
+```{r}
+p <- 2 # comparing two means
+(cval <- ((n-1)*p/(n-p))*qf(0.95, 
+                  df1 = p, df2 = n-p)) # F critical value
+a <- c(0,1,0,0,-1)
+Ybar <- t(a)%*%Xbar
+SY <- t(a)%*%S%*%a
+LL <- Ybar - sqrt(cval)*sqrt(SY/n)
+UL <- Ybar + sqrt(cval)*sqrt(SY/n)
+data.frame(Mean.D = Ybar, Lower.lim = LL, Upper.lim = UL)
+```
+The 95% simultaneous confidence interval for mu2-mu5 is (-25, 11). Since 0 is inside the confidence interval, then it is plausible that H0 holds.
+
+
+## Bonferroni Method of Multiple Comparisons
+
+* Suppose prior to the collection of data, confidence statementts about
+$m$ linear combinations $\mathbf{a}'_{1}\mu,\mathbf{a}'_{2}\mu,\ldots,\mathbf{a}'_{m}\mu$
+are required.
+
+* Let $C_{i}$ denote the confidence statement abou the value $\mathbf{a}'_{i}\mu$
+with $P(C_{i}\text{ true})=1-\alpha_{i},i=1,2,\ldots,m$.
+\[
+P[\text{all}\,C_{i}\,\text{true}]\geq1-\sum_{i=1}^{m}\alpha_{i}
+\]
+
+* A special case of the Bonferroni allows the investigator to control the overall error rate $\sum_{i=1}^{m}\alpha_{i}$, regardless of
+the correlation structure.
+
+* We consider the individual t-intervals
+\[
+\bar{X}_{i}\pm t_{n-1}\left(\frac{\alpha_{i}}{2}\right)\sqrt{\frac{s_{ii}}{n}},\,\,\,i=1,2,\ldots,m,
+\]
+where $\alpha_{i}=\alpha/m$.
+
+
+##
+
+```{r}
+p <- 5; alpha <- 0.05
+tci <- qt(1-alpha/2,df=n-1) 
+bc.tci <- qt(1-alpha/(2*p),df=n-1) 
+T2ci <- sqrt(((n-1)*p/(n-p))*qf(0.95, df1=p, df2=n-p))
+CI <- function(cval,Xbar,S,n){
+cbind(Xbar-cval*sqrt(diag(S/n)), 
+      Xbar+cval*sqrt(diag(S)/n))}
+# t-intervals
+t <- CI(tci, Xbar, S, n)
+# bonferroni corrected t-intervals
+bct <- CI(bc.tci,Xbar,S,n)
+# Hotelling T2-intervals
+T2 <- CI(T2ci,Xbar,S,n)
+```
+
+
+## 
+
+```{r}
+# Confidence Intervals for the mean vector with 
+# alpha = 0.05
+# One-at-a-time t, bonferroni corrected t, 
+# and T2 intervals
+colnames(t) <- colnames(bct) <- colnames(T2) <- c("LL", "UL")
+data.frame(t = t, Bonf_t = bct, T2 = T2)
+```
+
+## Observations
+
+* In general, the width of $T^2$-intervals, relative to $t$ and bonferroni corrected $t$ intervals, increases as $p$ increases (for fixed $n$) and decreases as $n$ increases (for fixed $p$).  
+
+* The confidence level associated with any collection of $T^2$-intervals, for fixed $n$ and $p$, is $1 - \alpha$, and the overall confidence associated with a collection of $t$ intervals, for the same $n$, can be much less.  
+
+* The bonferroni correction guarantees that overall confidence level is greater than or equal to 0.95.  
+
+* Because Bonferroni correction is easy to apply and provide relatively short confidence intervals; it often used in practice.
+
+
+
