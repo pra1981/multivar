@@ -83,8 +83,8 @@ corresponding to $\mathbf{a}'=[0,\ldots,0,a_{i},0,\ldots,a_{k},\ldots,0]$,
 where $a_{i}=1$ and $a_{k}=-1$. In this case $(p = 2)$, $\mathbf{a'Sa}=s_{ii}-2s_{ik}+s_{kk}$,
 we have the interval 
 \begin{align*}
-(\bar{X}_{i}-\bar{X}_{k})-\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}} & \leq\mu_{i}\leq\\
-(\bar{X}_{i}-\bar{X}_{k})+\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}}
+(\bar{X}_{i}-\bar{X}_{k})-&\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}}  \leq\mu_{i}\leq\\
+&(\bar{X}_{i}-\bar{X}_{k})+\sqrt{\frac{(n-1)p}{(n-p)}F_{p.n-p}(\alpha)}\sqrt{\frac{s_{ii}-2s_{ik}+s_{kk}}{n}}
 \end{align*}  
 
 * Which set of intervals is better (smaller) depends on the relative sizes of $n$ and $p$, and even the number of means compared, say $m$ $\mu_{i}$'s.  
@@ -105,7 +105,7 @@ patients <- read.csv("patients.csv", header=TRUE)
 S <- cov(patients) # cov matrix
 n <- nrow(patients)
 ```
-We want to see if $\mu_2=\mu_5$.
+We want to test whether there is enough evidence against $\mu_2 = \mu_5$.
 $$
 H_0 : \mu_2=\mu_5 \ \ \text{vs} \ \ H_1 : \mu_2 \neq \mu_5
 $$
