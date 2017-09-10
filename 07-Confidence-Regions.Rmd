@@ -174,9 +174,21 @@ T2 <- CI(T2ci,Xbar,S,n)
 # alpha = 0.05
 # One-at-a-time t, bonferroni corrected t, 
 # and T2 intervals
-colnames(t) <- colnames(bct) <- colnames(T2) <- c("LL", "UL")
-data.frame(t = t, Bonf_t = bct, T2 = T2)
+colnames(t) <- colnames(bct) <- 
+      colnames(T2) <- c("LL", "UL")
+data.frame(t = t, Bonf.t = bct, T2 = T2)
 ```
+
+## Comparison of Interval Widths
+
+```{r}
+# One-at-a-time t, bonferroni corrected t, 
+# and T2 intervals
+data.frame(t.width = t[,2] - t[,1], 
+           Bonf.t.width = bct[,2] - bct[,1], 
+           T2.width = T2[,2] - T2[,1])
+```
+
 
 ## Observations
 
