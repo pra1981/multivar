@@ -161,9 +161,9 @@ CI <- function(cval, Xbar, S, n){
 # t-intervals
 t <- CI(tci, Xbar, S, n)
 # bonferroni corrected t-intervals
-bct <- CI(bc.tci,Xbar,S,n)
+bct <- CI(bc.tci, Xbar, S, n)
 # Hotelling T2-intervals
-T2 <- CI(T2ci,Xbar,S,n)
+T2 <- CI(T2ci, Xbar, S, n)
 ```
 
 
