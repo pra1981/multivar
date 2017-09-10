@@ -43,8 +43,8 @@ $$
 P(&\text{overall Type 1 error}) \\
 & = P\{ (\text{Reject }H^1_{0}) \cup \cdots \cup (\text{Reject }H^{10}_{0})\} \\
 & = 1 - P\{(\text{Fail to Reject }H^1_{0}) \cap \cdots \cap (\text{Fail to Reject }H^{10}_{0})\} \\
-& = 1 - 0.95^{10} = 0.40 \quad \{\text{if variables are uncorrelated - rare}\} \\
-& = \text{between .05 and .40} \quad \{\text{if variables are correlated}\}
+& = 1 - 0.95^{10} = 0.40 \quad \{\text{if variables are independent - rare}\} \\
+& = \text{between .05 and .40} \quad \{\text{if variables are dependent}\}
 \end{aligned}
 $$
 
