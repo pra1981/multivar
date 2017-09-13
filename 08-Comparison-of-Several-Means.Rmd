@@ -1,0 +1,610 @@
+---
+title: "08 - Comparison of Several Means"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Paired Comparisons
+
+* Measurements are often recorded under different sets of experimental
+conditions to see whether the responses differ significantly over
+these sets.  
+
+* e.g. The efficacy of a new drug or of a saturation advertising campaign.  
+
+* Compare two treatments, or the presence and absence of a single treatment,
+and assign both treatments to the same or identical units/individuals.  
+
+* The paired responses may be analyzed by computing their differences,
+thereby eliminating much of the influence of extraneous unit-to-unit
+variation.
+
+
+## Wastewater Treatment Example
+
+* Municipal wastewater treatment plants are required by law to monitor their discharges into rivers and streams on a regular basis.   
+
+* Concern about the reliability of data from one of these self-monitoring programs led to a study in which samples of effluent were divided and sent to two laboratories for testing. 
+
+* One-half of each sample was sent to the Wisconsin State Laboratory of Hygiene, and one-half was sent to a private commercial laboratory routinely used in the monitoring program.  
+
+* Measurements of biochemical oxygen demand (BOD) and suspended solids (SS) were obtained, for $n=11$ sample splits, from two laboratories.  
+
+* Do the two laboratories' chemical analyses agree? If differences exists, what is their nature?
+
+
+##
+
+```{r}
+waste <- read.table("T6-1.dat")
+colnames(waste) <- c("BOD1","SS1","BOD2","SS2")
+str(waste)
+BOD <- data.frame(Lab = c(rep(1,11), rep(2,11)), 
+                value = with(waste, c(BOD1, BOD2)))
+SS <- data.frame(Lab = c(rep(1,11), rep(2,11)), 
+                value = with(waste, c(SS1, SS2)))
+```
+
+
+## 
+
+```{r}
+head(BOD)
+tail(BOD)
+```
+
+
+##
+
+```{r}
+boxplot(value ~ Lab, data = BOD, main = "BOD")
+```
+
+
+##
+
+```{r}
+head(SS)
+tail(SS)
+```
+
+
+
+## 
+
+```{r}
+boxplot(value ~ Lab, data = SS, main = "SS")
+```
+
+
+
+## Univariate Paired Comparison
+
+* Let $X_{j1}$ denote the response to treatment 1 (or pre-test measurement),
+and let $X_{j2}$ denote the response to treatment 2 (or post-test
+measurement).  
+
+* $(X_{j1},X_{j2})$ are measurements recorded on the $j$th unit (pair).
+The $n$ differences 
+\[
+D_{j}=X_{j1}-X_{j2},\,\,\,\,j=1,2,\ldots,n
+\]
+reflect only the differential effects of the treatments.   
+
+
+## Univariate Paired Comparison (cont)
+
+* Since $D_{j}\sim N(\delta,\sigma_{d}^{2})$ where $\delta$ and $\sigma_{d}^{2}$
+are the true mean and variances of the differences $D_{j}$, then
+the test statistic for testing whether $H_{0}:\delta=0$ vs $H_{1}:\delta\neq0$
+is
+\[
+t=\frac{\bar{D}-\delta_{0}}{s_{d}/\sqrt{n}}\sim t_{n-1}\,\,\,\,(\text{reject }H_{0}\text{ when}|t|>t_{n-1}(\alpha/2))
+\]
+where $\bar{D}$ and $s_{d}^{2}$ are the sample mean and sample variances
+of $D_{j}$. 
+
+
+## Multivariate Paired Notations
+
+We label the $p$ responses within the $j$th unit as
+\begin{align*}
+X_{1j1} & =\text{variable 1 under treatment 1}\\
+X_{1j2} & =\text{variable 2 under treatment 1}\\
+\vdots & \,\,\,\,\,\,\vdots\\
+X_{1jp} & =\text{variable p under treatment 1}\\
+X_{2j1} & =\text{variable 1 under treatment 2}\\
+X_{2j2} & =\text{variable 2 under treatment 2}\\
+\vdots & \,\,\,\,\,\,\vdots\\
+X_{2jp} & =\text{variable p under treatment 2}
+\end{align*}
+
+
+## Multivariate Paired Differences
+
+* The $p$ paired-difference random variables become
+\begin{align*}
+D_{j1} & =X_{1j1}-X_{2j1}\\
+D_{j2} & =X_{1j2}-X_{2j2}\\
+\vdots & \,\,\,\,\,\vdots\\
+D_{jp} & =X_{1jp}-X_{2jp}
+\end{align*}  
+
+* Let $\mathbf{D}_{j}'=[D_{j1},D_{j2},\ldots,D_{jp}]$ , for $j=1,2,\ldots,n$,
+and $E(\mathbf{D}_{j}')=\mathbf{\delta}'=[\delta_{1},\delta_{2},\ldots,\delta_{p}]$
+and $Cov(\mathbf{D}_{j})=\Sigma_{d}$.   
+
+
+## Multivariate Paired Differences (cont)
+
+* If $D_{1},D_{2},\ldots,D_{n}$ are IID $\sim N_{p}(\mathbf{\delta},\Sigma_{d})$,
+inferences on $\mathbf{\delta}$ can be based on the $T^{2}$-statistic
+\[
+T^{2}=n(\bar{\mathbf{D}}-\delta)'\mathbf{S}_{d}^{-1})(\bar{\mathbf{D}}-\delta)\sim\frac{(n-1)p}{n-p}F_{p,n-p}
+\]
+where $\bar{\mathbf{D}}=\frac{1}{n}\sum_{j=1}^{n}\mathbf{D}_{j}$
+and 
+$$
+S_{d}=\frac{1}{n-1}\sum_{j=1}^{n}(\mathbf{D}_{j}-\bar{\mathbf{D}})(\mathbf{D}_{j}-\bar{\mathbf{D}})'
+$$
+
+
+## Multivariate Paired Test and Confidence Region
+
+* The condition $\mathbf{\delta}=0$ is equivalent to ``no average
+difference between two treatments.''  
+
+* \textbf{$\bar{\mathbf{d}}$} and $\mathbf{S_{d}}$
+are the realized values of $\bar{\mathbf{D}}$ and $\mathbf{S_{D}}$.  
+
+* An $\alpha$-level test of $H_{0}:\delta=0$ vs $H_{1}:\delta\neq0$
+for $N_{p}(\delta,\Sigma_{d})$ population rejects $H_{0}$ if the
+observed 
+\[
+T^{2}=n\bar{\mathbf{d}}\mathbf{S}_{\mathbf{d}}^{-1}\bar{\mathbf{d}}>\frac{(n-1)p}{(n-p)}F_{p,n-p}(\alpha)
+\]
+where $F_{p,n-p}(\alpha)$ is the upper $(100\alpha)$th percentile
+of an F-distribution.   
+
+
+
+## 
+
+* A $100(1-\alpha)\%$ confidence region for $\delta$ consists of all
+$\delta$ such than
+\[
+(\bar{\mathbf{d}}-\delta)'S_{\mathbf{d}}^{-1}(\bar{\mathbf{d}}-\delta)\leq\frac{(n-1)p}{n(n-p)}F_{p,n-p}(\alpha)
+\]
+
+
+
+## Multivariate Paired Simultaneous Intervals
+
+
+* A $100(1-\alpha)\%$ simultaneous confidence intervals for the
+individual mean differences $\delta_{i}$ are given by
+\[
+\delta_{i}:\bar{d}_{i}\pm\sqrt{\frac{(n-1)}{(n-p)}F_{p,n-p}(\alpha)}\sqrt{\frac{s_{d_{i}}^{2}}{n}}
+\]
+where $\bar{d}_{i}$ is the ith element of $\bar{\mathbf{d}}$ and
+$s_{d_{i}}^{2}$ is the ith diagonal element of $\mathbf{S}_{d}$.  
+
+* The Bonferroni $100(1-\alpha)\%$ simultaneous confidence intervals
+for the individual mean differences are 
+\[
+\delta_{i}:\bar{d}_{i}\pm t_{n-1}\left(\frac{\alpha}{2p}\right)\sqrt{\frac{s_{d_{i}}^{2}}{n}}
+\]
+
+
+## Wastewater Treatment Example
+
+```{r}
+# get paired differeces for BOD and SS
+(d <- with(waste, cbind(BOD1-BOD2, SS1-SS2))) 
+```
+
+
+## Sample Mean and Covariances
+
+```{r}
+n <- nrow(d)
+p <- 2
+(dbar <- colMeans(d))
+(S <- cov(d))
+```
+
+
+
+## Multivariate Paired Test
+
+```{r}
+(T2 <- n*t(dbar)%*%solve(S)%*%dbar) # hotelling T2
+# scaled F critical value
+p*(n-1)/(n-p)*qf(0.95,df1=p,df2=n-p)
+```
+
+
+##
+
+```{r}
+# scale T2 so we can use original F-crit value
+(T2.F <- T2/((n-1)*p/(n-p))) 
+# original F-critical value
+(cval <- qf(0.95, df1 = p, df2 = n-p))
+# We can also compute the p-value using
+(pvalue <- 1 - pf((n-p)/(p*(n-1))*T2, df1=p,df2 = n-p))
+```
+
+
+## Multivariate Paired Test using `ICSNP::HotellingsT2`
+
+```{r}
+ICSNP::HotellingsT2(d, mu = c(0, 0))
+```
+Since $T2.F = 6.1 > 4.3, (p = 0.02)$, we reject $H_0$ at 5% level and conclude that there is a nonzero mean difference between the measurements of the two laboratories.
+
+
+
+## Simultaneous Confidence Intervals
+
+```{r}
+# The 95% simultaneous confidence intervals are
+LL <- dbar - sqrt(cval)*sqrt(diag(S)/n)
+UL <- dbar + sqrt(cval)*sqrt(diag(S)/n)
+
+# Bonferroni Corrected simultaneous confidence t-intervals
+ct <- qt(1-0.05/(2*2),df=n-1)
+LLbc <- dbar - ct*sqrt(diag(S)/n)
+ULbc <- dbar + ct*sqrt(diag(S)/n)
+data.frame(LL_T2 = LL, UL_T2 = UL,
+           LL_bc = LLbc, UL_bc = ULbc)
+```
+
+Note that the 95% confidence intervals include zero, yet we reject $H_0$ (no difference) at 5% level. What is going on?
+
+
+
+
+##  Plot the 95% confidence ellipse for the vector of mean differences
+
+```{r echo = FALSE, fig.width= 4}
+library(ellipse) 
+plot(ellipse(S,centre=dbar, t = sqrt(cval/n)), 
+     type = "l",
+	   xlim = c(-25,8), 
+     ylim = c(-10,35))
+points(dbar[1], dbar[2])
+points(0, 0, col="red")
+# Plot the confidence intervals together with the 
+# confidence ellipse: 
+lines(c(LL[1],LL[1]),c(-12,UL[2]),lty=2)
+lines(c(UL[1],UL[1]),c(-12,UL[2]),lty=2)
+lines(c(-27,UL[1]),c(LL[2],LL[2]),lty=2)
+lines(c(-27,UL[1]),c(UL[2],UL[2]),lty=2)
+
+# Plot the Bonferroni confidence intervals together 
+# with the confidence ellipse:
+lines(c(LLbc[1],LLbc[1]),c(-12,ULbc[2]),lty=3)
+lines(c(ULbc[1],ULbc[1]),c(-12,ULbc[2]),lty=3)
+lines(c(-27,ULbc[1]),c(LLbc[2],LLbc[2]),lty=3)
+lines(c(-27,ULbc[1]),c(ULbc[2],ULbc[2]),lty=3)
+```
+
+
+## 
+
+* Looking back at $T_2 = 14 > 9.47$, we have evidence that the confidence region  excludes $\delta=0$.   
+
+* The 95\% simultaneous confidence coefficient     $\sqrt{\frac{(n-1)}{(n-p)}F_{p,n-p}(\alpha)} = \sqrt{9.47}=3.07$ 
+applies to all possible linear combinations of the form $a_1\delta_1 + a_2\delta_2$.    
+* Our interval choices have $(a_1=1,a_2=0)$ and $(a_1=0,a_2=1)$ contains zero.  
+
+
+## 
+
+* However, other choices of $a_1$ and $a_2$ will produce simultaneous intervals that do not contain zero.  
+
+* If $H_0 : \delta=0$ were not rejected, then all simultaneous interval would include zero.  
+
+* Note that in the boxplots, we see possible outliers in the data? Is the assumption of multivariate normality valid in this case?  
+
+
+
+## 
+
+```{r}
+# outlier
+waste[8,]
+# remove eight observation
+ICSNP::HotellingsT2(d[-8, ], mu = c(0, 0))
+
+```
+
+
+
+## Repeated Measures Design (RMD) for Comparing Treatments
+
+
+* $q$ treatments (or time points) are compared with respect to a single
+response variable.  
+
+* Each subject or unit receives each treatment once over successive
+periods of time.  
+
+* The $j$th observation is $\mathbf{X}_{j}'=[X_{j1},X_{j2},\ldots,X_{jq}]$,
+$j=1,2,\ldots,n$.  
+
+* The repeated measures stem from the fact that all treatments are administered
+to each unit.  
+
+
+## RMD for Comparing Treatments (cont)
+
+* We consider contrasts of the components of $\mu=E(\mathbf{X}_{j})$.
+\[
+\left[\begin{array}{c}
+\mu_{1}-\mu_{2}\\
+\mu_{1}-\mu_{3}\\
+\vdots\\
+\mu_{1}-\mu_{q}
+\end{array}\right]=\left[\begin{array}{ccccc}
+1 & -1 & 0 & \cdots & 0\\
+1 & 0 & -1 & \cdots & 0\\
+\vdots & \vdots & \vdots & \ddots & \vdots\\
+1 & 0 & 0 & \cdots & -1
+\end{array}\right]\left[\begin{array}{c}
+\mu_{1}\\
+\mu_{2}\\
+\vdots\\
+\mu_{q}
+\end{array}\right]=\mathbf{C}\mathbf{\mu}
+\]
+
+* The $q-1$ rows of $C$ are linearly independent and each is a contrast vector.
+
+
+
+## Test of Equality of Treatments in RMD
+
+Consider an $N_{q}(\mu,\Sigma)$ population, and let $C$ be a contrast
+matrix. An $\alpha$-level test of $H_{0}:\mathbf{C}\mu=0$ (equal
+treatment means) versus $H_{1}:C\mu\neq0$ is
+\[
+T^{2}=n(\mathbf{C}\bar{\mathbf{x}})'(\mathbf{CSC}')^{-1}(\mathbf{C}\bar{\mathbf{x}})>\frac{(n-1)(q-1)}{(n-q+1)}F_{q-1,n-q+1}(\alpha)
+\]
+where $F_{q-1,n-q+1}(\alpha)$ is the upper $(100\alpha)$th percentile
+of an $F$-distribution with $q-1$ and $n-q+1$ d.f.; 
+
+$$\bar{\mathbf{x}}=\frac{1}{n}\sum_{i=1}^{n}\mathbf{x}_{j}, \quad \quad \mathbf{S}=\frac{1}{n-1}\sum_{j=1}^{n}(\mathbf{x}_{j}-\bar{\mathbf{x}})(\mathbf{x}_{j}-\bar{\mathbf{x}})'$$
+
+
+
+## 
+
+* A confidence region for contrast $C\mu$ is the set of all $C\mu$
+such that
+\[
+n(\mathbf{C}\bar{\mathbf{x}}-\mathbf{C}\mu)'(\mathbf{CSC}')^{-1}(\mathbf{C}\bar{\mathbf{x}}-\mathbf{C}\mu)\leq\frac{(n-1)(q-1)}{(n-q+1)}F_{q-1,n-q+1}(\alpha)
+\]
+
+* Also, simultaneous $100(1-\alpha)\%$ confidence intervals for single
+contrasts $\mathbf{c}'\mu$ for any constrast vectors are
+\[
+\mathbf{c}'\mu:\,\,\mathbf{c}'\bar{\mathbf{x}}\pm\sqrt{\frac{(n-1)(q-1)}{(n-q+1)}F_{q-1,n-q+1}(\alpha)}\sqrt{\frac{\mathbf{c}'\mathbf{\mathbf{S}c}}{n}}
+\]
+
+
+## Anesthetics Example
+
+* Improved anesthetics are often developed by first studying their effects
+on animals.  
+
+* In one study, 19 dogs were initially given the drug pentobarbitol.
+Each dog was then administered $CO_{2}$ at each of two pressure levels.
+
+* Next, halothane ($H$) was added, and the administration of $CO_{2}$
+was repeated.
+
+
+## 
+
+* The response, milliseconds between heartbeats, was measured for the
+four treatment combinations 
+      - Treatment 1 = high $CO_{2}$ pressure without $H$  
+      - Treatment 2 = low $CO_{2}$ pressure without $H$  
+      - Treatment 3 = high $CO_{2}$ pressure with $H$  
+      - Treatment 4 = low $CO_{2}$ pressure with $H$  
+
+* Analyze the anesthetizing effects of $CO_{2}$ pressure and halothene
+($H$) from this repeated-measures design.
+
+
+
+##
+
+```{r}
+time <- read.table("T6-2.dat")
+colnames(time) <- c("T1","T2","T3","T4")
+n <- nrow(time)
+q <- ncol(time)
+c(n,q)
+heartbeats <- data.frame(treatment = c(rep(1,n),rep(2,n),
+                                       rep(3,n),rep(4,n)), 
+              beats = with(time, c(T1, T2, T3, T4)))
+```
+
+
+##
+
+```{r}
+boxplot(beats ~ treatment, data = heartbeats,
+	        main = "Response between heartbeats ")
+```
+
+
+
+## Anesthetics Example : Treatment Contasts
+
+* Let $\mu_{1},\mu_{2},\mu_{3}$ and $\mu_{4}$ denote the mean responses
+for treatments 1,2,3 and 4.  
+
+* There are three treatment contrasts that might be of interest in the
+experiment.  
+
+* $(\mu_{3}+\mu_{4})-(\mu_{1}+\mu_{2})=$ Halothane contrast representing
+the difference between the presence and absence of halothene  
+
+* $(\mu_{1}+\mu_{3})-(\mu_{2}+\mu_{4})=$ $CO_{2}$ contrast representing
+the difference between high and low $CO_{2}$ pressure  
+
+* $(\mu_{1}+\mu_{4})-(\mu_{2}+\mu_{3})=$ Contrast representing the influence
+of halothane on $CO_{2}$ pressure differences ($H-CO_{2}$ pressure
+``interaction'')
+
+
+##
+
+```{r}
+# The contrast matrix is
+c1 <- c(-1, -1, 1, 1)
+c2 <- c(1, -1, 1, -1)
+c3 <- c(1, -1, -1, 1)
+(C <- rbind(c1,c2,c3))
+(xbar <- colMeans(time))
+```
+
+
+## 
+
+```{r}
+(S <- cov(time))
+(T2 <- n*t(C%*%xbar)%*%solve(C%*%S%*%t(C))%*%C%*%xbar)
+(cval <- (n-1)*(q-1)/(n-q+1) * qf(0.95, 
+                                  df1=q-1,df2 = n-q+1))
+```
+
+
+##
+
+
+```{r}
+# scaled T2, original F crit
+c(T2/((n-1)*(q-1)/(n-q+1)), 
+  qf(0.95, df1=q-1,df2 = n-q+1))
+# We can also compute the p-value using
+(pvalue <- 1 - pf((n-q+1)/((n-1)*(q-1))*T2, 
+	df1=q-1,df2 = n-q+1))
+```
+
+
+
+## Tests of Equality of Treatments in RMD using `ICSNP::HotellingsT2`
+
+```{r}
+# transform data using contrasts matrix
+time.C <- t(C %*% t(time))  
+ICSNP::HotellingsT2(time.C, mu = c(0, 0, 0))
+```
+Strong evidence in the sample that the vector of constrasts is different from the zero vector. This means that some, if not all, of the contrasts values are different from zero.
+
+
+## 
+
+* To see which of the contrasts are responsible for the rejection of H0.   
+
+* Let's perform two-sided t-test on each contrasts. We can also get equivalent result if we instead construct confidence intervals for the contrasts.
+
+* We use the base function `t.test()` to do this.
+
+* Since there three contrasts, we use Bonferonni correction on the level of significance.
+
+* Bonferroni corrected level of significance: $\alpha/3$  
+
+```{r}
+(alpha0 <- 0.05/3)  # Bonferonni correction
+```
+
+
+## Contrast 1: $(\mu_{3}+\mu_{4})-(\mu_{1}+\mu_{2})$
+
+Halothane contrast representing the difference between the presence and absence of halothene
+
+```{r}
+time.c1 <- t(c1 %*% t(time))
+t.test(time.c1, mu = 0, conf.level = 1 - alpha0)
+```
+
+## 
+
+* It strongly seems that there is a halothene effect.  
+
+* The presence of halothene produces longer times between heartbeats. 
+
+
+
+## Contrast 2: $(\mu_{1}+\mu_{3})-(\mu_{2}+\mu_{4})$
+
+$CO_{2}$ contrast representing the difference between high and low $CO_{2}$ pressure
+
+```{r}
+time.c2 <- t(c2 %*% t(time))
+t.test(time.c2, mu = 0, conf.level = 1 - alpha0)
+```
+
+
+
+## 
+
+* The result of the test on the second contrast indicates that there is an effect due to $CO_2$ pressure.  
+
+* Lower $CO_2$ pressure produces longer times between heartbeats. 
+
+
+
+## Contrast 3: $(\mu_{1}+\mu_{4})-(\mu_{2}+\mu_{3})$
+
+Representing the influence of halothane on $CO_{2}$ pressure differences ($H-CO_{2}$ pressure ``interaction'')
+
+```{r}
+time.c3 <- t(c3 %*% t(time))
+t.test(time.c3, mu = 0, conf.level = 1 - alpha0)
+```
+
+
+## 
+
+* No significant interaction effect between Halothen and $CO_2$ is detected.  
+
+* Halothene produces longer times between heartbeats at both levels of $CO_2$ pressure.   
+
+* Some caution must be exercised in our interpretation because the trials with Halothene must follow those without (meaning there is a possible time trend).
+
+
+
+
+
