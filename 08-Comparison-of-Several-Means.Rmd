@@ -119,7 +119,7 @@ reflect only the differential effects of the treatments.
 
 ## Univariate Paired Comparison (cont)
 
-* Since $D_{j}\sim N(\delta,\sigma_{d}^{2})$ where $\delta$ and $\sigma_{d}^{2}$
+* If $D_{j}\sim N(\delta,\sigma_{d}^{2})$ where $\delta$ and $\sigma_{d}^{2}$
 are the true mean and variances of the differences $D_{j}$, then
 the test statistic for testing whether $H_{0}:\delta=0$ vs $H_{1}:\delta\neq0$
 is
