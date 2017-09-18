@@ -1,0 +1,462 @@
+---
+title: "10 - Multivariate Analysis of Variance"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Comparing Several Mult Pop'n Means (Multivariate ANOVA)
+
+Random samples, collected from each of $g$ populations,
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|}
+\hline 
+Population 1: & $\mathbf{X}_{11},\mathbf{X}_{12},\ldots,\mathbf{X}_{1n_{1}}$\tabularnewline
+\hline 
+Population 2: & $\mathbf{X}_{21},\mathbf{X}_{22},\ldots,\mathbf{X}_{2n_{2}}$\tabularnewline
+\hline 
+$\vdots$ & $\vdots$\tabularnewline
+\hline 
+Population $g$: & $\mathbf{X}_{g1},\mathbf{X}_{g2},\ldots,\mathbf{X}_{gn_{g}}$\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+* MANOVA is used first to investigate whether the population mean vectors are the same and, if not, which mean components differ significantly.
+
+
+## Review of Univariate ANOVA
+
+* $X_{\ell1},X_{\ell2},\ldots,X_{\ell n_{l}}$ is a random sample from an $N(\mu_{\ell},\sigma^{2})$ population, $\ell=1,2,\ldots,g$  
+
+* random samples are independent  
+
+* $H_{0}:\mu_{1}=\mu_{2}=\cdots=\mu_{q}$  
+
+* $\mu_{\ell}=\mu+(\mu_{\ell}-\mu)=\mu+\tau_{\ell}$, where $\tau_{\ell}=\mu_{\ell}-\mu$.
+
+* The null hypothesis becomes $H_{0}:\tau_{1}=\tau_{2}=\cdots=\tau_{g}=0$  
+
+* The response $X_{\ell j}\sim N(\mu+\tau_{j},\sigma^{2})$, can be written as
+\[
+X_{\ell j}=\mu+\tau_{\ell}+e_{\ell j}
+\]
+where the $e_{\ell j}$ are independent $N(0,\sigma^{2})$ random variables.
+
+* To define uniquely the model parameters and their least squares estimates, we impose the constraint
+\[
+\sum_{\ell=1}^{g}n_{\ell}\tau_{\ell}=0.
+\]
+
+
+## 
+
+The analysis of variance is based upon an analogous decomposition of the observations
+\begin{align*}
+x_{\ell j} & =\bar{x}+(\bar{x}_{\ell}-\bar{x})+(x_{\ell j}-\bar{x}_{\ell})\\
+ & =\bar{x}+\hat{\tau}_{\ell}+\hat{e}_{\ell j}\\
+\text{(obs)} & =\text{(overall sample mean)}+ \\
+& \quad \text{(estimated treatment effect)}+\text{(residual)}
+\end{align*}
+
+Note that, for all $\ell=1,2,\ldots,g$,
+\[
+\sum_{\ell=1}^{n_{\ell}}(x_{\ell j}-\bar{x})^{2}=n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2}+\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2},
+\]
+since $\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})=0$.
+
+
+
+## 
+
+Summing both sides over $\ell$ we get
+\begin{align*}
+\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x})^{2} & =\sum_{\ell=1}^{g}n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2}+\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2}\\
+\left(\begin{array}{c}
+SS_{cor}\\
+\text{total}\\
+\text{(corrected) SS}
+\end{array}\right) & =\left(\begin{array}{c}
+SS_{tr}\\
+\text{between}\\
+\mbox{\text{(samples) SS}}
+\end{array}\right)+\left(\begin{array}{c}
+SS_{res}\\
+\text{within}\\
+\text{(samples) SS }
+\end{array}\right) \\
+\text{OR} \qquad & \\
+\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}x_{\ell j}^{2}  &=(n_{1}+n_{2}+\cdots+n_{g})\bar{x}^{2}+\sum_{\ell=1}^{g}n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2} \\
+& \qquad + \sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2}\\
+(SS_{obs}) & =(SS_{mean})+(SS_{tr})+(SS_{res})
+\end{align*}
+
+
+## ANOVA Table
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|}
+\hline 
+$\begin{array}{c}
+\text{Source of}\\
+\text{variation}
+\end{array}$ & $\begin{array}{c}
+\text{Sum of}\\
+\text{Squares} (SS)
+\end{array}$ & $\begin{array}{c}
+\text{Degrees of}\\
+\text{freedom} (d.f.)
+\end{array}$\tabularnewline
+\hline 
+\hline 
+Treatments & $SS_{tr}=\sum_{\ell=1}^{g}n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2}$ & $g-1$\tabularnewline
+\hline 
+$\begin{array}{c}
+\text{Residual}\\
+\text{(error)}
+\end{array}$ & $SS_{res}=\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2}$  & $\sum_{\ell=1}^{g}n_{\ell}-g$\tabularnewline
+\hline 
+$\begin{array}{c}
+\text{Total}\\
+\text{(corrected for}\\
+\text{the mean)}
+\end{array}$ & $SS_{cor}=\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x})^{2}$ & $\sum_{\ell=1}^{g}n_{\ell}-1$\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+
+## ANOVA Test for Comparing Univariate Means
+
+* The usual $F$-test rejects $H_{0}:\tau_{1}=\tau_{2}=\cdots=\tau_{g}=0$
+at level $\alpha$ if
+\[
+F=\frac{SS_{tr}/(g-1)}{SS_{res}/\left(\sum_{\ell=1}^{g}n_{\ell}-g\right)}>F_{g-1,\sum n_{\ell}-g}(\alpha)
+\]
+where $F_{g-1,\sum n_{\ell}-g}(\alpha)$ is the upper $(100\alpha)$th percentile of the $F$-distribution with $g-1$ and $\sum n_{\ell}-g$
+degrees of freedom.  
+
+* This is equivalent to rejecting $H_{0}$ for large values of $SS_{tr}/SS_{res}$ or for large values of $1+SS_{tr}/SS_{res}$.  
+
+* The multivariate generalization rejects $H_{0}$ for small values of the reciprocal
+\[
+\frac{1}{1+SS_{tr}/SS_{res}}=\frac{SS_{res}}{SS_{res}+SS_{tr}}
+\]
+
+
+## Multivariate Analysis of Variance (MANOVA)
+
+* MANOVA Model for Comparing $g$ Population Mean Vectors
+\[
+\mathbf{X}_{\ell j}=\mu+\tau_{\ell}+\mathbf{e}_{\ell j},\,\,\,j=1,2,\ldots,n_{\ell}\,\,\text{and}\,\,\ell=1,2,\ldots,g
+\]
+where the $\mathbf{e}_{\ell j}$ are independent $N_{p}(0,\Sigma)$ variables.   
+
+* The parameter vector $\mu$ is an overall mean (level), and $\tau_{\ell}$ represents the $\ell$th treatment effect with
+$\sum_{\ell=1}^{g}n_{\ell}\tau_{\ell}=0$.
+
+
+## 
+
+A vector of observations may be decomposed 
+
+\begin{align*}
+\mathbf{x}_{\ell j} & =\bar{\mathbf{x}}+(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})+(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})\\
+\text{(observation)} & =\left(\begin{array}{c}
+\text{overall sample}\\
+\text{mean }\,\hat{\mu}
+\end{array}\right)+\text{\ensuremath{\left(\begin{array}{c}
+ \text{estimated }\\
+ \text{treatment}\\
+ \text{effect}\,\,\hat{\tau}_{\ell} 
+\end{array}\right)}}+\text{\ensuremath{\left(\begin{array}{c}
+ \text{residual}\\
+ \hat{\mathbf{e}}_{\ell j} 
+\end{array}\right)}}
+\end{align*}
+
+
+## 
+
+Similarly, we have
+\begin{align*}
+\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})' & =\sum_{\ell=1}^{g}n_{\ell}(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})'+\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})'\\
+\left(\begin{array}{c}
+SS_{cor}\\
+\text{total}\\
+\text{(corrected) SS}
+\end{array}\right) & =\left(\begin{array}{c}
+SS_{tr}\\
+\text{between}\\
+\mbox{\text{(samples) SS}}
+\end{array}\right)+\left(\begin{array}{c}
+SS_{res}\\
+\text{within}\\
+\text{(samples) SS }
+\end{array}\right)\\
+ & =\mathbf{B}+\mathbf{W}
+\end{align*}
+
+
+## 
+
+The within sum of squares and cross products matrix can be expressed
+as
+\begin{align*}
+\mathbf{W} & =\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})'\\
+ & =(n_{1}-1)\mathbf{S}_{1}+(n_{2}-1)\mathbf{S}_{2}+\cdots+(n_{g}-1)\mathbf{S}_{g}
+\end{align*}
+where $\mathbf{S}_{\ell}$ is the sample covariance matrix for the $\ell$th sample.
+
+
+## MANOVA Table
+
+The hypothesis of no treatment effects
+\[
+H_{0}:\tau_{1}=\tau_{2}=\cdots=\tau_{g}=0
+\]
+is tested by considering the relative sizes of the treatment and residual sums of squares and cross products.
+
+\begin{table}
+\centering
+
+\begin{tabular}{|c|c|}
+\hline 
+$\begin{array}{c}
+\text{Matrix of sum of squares and}\\
+\text{cross products}(SSP)
+\end{array}$ & $\begin{array}{c}
+\text{Degrees of}\\
+\text{freedom}(d.f.)
+\end{array}$\tabularnewline
+\hline 
+\hline 
+Treatments: \qquad $\mathbf{B}=\sum_{\ell=1}^{g}n_{\ell}(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})'$ & $g-1$\tabularnewline
+\hline 
+Residual: \quad 
+$\mathbf{W}=\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})'$ & $\sum_{\ell=1}^{g}n_{\ell}-g$\tabularnewline
+\hline 
+Total: \quad 
+$\mathbf{B}+\mathbf{W}=\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})'$ & $\sum_{\ell=1}^{g}n_{\ell}-1$\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+
+## Wilks' Lamba $\Lambda^{*}$
+
+* One test of 
+\[
+H_{0}:\tau_{1}=\tau_{2}=\cdots=\tau_{g}=0
+\]
+involves generalized variances. We reject $H_{0}$ if the ratio of generalized variances
+\[
+\Lambda^{*}=\frac{|\mathbf{W}|}{|\mathbf{B}+\mathbf{W}|}=\frac{\left|\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})'\right|}{\left|\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}})'\right|}\,\,\,\text{is too small.}
+\]  
+
+* The quantity $\Lambda^{*}$ originally by Wilks corresponds to the equivalent form of the F-test of $H_{0}$: no treatment effects in the univariate case.  
+
+
+## Wilks' Lamba $\Lambda^{*}$ (cont)
+
+* Wilks $\Lambda^{*}$ can also be expressed as a function of the eigenvalues
+$\hat{\lambda}_{1},\hat{\lambda}_{2},\ldots,\hat{\lambda}_{s}$ of
+$\mathbf{W}^{-1}\mathbf{B}$ as
+\[
+\Lambda^{*}=\Pi_{i=1}^{s}\left(\frac{1}{1+\hat{\lambda}_{i}}\right),\,\,\text{where\,\ }s=\min(p,g-1)=rank(B)
+\]
+
+
+##  Distribution of Wilks' Lambda, $\Lambda^{*}$
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|}
+\hline 
+$\begin{array}{c}
+\text{No. of}\\
+\text{variables}
+\end{array}$ & $\begin{array}{c}
+\text{No. of}\\
+\text{groups}
+\end{array}$ & $\begin{array}{c}
+\text{Sampling distribution for}\\
+\text{multivariate normal data}
+\end{array}$\tabularnewline
+\hline 
+\hline 
+$p=1$  & $g\geq2$ & $\left(\frac{\sum n_{\ell}-g}{g-1}\right)\left(\frac{1-\Lambda^{*}}{\Lambda^{*}}\right)\sim F_{g-1,\sum n_{\ell}-g}$\tabularnewline
+\hline 
+$p=2$ & $g\geq2$ & $\left(\frac{\sum n_{\ell}-g-1}{g-1}\right)\left(\frac{1-\sqrt{\Lambda^{*}}}{\sqrt{\Lambda^{*}}}\right)\sim F_{2(g-1),2(\sum n_{\ell}-g-1)}$\tabularnewline
+\hline 
+$p\geq1$ & $g=2$ & $\left(\frac{\sum n_{\ell}-p-1}{p}\right)\left(\frac{1-\Lambda^{*}}{\Lambda^{*}}\right)\sim F_{p,\sum n_{\ell}-g-1}$\tabularnewline
+\hline 
+$p\geq1$ & $g=3$ & $\left(\frac{\sum n_{\ell}-p-2}{p}\right)\left(\frac{1-\sqrt{\Lambda^{*}}}{\sqrt{\Lambda^{*}}}\right)\sim F_{2p,2(\sum n_{\ell}-p-2)}$\tabularnewline
+\hline 
+\end{tabular}
+\end{table}
+
+
+## Distribution of Wilks' Lambda, $\Lambda^{*}$ (cont)
+
+For other cases and large sample sizes, $\sum_{\ell}n_{\ell}=n$ large,
+we reject $H_{0}$ at significance level $\alpha$ if 
+\begin{align*}
+-\left(-n-1-\frac{(p+g)}{2}\right)\ln\Lambda^{*} & >\chi_{p(g-1)}^{2}(\alpha)\,\,\,\text{or}\\
+\Lambda^{*}<exp & \left[-\left(-n-1-\frac{(p+g)}{2}\right)^{-1}\chi_{p(g-1)}^{2}(\alpha)\right]
+\end{align*}
+
+
+## Rootstock Data
+
+The data contains four dependent variables as follows:
+
+* six different rootstocks (Tree Number)
+* trunk girth at four years (mm $\times$ 100)    
+* extension growth at four years (m)  
+* trunk girth at 15 years (mm $\times$ 100)  
+* weight of tree above ground at 15 years (lb $\times$ 1000)
+
+```{r}
+library(ACSWR) # data is in package ACSWR
+data("rootstock")
+colnames(rootstock) <- c("Tree.Num", "Girth.4y",
+  "Growth.4y", "Girth.15y", "WgtAbvGrnd.15y")
+```
+
+
+##
+
+```{r}
+head(rootstock)
+```
+
+
+
+## Setting up the data
+
+The `manova()` function in R accepts formula interface `y ~ x`, where $y$ is the matrix of dependent variables (measurement value) and $x$ as the independent factor variable (population tree number).
+
+```{r}
+dep.variable <- as.matrix(rootstock[, 2:5])
+ind.variable <- as.factor(rootstock[, 1])
+rootstock.model <- manova( dep.variable ~ ind.variable)
+```
+
+
+## Wilks' MANOVA Test
+
+```{r}
+summary(rootstock.model, test = "W") # argument test = W
+```
+
+The resultant MANOVA model reports a Wilks' test statistic of 0.154 and a p-value below 0.05, thus $H_0$ is rejected and it is concluded there are significant differences in the means measurements of the six different rootstocks.
+
+
+## Equivalent Test Statistics
+
+In the context of random samples from several populations, the multivariate
+tests are based on the matrices
+
+\[
+\mathbf{B}=\sum_{\ell=1}^{g}n_{\ell}(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})(\bar{\mathbf{x}}_{\ell}-\bar{\mathbf{x}})'\,\,\,\text{and}\,\,\,\mathbf{W}=\sum_{\ell=1}^{g}\sum_{j=1}^{n_{\ell}}(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})(\mathbf{x}_{\ell j}-\bar{\mathbf{x}}_{\ell})'
+\]
+
+We have used
+\[
+\text{Wilks lambda statistic}\,\,\,\Lambda^{*}=\frac{|\mathbf{W}|}{|\mathbf{B}+\mathbf{W}|}
+\]
+which is equivalent to the likelihood ratio test. 
+
+
+
+## Other Multivariate Statistics
+
+Three other multivariate test statistics are regularly included in the output of statistical packages
+\begin{align*}
+\text{Lawley-Hotelling Trace} & =tr[\mathbf{B}\mathbf{W}^{-1}]\\
+\text{Pillai trace} & =tr[\mathbf{B}(\mathbf{B}+\mathbf{W})^{-1}]\\
+\text{Roy's largest root} & =\text{maximum eigenvalue of}\,\,\,\,\mathbf{W}(\mathbf{B}+\mathbf{W})^{-1}
+\end{align*}
+
+
+## Equivalent Test Statistics
+
+* All four of these tests appear to be nearly equivalent for extremely large samples.  
+
+* For moderate sample sizes, all comparisons are based on what is necessarily a limited number of cases studied by simulation.  
+
+* From the simulations reported, the first three tests have similar power, while the last, Roy's test, behaves differently.
+
+* Its power is best only when there is a single nonzero eigenvalue and, at the same time, the power is large.
+
+
+##
+
+* There is also some suggestion that Pillai's trace is slightly more robust against nonnormality.  
+
+* All four statistics apply in the two-way setting and in even more complicated MANOVA.  
+
+* When, and only, when the multivariate tests signals a difference, or departure from the null hypothesis, do we probe deeper.
+
+
+## Pillai's Statistic
+
+```{r}
+summary(rootstock.model)  # default output
+```
+
+## Hotelling-Lawley's Statistic
+
+```{r}
+summary(rootstock.model, test = "H")
+```
+
+
+## Roy's Statistics
+
+```{r}
+summary(rootstock.model, test = "R")
+```
+
+
+## Post Hoc Tests: 4 ANOVA's on the four tree measurements
+
+```{r}
+summary(aov(dep.variable ~ ind.variable))[1:2]
+```
+
+##
+
+```{r}
+summary(aov(dep.variable ~ ind.variable))[3:4]
+```
+
+Except for trunk girth at four years, there are significant differences in the means of rootstock measurements amongst the six groups.
