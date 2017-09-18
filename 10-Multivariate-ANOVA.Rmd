@@ -357,9 +357,6 @@ colnames(rootstock) <- c("Tree.Num", "Girth.4y",
 ```{r}
 head(rootstock)
 ```
-
-
-
 ## Setting up the data
 
 The `manova()` function in R accepts formula interface `y ~ x`, where $y$ is the matrix of dependent variables (measurement value) and $x$ as the independent factor variable (population tree number).
@@ -367,17 +364,51 @@ The `manova()` function in R accepts formula interface `y ~ x`, where $y$ is the
 ```{r}
 dep.variable <- as.matrix(rootstock[, 2:5])
 ind.variable <- as.factor(rootstock[, 1])
-rootstock.model <- manova( dep.variable ~ ind.variable)
 ```
 
 
-## Wilks' MANOVA Test
+
+## Side-by-Side Boxplots for Girth at 4 yrs
 
 ```{r}
+boxplot(Girth.4y ~ Tree.Num, data = rootstock,
+              main = "Girth.4y")
+```
+
+## Side-by-Side Boxplots for Growth at 4 yrs
+
+```{r}
+boxplot(Growth.4y ~ Tree.Num, data = rootstock,
+            main = "Growth.4y")
+```
+
+## Side-by-Side Boxplots for Girth at 15 yrs
+
+```{r}
+boxplot(Girth.15y ~ Tree.Num, data = rootstock,
+            main = "Girth.15y")
+```
+
+
+## Side-by-Side Boxplots for Weight Above Ground at 15 yrs
+
+```{r}
+boxplot(WgtAbvGrnd.15y ~ Tree.Num, data = rootstock,
+            main = "WgtAbvGrnd.15y")
+```
+
+
+
+## MANOVA Test in R
+
+$y$ is the matrix of dependent variables (measurement value); $x$ as the independent factor variable (population tree number).
+
+```{r}
+rootstock.model <- manova( dep.variable ~ ind.variable )
 summary(rootstock.model, test = "W") # argument test = W
 ```
 
-The resultant MANOVA model reports a Wilks' test statistic of 0.154 and a p-value below 0.05, thus $H_0$ is rejected and it is concluded there are significant differences in the means measurements of the six different rootstocks.
+The MANOVA procedure gives a Wilks' test statistic of 0.154 and a p-value below 0.05, thus $H_0$ is rejected and it is concluded there are significant differences in the means measurements of the six different rootstocks.
 
 
 ## Equivalent Test Statistics
