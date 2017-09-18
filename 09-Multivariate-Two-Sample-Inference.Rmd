@@ -1,0 +1,225 @@
+---
+title: "09 - Multivariate Two Sample Inference"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Comparing Mean Vectors from Two Populations
+
+\begin{tabular}{|c|c|c|}
+\hline 
+Sample & Mean & Covariance\tabularnewline
+\hline 
+\hline 
+1 & $\bar{\mathbf{x}}_{1}=\frac{1}{n_{1}}\sum_{j=1}^{n_{1}}\mathbf{x}_{1j}$ & $\mathbf{S}_{1}=\frac{1}{n_{1}-1}\sum_{j=1}^{n_{1}}(\mathbf{x}_{1j}-\bar{\mathbf{x}}_{1})(\mathbf{x}_{1j}-\bar{\mathbf{x}}_{1})'$\tabularnewline
+\hline 
+2 & $\bar{\mathbf{x}}_{2}=\frac{1}{n_{2}}\sum_{j=1}^{n_{2}}\mathbf{x}_{2j}$ & $\mathbf{S}_{1}=\frac{1}{n_{2}-1}\sum_{j=1}^{n_{2}}(\mathbf{x}_{2j}-\bar{\mathbf{x}}_{2})(\mathbf{x}_{2j}-\bar{\mathbf{x}}_{2})'$\tabularnewline
+\hline 
+\end{tabular}
+
+Let $\mu_{1} = E(\mathbf{X}_{1})$ and $\mu_{2} = E(\mathbf{X}_{2})$.
+
+We want to answer the questions
+
+1. Is $\mu_{1}=\mu_{2}$ $(\text{or}\,\,\,\mu_{1}-\mu_{2}=0)$?   
+
+2. If $\mu_{1}\neq\mu_{2}$, which component means are different?  
+
+
+## Assumptions on the Structure of the Data
+
+* The sample $\mathbf{X}_{11},\mathbf{X}_{12},\ldots,\mathbf{X}_{1n_{1}}$
+is a random sample from a population with mean $\mu_{1}$ and covariance
+matrix $\Sigma_{1}$.  
+
+* The sample $\mathbf{X}_{21},\mathbf{X}_{22},\ldots,\mathbf{X}_{2n_{2}}$
+is a random sample from a population with mean $\mu_{2}$ and covariance
+matrix $\Sigma_{2}$.  
+
+* The sample $\mathbf{X}_{11},\mathbf{X}_{12},\ldots,\mathbf{X}_{1n_{1}}$
+are independent from $\mathbf{X}_{21},\mathbf{X}_{22},\ldots,\mathbf{X}_{2n_{2}}$.  
+
+* For small sample sizes, the populations are multivariate normal.  
+
+* Suppose $\Sigma_{1}=\Sigma_{2}=\Sigma$.
+
+
+## 
+
+* We can pool the information in both samples in order to estimate the common variance $\Sigma$.  
+
+\begin{align*}
+\mathbf{S}_{\text{pooled}} & =\frac{\sum_{j=1}^{n_{1}}(\mathbf{x}_{1j}-\bar{\mathbf{x}}_{1})(\mathbf{x}_{1j}-\bar{\mathbf{x}}_{1})'+\sum_{j=1}^{n_{2}}(\mathbf{x}_{2j}-\bar{\mathbf{x}}_{2})(\mathbf{x}_{2j}-\bar{\mathbf{x}}_{2})'}{n_{1}+n_{2}-2}\\
+ & =\frac{n_{1}-1}{n_{1}+n_{2}-2}\mathbf{S}_{1}+\frac{n_{2}-1}{n_{1}+n_{2}-2}\mathbf{S}_{2}
+\end{align*}
+
+
+## Test the hypothesis $H_{0}:\mu_{1}-\mu_{2}=\delta_{0}$
+
+* To test $H_{0}$, we consider the squared statistical distance from
+$\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2}$ to $\delta_{0}$.
+\item By the independence assumption,
+\[
+Cov(\bar{\mathbf{X}}_{1}-\bar{\mathbf{X}}_{2})=Cov(\bar{\mathbf{X}}_{1})+Cov(\bar{\mathbf{X}}_{2})=\frac{1}{n_{1}}\Sigma+\frac{1}{n_{1}}\Sigma
+\]  
+
+* Because $\mathbf{S}_{\text{pooled}}$ estimates $\Sigma$, then 
+\[
+\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)\mathbf{S}_{\text{pooled}}
+\]
+is an estimator of $Cov(\bar{\mathbf{X}}_{1}-\bar{\mathbf{X}}_{2})$.
+
+
+## Test the hypothesis $H_{0}:\mu_{1}-\mu_{2}=\delta_{0}$
+
+* The likelihood ratio test of $H_{0}:\mu_{1}-\mu_{2}=\delta_{0}$ is
+based on the the square of the statistical distance, $T^{2}$. Reject
+$H_{0}$ if
+\begin{align*}
+T^{2} & =(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2}-\delta_{0})'\left[\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)\mathbf{S}_{\text{pooled}}\right]^{-1}(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2}-\delta_{0})\\
+ & >\frac{(n_{1}+n_{2}-2)p}{(n_{1}+n_{2}-p-1)}F_{p,n_{1}+n_{2}-p-1}(\alpha)=c^{2}
+\end{align*}
+
+
+## Test $H_{0}:\mu_{1}=\mu_{2}$ vs. $H_{1}:\mu_{1}\neq\mu_{2}$
+
+If $\mathbf{X}_{11},\mathbf{X}_{12},\ldots,\mathbf{X}_{1n_{1}}$ is
+a random sample of size $n_{1}$ from $N_{p}(\mu_{1},\Sigma)$ and
+$\mathbf{X}_{21},\mathbf{X}_{22},\ldots,\mathbf{X}_{2n_{2}}$ is an
+independent random sample of size of $n_{2}$ from $N_{p}(\mu_{2},\Sigma)$,
+then
+\[
+T^{2}=[\bar{\mathbf{X}}_{1}-\bar{\mathbf{X}}_{2}-(\mu_{1}-\mu_{2})]'\left[\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)\mathbf{S}_{\text{pooled}}\right]^{-1}[\bar{\mathbf{X}}_{1}-\bar{\mathbf{X}}_{2}-(\mu_{1}-\mu_{2})]
+\]
+is distributed as 
+\[
+\frac{(n_{1}+n_{2}-2)p}{(n_{1}+n_{2}-p-1)}F_{p,n_{1}+n_{2}-p-1}.
+\]
+Consequently,
+\[
+P\left[T^{2}\leq\frac{(n_{1}+n_{2}-2)p}{(n_{1}+n_{2}-p-1)}F_{p,n_{1}+n_{2}-p-1}(\alpha)\right]=1-\alpha
+\]
+
+
+## Simultaneous Confidence Intervals
+
+With probability $1-\alpha$,
+\[
+\mathbf{a}'(\bar{\mathbf{X}}_{1}-\bar{\mathbf{X}}_{2})\pm c\sqrt{\mathbf{a}'\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)\mathbf{S}_{\text{pooled}}\mathbf{a}}
+\]
+
+will cover $\mathbf{a}'(\mu_{1}-\mu_{2})$ for all $\mathbf{a}'$.
+In particular $\mu_{1i}-\mu_{2i}$ will be covered by
+\[
+(\bar{X}_{1i}-\bar{X}_{2i})\pm c\sqrt{\left(\frac{1}{n_{1}}+\frac{1}{n_{2}}\right)s_{ii,pooled}}\,\,\,\,\,\text{for}\,\,i=1,2,\ldots,p
+\]
+
+
+## Example: Bird Data
+
+The tail lengths in millimeters $(x_{1})$ and wing lengths in millimeters
+$(x_{2})$ for 45 male hook-billed kites are given in file \textbf{T6-11.DAT}.
+Similar measurements for female hook-billed kites were given \textbf{T5-11.DAT}.  
+
+* Plot the male hook-billed kite data as a scatter diagram, and (visually) check for outliers.  
+
+* Test for equality of mean vectors for the populations of male and female hook-billed kites. Set $\alpha-.05$. If $H_{0}:\mu_{1}-\mu_{2}=0$
+is rejected, find the linear combination most responsible for the
+rejection of $H_{0}$.  
+
+* Determine the 95\% confidence region for $\mu_{1}-\mu_{2}$ and 95\% simultaneous confidence intervals for the components of $\mu_{1}-\mu_{2}$.  
+
+* Are male or female birds generally larger?
+
+
+##  
+
+```{r}
+bird.females <- read.table("T5-12.DAT", header = F)
+bird.males <- read.table("T6-11.DAT", header = F)
+colnames(bird.females) = 
+    colnames(bird.males) =  c("tail","wing")
+```
+
+
+##
+
+```{r eval = FALSE}
+# Plot data: 
+plot(bird.males, main = "With Outlier", 
+     xlim = c(160,290), ylim=c(240,320)
+) 
+points(bird.females, pch=3)
+
+# Remove outlier for males and plot data:   
+newbird.males <- bird.males[-31, ] 
+plot(newbird.males, main = "Without Outlier", 
+        xlim=c(160,235), ylim=c(240,320)) 
+points(bird.females, pch=3)
+```
+
+##
+
+```{r echo = FALSE}
+# Plot data: 
+plot(bird.males, main = "With Outlier", 
+     xlim = c(160,290), ylim=c(240,320)
+) 
+points(bird.females, pch=3)
+```
+
+
+## 
+
+```{r echo = FALSE}
+# Remove outlier for males and plot data:   
+newbird.males <- bird.males[-31, ] 
+plot(newbird.males, main = "Without Outlier", 
+        xlim = c(160,235), ylim = c(240,320)) 
+points(bird.females, pch=3)
+```
+
+
+## Multivariate Energy Normality Tests
+
+```{r}
+energy::mvnorm.etest(newbird.males, R = 199) # male
+energy::mvnorm.etest(bird.females, R = 199) # female
+```
+
+
+## Multivariate Two-Sample Tests
+
+$H_{0}:\mu_{1}-\mu_{2}=0$ (no difference between means)
+
+```{r}
+ICSNP::HotellingsT2(X = newbird.males, Y = bird.females)
+```
+Reject $H_0$ at 1% level of significance. Strong evidence in the sample supporting the claim that the mean measurements between genders are different.
+
+
