@@ -204,6 +204,28 @@ plot(newbird.males, main = "Without Outlier",
 points(bird.females, pch=3)
 ```
 
+## Boxplots
+
+```{r}
+n1 <- nrow(newbird.males); n2 <- nrow(bird.females)
+gender <- c(rep("Male", n1), rep("Female", n2))
+new.dat <- cbind(gender, 
+                 rbind(newbird.males, bird.females))
+str(new.dat)
+```
+
+##
+
+```{r}
+boxplot(tail ~ gender, data = new.dat, main = "Tail Measurements")
+```
+
+##
+
+```{r}
+boxplot(wing ~ gender, data = new.dat, main = "Wing Measurements")
+```
+
 
 ## Multivariate Energy Normality Tests
 
@@ -211,6 +233,17 @@ points(bird.females, pch=3)
 energy::mvnorm.etest(newbird.males, R = 199) # male
 energy::mvnorm.etest(bird.females, R = 199) # female
 ```
+
+
+## Summary Measures, Need `mosaic` Package
+
+```{r}
+mosaic::favstats(tail ~ gender, data = new.dat)
+mosaic::favstats(wing ~ gender, data = new.dat)
+
+```
+
+
 
 
 ## Multivariate Two-Sample Tests
