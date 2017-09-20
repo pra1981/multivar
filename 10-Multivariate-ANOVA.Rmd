@@ -362,8 +362,8 @@ head(rootstock)
 The `manova()` function in R accepts formula interface `y ~ x`, where $y$ is the matrix of dependent variables (measurement value) and $x$ as the independent factor variable (population tree number).
 
 ```{r}
-dep.variable <- as.matrix(rootstock[, 2:5])
-ind.variable <- as.factor(rootstock[, 1])
+dep.variable <- as.matrix(rootstock[, 2:5])  # dependent var
+tree.number <- as.factor(rootstock[, 1]) # independent var
 ```
 
 
@@ -372,21 +372,21 @@ ind.variable <- as.factor(rootstock[, 1])
 
 ```{r}
 boxplot(Girth.4y ~ Tree.Num, data = rootstock,
-              main = "Girth.4y")
+              main = "Girth.4y", xlab = "Tree Number")
 ```
 
 ## Side-by-Side Boxplots for Growth at 4 yrs
 
 ```{r}
 boxplot(Growth.4y ~ Tree.Num, data = rootstock,
-            main = "Growth.4y")
+            main = "Growth.4y", xlab = "Tree Number")
 ```
 
 ## Side-by-Side Boxplots for Girth at 15 yrs
 
 ```{r}
 boxplot(Girth.15y ~ Tree.Num, data = rootstock,
-            main = "Girth.15y")
+            main = "Girth.15y", xlab = "Tree Number")
 ```
 
 
@@ -394,7 +394,7 @@ boxplot(Girth.15y ~ Tree.Num, data = rootstock,
 
 ```{r}
 boxplot(WgtAbvGrnd.15y ~ Tree.Num, data = rootstock,
-            main = "WgtAbvGrnd.15y")
+            main = "WgtAbvGrnd.15y", xlab = "Tree Number")
 ```
 
 
@@ -404,7 +404,7 @@ boxplot(WgtAbvGrnd.15y ~ Tree.Num, data = rootstock,
 $y$ is the matrix of dependent variables (measurement value); $x$ as the independent factor variable (population tree number).
 
 ```{r}
-rootstock.model <- manova( dep.variable ~ ind.variable )
+rootstock.model <- manova( dep.variable ~ tree.number )
 summary(rootstock.model, test = "W") # argument test = W
 ```
 
@@ -478,16 +478,41 @@ summary(rootstock.model, test = "R")
 ```
 
 
-## Post Hoc Tests: 4 ANOVA's on the four tree measurements
+## Individual ANOVA's on the four tree measurements {.allowframebreaks}
 
 ```{r}
-summary(aov(dep.variable ~ ind.variable))[1:2]
+summary(aov(dep.variable ~ tree.number))
+```
+
+
+
+Accounting for multiple comparisons with Bonferonni corrected alpha level (0.04/4 = 0.0125), there are significant differences only in the average of Girth after 15 yrs and Weight Above Ground after 15 yrs amongst the six groups.
+
+
+## Post-Hoc Comparisons on Girth after 15 yrs {.allowframebreaks}
+
+```{r}
+Girth.15yr.fit <- aov(dep.variable[,3] ~ tree.number)
+TukeyHSD(Girth.15yr.fit, ordered = TRUE)
 ```
 
 ##
 
-```{r}
-summary(aov(dep.variable ~ ind.variable))[3:4]
+```{r }
+plot(TukeyHSD(Girth.15yr.fit, ordered = TRUE))
 ```
 
-Except for trunk girth at four years, there are significant differences in the means of rootstock measurements amongst the six groups.
+
+## Post-Hoc on Weight Above Grnd after 15 yrs {.allowframebreaks}
+
+```{r}
+WgtAbvGrnd.15y.fit <- aov(dep.variable[,4] ~ tree.number)
+print(TukeyHSD(WgtAbvGrnd.15y.fit, ordered = TRUE))
+```
+
+##
+
+```{r }
+plot(TukeyHSD(WgtAbvGrnd.15y.fit, ordered = TRUE))
+```
+
