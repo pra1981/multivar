@@ -217,13 +217,15 @@ str(new.dat)
 ##
 
 ```{r}
-boxplot(tail ~ gender, data = new.dat, main = "Tail Measurements")
+boxplot(tail ~ gender, data = new.dat, 
+        main = "Tail Measurements")
 ```
 
 ##
 
 ```{r}
-boxplot(wing ~ gender, data = new.dat, main = "Wing Measurements")
+boxplot(wing ~ gender, data = new.dat, 
+        main = "Wing Measurements")
 ```
 
 
@@ -254,5 +256,21 @@ $H_{0}:\mu_{1}-\mu_{2}=0$ (no difference between means)
 ICSNP::HotellingsT2(X = newbird.males, Y = bird.females)
 ```
 Reject $H_0$ at 1% level of significance. Strong evidence in the sample supporting the claim that the mean measurements between genders are different.
+
+
+## Post-Hoc Tests, Tail Measurements Only
+
+```{r}
+t.test(tail ~ gender, data = new.dat)
+```
+Strong evidence that female birds have longer average tail lengths than males.
+
+
+## Post-Hoc Tests, Wing Measurements Only
+
+```{r}
+t.test(wing ~ gender, data = new.dat)
+```
+Not enough evidence that female and male birds have different wing measurements.
 
 
