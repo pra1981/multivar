@@ -397,6 +397,21 @@ boxplot(WgtAbvGrnd.15y ~ Tree.Num, data = rootstock,
             main = "WgtAbvGrnd.15y", xlab = "Tree Number")
 ```
 
+## Summary Statistics
+
+```{r}
+library(mosaic) # need mosaic package
+mean(Girth.4y ~ Tree.Num, data = rootstock)
+mean(Growth.4y ~ Tree.Num, data = rootstock)
+```
+
+## Summary Statistics
+
+```{r}
+mean(Girth.15y ~ Tree.Num, data = rootstock)
+mean(WgtAbvGrnd.15y ~ Tree.Num, data = rootstock)
+```
+
 
 
 ## MANOVA Test in R
@@ -493,13 +508,13 @@ Accounting for multiple comparisons with Bonferonni corrected alpha level (0.04/
 
 ```{r}
 Girth.15yr.fit <- aov(dep.variable[,3] ~ tree.number)
-TukeyHSD(Girth.15yr.fit, ordered = TRUE)
+TukeyHSD(Girth.15yr.fit)
 ```
 
 ##
 
 ```{r }
-plot(TukeyHSD(Girth.15yr.fit, ordered = TRUE))
+plot(TukeyHSD(Girth.15yr.fit))
 ```
 
 
@@ -507,12 +522,12 @@ plot(TukeyHSD(Girth.15yr.fit, ordered = TRUE))
 
 ```{r}
 WgtAbvGrnd.15y.fit <- aov(dep.variable[,4] ~ tree.number)
-print(TukeyHSD(WgtAbvGrnd.15y.fit, ordered = TRUE))
+print(TukeyHSD(WgtAbvGrnd.15y.fit))
 ```
 
 ##
 
 ```{r }
-plot(TukeyHSD(WgtAbvGrnd.15y.fit, ordered = TRUE))
+plot(TukeyHSD(WgtAbvGrnd.15y.fit))
 ```
 
