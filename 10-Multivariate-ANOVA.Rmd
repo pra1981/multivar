@@ -57,7 +57,7 @@ Population $g$: & $\mathbf{X}_{g1},\mathbf{X}_{g2},\ldots,\mathbf{X}_{gn_{g}}$\t
 
 * random samples are independent  
 
-* $H_{0}:\mu_{1}=\mu_{2}=\cdots=\mu_{q}$  
+* $H_{0}:\mu_{1}=\mu_{2}=\cdots=\mu_{g}$  
 
 * $\mu_{\ell}=\mu+(\mu_{\ell}-\mu)=\mu+\tau_{\ell}$, where $\tau_{\ell}=\mu_{\ell}-\mu$.
 
@@ -87,7 +87,7 @@ x_{\ell j} & =\bar{x}+(\bar{x}_{\ell}-\bar{x})+(x_{\ell j}-\bar{x}_{\ell})\\
 
 Note that, for all $\ell=1,2,\ldots,g$,
 \[
-\sum_{\ell=1}^{n_{\ell}}(x_{\ell j}-\bar{x})^{2}=n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2}+\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2},
+\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x})^{2}=n_{\ell}(\bar{x}_{\ell}-\bar{x})^{2}+\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})^{2},
 \]
 since $\sum_{j=1}^{n_{\ell}}(x_{\ell j}-\bar{x}_{\ell})=0$.
 
