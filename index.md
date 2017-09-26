@@ -10,5 +10,6 @@
 8. [Comparison of Several Means](https://github.com/jpailden/multivar/blob/master/08-Comparison-of-Several-Means.pdf)  
 9. [Multivariate Two Sample Inference](https://github.com/jpailden/multivar/blob/master/09-Multivariate-Two-Sample-Inference.pdf)  
 10. [Multivariate Analysis of Variance](https://github.com/jpailden/multivar/blob/master/10-Multivariate-ANOVA.pdf)  
+11. [Principal Components Analysis](https://github.com/jpailden/multivar/blob/master/11-Principal-Components-Analysis.pdf)  
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
