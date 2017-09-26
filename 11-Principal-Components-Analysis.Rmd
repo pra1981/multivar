@@ -1,0 +1,627 @@
+---
+title: "11 -  Principal Components Analysis"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## General Objectives 
+
+* Explaining the variance-covariance structure of a set of variables through a few linear combinations of these variables.  
+
+    i) Data Reduction  
+    ii) Interpretation  
+
+* Although $p$ components are required to reproduce the total system variability, often much of this variability can be accounted for by a small number of $k$ of the principal components.  
+
+
+## 
+* If so, there is as much information in the $k$ components as there is in the original $p$ variables.  
+* The $k$ principal components can then replace the initial $p$ variables, and the original data set, consisting of $n$ measurements on $p$ variables, is reduced to a data set consisting of $n$ measurements
+on $k$ principal components.
+
+
+##  Population Principal Components 
+
+* Principal components are particular linear combinations of the $p$ random variables $X_{1},X_{2},\ldots,X_{p}$.  
+
+* Geometrically, these linear combinations represent the selection of a new coordinate system obtained by rotating the original system with
+$X_{1},X_{2},\ldots,X_{p}$ as the coordinate axes.  
+
+* The new axes represent the directions with maximum variability and provide a simpler and more parsimonious description of the covariance
+structure.  
+
+* Principal components depend solely on the covariance matrix $\boldsymbol{\Sigma}$
+(or the correlation matrix $\boldsymbol{\rho}$) of $X_{1},X_{2},\ldots,X_{p}$.  
+
+* \textbf{NO Multivariate Normal Assumption Required}  
+
+
+## Population Principal Components: Notation 
+
+* Let the random vector $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$ have
+the covariance matrix $\boldsymbol{\Sigma}$ with eigenvalues $\lambda_{1}\geq\lambda_{2}\geq\cdots\geq\lambda_{p}\geq0$.  
+
+* Consider the linear combinations
+\begin{align*}
+Y_{1} & =\mathbf{a}'_{1}\mathbf{X}=a_{11}X_{1}+a_{12}X_{2}+\cdots+a_{1p}X_{p}\\
+Y_{2} & =\mathbf{a}'_{2}\mathbf{X}=a_{21}X_{1}+a_{22}X_{2}+\cdots+a_{2p}X_{p}\\
+\vdots\\
+Y_{p} & =\mathbf{a}'_{p}\mathbf{X}=a_{p1}X_{1}+a_{p2}X_{2}+\cdots+a_{pp}X_{p}
+\end{align*} 
+
+##
+
+* We obtain
+\begin{align*}
+Var(Y_{i}) & =\mathbf{a}'_{i}\boldsymbol{\Sigma}\mathbf{a}_{i}\,\,\,\,\,\,\,i=1,2,\ldots,p\\
+Cov(Y_{i},Y_{k}) & =\mathbf{a}'_{i}\boldsymbol{\Sigma}\mathbf{a}_{k}\,\,\,\,i,k=1,2,\ldots,p
+\end{align*}  
+
+* The principal components are those uncorrelated linear combinations
+$Y_{1},Y_{2},\ldots,Y_{p}$ whose variances in $Var(Y_{i})$ are as
+large as possible.
+
+
+## 
+
+\begin{align*}
+&\text{First principal component}  =\text{linear combination}\,\,\,\mathbf{a}_{1}'\mathbf{X}\,\,\,\text{that maximizes}\\
+ & \qquad \qquad \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,Var(\mathbf{a}'_{1}\mathbf{X})\,\,\text{subject to}\,\,\,\mathbf{a}_{1}'\mathbf{a}_{1}=1
+\end{align*} 
+
+\begin{align*} 
+&\text{Second principal component}  =\text{linear combination}\,\,\,\mathbf{a}_{2}'\mathbf{X}\,\,\,\text{that maximizes}\\
+ & \qquad \qquad \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,Var(\mathbf{a}'_{2}\mathbf{X})\,\,\text{subject to}\,\,\,\mathbf{a}_{2}'\mathbf{a}_{2}=1\\
+ & \qquad \,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,Cov(\mathbf{a}_{1}'\mathbf{X},\mathbf{a}_{2}'\mathbf{X})=0
+\end{align*} 
+ 
+
+\begin{align*} 
+& \text{At the}\,\,ith\,\,\,\text{step\,,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,}\\
+& ith\,\,\text{principal component}  =\text{linear combination}\,\,\,\mathbf{a}_{i}'\mathbf{X}\,\,\,\text{that maximizes}\\
+ & \qquad \qquad \qquad \,\,\,\,\,\,\,\,\,\,\,Var(\mathbf{a}'_{i}\mathbf{X})\,\,\text{subject to}\,\,\,\mathbf{a}_{i}'\mathbf{a}_{i}=1\,\,\,\text{and}\\
+ & \qquad \qquad \qquad \qquad \,\,\,\,\,\,\,\,\,\,\,Cov(\mathbf{a}_{i}'\mathbf{X},\mathbf{a}_{k}'\mathbf{X})=0\,\,\,\,\text{for}\,\,\,\,k<i
+\end{align*}
+
+
+## Result 8.1
+
+Let $\boldsymbol{\Sigma}$ be the covariance matrix associated
+with the random vector $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$ .
+Let $\boldsymbol{\Sigma}$ have the eigenvalue-eigenvector pairs $(\lambda_{1},\mathbf{e}_{2}),(\lambda_{1},\mathbf{e}_{2}),\ldots,(\lambda_{p},\mathbf{e}_{p})$
+where $\lambda_{1}\geq\lambda_{2}\geq\cdots\geq\lambda_{p}\geq0$.
+
+Then the $i$\emph{th} \emph{principal component} is given by
+\[
+Y_{i}=\mathbf{e}'_{i}\mathbf{X}=e_{i1}X_{1}+e_{i2}X_{2}+\cdots+e_{ip}X_{p},\,\,\,i=1,2,\ldots,p
+\]
+With these choices,
+\begin{align*}
+Var(Y_{i}) & =\mathbf{e}'_{i}\Sigma\mathbf{e}_{i}=\lambda_{i}\,\,\,\,i=1,2,\ldots,p\\
+Cov(Y_{i},Y_{k}) & =\mathbf{e}'_{i}\Sigma\mathbf{e}_{k}=0\,\,\,\,i\neq k
+\end{align*}
+
+## Result 8.1 (cont)
+
+If some $\lambda_{i}$ are equal, the choices of the corresponding coefficient vectors, $\mathbf{e}_{i}$ and hence $Y_{i}$ are not unique.
+
+Result 8.1, the principal components are uncorrelated and have variances equal to the eigenvalues of $\boldsymbol{\Sigma}$. 
+
+
+## Result 8.2
+
+Let $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$ have covariance matrix
+\textbf{$\boldsymbol{\Sigma}$ }, with eigenvalue-eigenvector pairs
+$(\lambda_{1},\mathbf{e}_{1}),(\lambda_{2},\mathbf{e}_{2}),\ldots,(\lambda_{p},\mathbf{e}_{p})$
+where $\lambda_{1}\geq\lambda_{2}\geq\cdots\geq\lambda_{p}\geq0$.
+Let $Y_{1}=\mathbf{e}'_{1}\mathbf{X}$, $Y_{2}=\mathbf{e}'_{2}\mathbf{X}$,$\ldots$,$Y_{p}=\mathbf{e}'_{p}\mathbf{X}$
+be the principal components. Then
+\[
+\sigma_{11}+\sigma_{22}+\cdots+\sigma_{pp}=\sum_{i=1}^{p}Var(X_{i})=\lambda_{1}+\lambda_{2}+\cdots+\lambda_{p}=\sum_{i=1}^{p}Var(Y_{i})
+\]
+
+Result 8.2 says that
+\begin{align*}
+\text{Total population variance} & =\sigma_{11}+\sigma_{22}+\cdots+\sigma_{pp}\\
+ & =\lambda_{1}+\lambda_{2}+\cdots+\lambda_{p}
+\end{align*}
+
+## Result 8.2 (cont)
+
+and, the proportion of total variance due to (explained by) the $k$th
+principal component is
+\[
+\left(\begin{array}{c}
+\text{Proportion of total}\\
+\text{population variance}\\
+\text{due to}\,\,kth\,\,\text{principal}\\
+\text{component}
+\end{array}\right)=\frac{\lambda_{k}}{\lambda_{1}+\lambda_{2}+\cdots+\lambda_{p}}
+\]
+
+
+##
+
+* If most (for instance, 80 to 90\%) of the total population variance, for large $p$, can be attributed to the first one, two, or three components, then these components can ``replace'' the original $p$ variables without much of loss of information. Each component of the coefficient vector $\mathbf{e}'_{i}=[e_{i1},\ldots,e_{ik},\ldots,e_{ip}]$ also merits inspection.
+
+* The magnitude of $e_{ik}$ measures the importance of the $k$th variable to the $i$th principal component, irrespective of the other variables.
+In particular, $e_{ik}$ is proportional to the correlation coefficient between $Y_{i}$ and $X_{k}$.
+
+
+## Result 8.3
+
+
+If $Y_{1}=\mathbf{e}'_{1}\mathbf{X}$, $Y_{2}=\mathbf{e}'_{2}\mathbf{X}$,$\ldots$,$Y_{p}=\mathbf{e}'_{p}\mathbf{X}$
+are the principal components obtained from the covariance matrix \textbf{$\boldsymbol{\Sigma}$,
+}then
+\[
+\rho_{Y_{i},X_{k}}=\frac{e_{ik}\sqrt{\lambda_{i}}}{\sqrt{\sigma_{kk}}}\,\,\,\,i,k=1,2,\ldots,p
+\]
+
+are the correlation coefficients between the components $Y_{i}$ and
+the variables $X_{k}$.
+
+
+## Example 8.1 Calculation the population principal components {.allowframebreaks}
+
+Let $X_1$, $X_2$, and $X_3$ have the covariance matrix
+
+```{r}
+(Sigma <- matrix(c(1,-2,0,-2,5,0,0,0,2), nrow=3, byrow=T))
+eigen.Sigma <- eigen(Sigma)
+(lambda <- eigen.Sigma$values)
+(eigen.Sigma$vectors)
+(prop.var <- cumsum(lambda)/sum(lambda) )
+```
+
+
+## Plots
+
+```{r eval = FALSE}
+plot(lambda, type="b", main="Eigenvalues of Sigma", 
+     xlim = c(0.5, 3.4),ylim = c(0,8))
+plot(prop.var, type="b", main="Proportion of Variation", 
+     xlim = c(0.5, 3.4), ylim = c(0.4,1.2))
+```
+
+
+## {.allowframebreaks}
+
+```{r echo = FALSE}
+plot(lambda, type="b", main="Eigenvalues of Sigma", 
+     xlim = c(0.5, 3.4),ylim = c(0,8))
+plot(prop.var, type="b", main="Proportion of Variation", 
+     xlim = c(0.5, 3.4), ylim = c(0.4,1.2))
+```
+
+
+## Principal Components Obtained from Standardized Variables
+
+Principal components may also be obtained for the standardized variables
+\[
+Z_{1}=\frac{(X_{1}-\mu_{1})}{\sqrt{\sigma_{11}}},\,\,Z_{2}=\frac{(X_{2}-\mu_{2})}{\sqrt{\sigma_{22}}},\,\ldots\,,Z_{p}=\frac{(X_{p}-\mu_{p})}{\sqrt{\sigma_{pp}}}
+\]
+
+In matrix notation,
+\begin{align*}
+\mathbf{Z} & =(\mathbf{V}^{1/2})^{-1}(\mathbf{X}-\mu),\\
+E(\mathbf{Z})=0, & \text{and}\,\,,\,Cov(Z)=(\mathbf{V}^{1/2})^{-1}\boldsymbol{\Sigma}(\mathbf{V}^{1/2})^{-1}=\boldsymbol{\rho},
+\end{align*}
+
+where $\mathbf{V}^{1/2}$ is the diagonal standard deviation matrix.
+
+
+## Result 8.4
+
+The $i$th principal component of the standardized variables $\mathbf{Z}'=[Z_{1},Z_{2},\ldots,Z_{p}]$~with~$Cov(\mathbf{Z})=\boldsymbol{\rho}$,
+is given by
+\[
+Y_{i}=e'_{i}Z=e'_{i}(\mathbf{V}^{1/2})^{-1}(\mathbf{X}-\mu),\,\,i=1,2,\ldots,p
+\]
+
+Moreover,
+\[
+\sum_{i=1}^{p}Var(Y_{i})=\sum_{i=1}^{p}Var(Z_{i})=p
+\]
+and 
+\[
+\rho_{Y_{i},Z_{k}}=e_{ik}\sqrt{\lambda_{i}}\,\,\,\,\,i,k=1,2,\ldots,p.
+\]
+
+
+\[
+\left(\begin{array}{c}
+\text{Proportion of (standardized)}\\
+\text{population variance}\\
+\text{due to}\,\,kth\,\,\text{principal}\\
+\text{component}
+\end{array}\right)=\frac{\lambda_{k}}{p},\,\,\,k=1,2,\ldots,p
+\]
+
+
+## Summarizing Sample Variation by Principal Components
+
+* Suppose the data $\mathbf{x}_{1},\mathbf{x}_{2},\ldots,\mathbf{x}_{n}$
+represent $n$ independent drawings from some $p$-dimensional population
+with mean vector $\boldsymbol{\mu}$ and covariance matrix \textbf{$\boldsymbol{\Sigma}$}.  
+
+* These data yield the sample mean vector $\bar{\mathbf{x}}$, the sample
+covariance matrix $\mathbf{S}$, and the sample correlation matrix
+$\mathbf{R}$.
+
+* Our objective in this section will be to construct uncorrelated linear combinations of the measured characteristics that account for much of the variation in the sample.  
+
+* The uncorrelated combinations with the largest variances will be called
+the \emph{sample principal components}.  
+
+
+## 
+
+* Recall that the $n$ values of any linear combination
+\[
+\mathbf{a}'_{1}\mathbf{x}=a_{11}x_{j1}+a_{12}x_{j2}+\cdots+a_{1p}x_{jp},\,\,\,\,\,j=1,2,\ldots,n
+\]
+have the sample mean $\mathbf{a}'_{1}\bar{\mathbf{x}}$ and sample
+variance $\mathbf{a}'_{1}\mathbf{S}\mathbf{a}_{1}$. 
+
+* Also, the pairs of values $(\mathbf{a}'_{1}\mathbf{x}_{j},\mathbf{a}'_{2}\mathbf{x}_{j})$ have sample covariance $\mathbf{a}'_{1}\mathbf{S}\mathbf{a}_{2}$.  
+
+## 
+
+If $\mathbf{S}=\{s_{ik}\}$ is the $p\times p$ sample covariance matrix with eigenvalue-eigenvector pairs $(\hat{\lambda}_{1},\hat{\mathbf{e}}_{1}),(\hat{\lambda}_{2},\hat{\mathbf{e}}_{2}),\ldots,(\hat{\lambda}_{p},\hat{\mathbf{e}}_{p})$,
+the $i$th sample principal component is given by
+\[
+\hat{y}_{i}=\hat{\mathbf{e}}'_{i}=\hat{e}_{i1}x_{1}+\hat{e}_{i2}x_{2}+\cdots+\hat{e}_{ip}x_{p},\,\,\,\,i=1,2,\ldots,p
+\]
+
+where $\hat{\lambda}_{1}\geq\hat{\lambda}_{2}\geq\cdots\geq\hat{\lambda}_{p}\geq0$
+and $\mathbf{x}$ is any observation on the variables $X_{1},X_{2},\ldots,X_{p}$.
+Also,
+\begin{align*}
+\text{Sample variance}\,(\hat{y}_{k}) & =\hat{\lambda}_{k},\,\,k=1,2,\ldots,p\\
+\text{Sample covariance}\,(\hat{y}_{i},\hat{y}_{k}) & =0,\,\,i\neq k
+\end{align*}
+
+## 
+
+In addition,
+\begin{align*}
+\text{Total sample variance}\, & =\sum_{i=1}^{p}s_{ii}=\hat{\lambda}_{1}+\hat{\lambda}_{2}+\cdots+\hat{\lambda}_{p}\\
+r_{\hat{y_{i}},x_{k}} & =\frac{\hat{e}_{ik}\sqrt{\hat{\lambda}_{i}}}{\sqrt{s_{kk}}},\,\,\,\,\,\,i,k=1,2,\ldots,p
+\end{align*}
+
+
+## Sample Variation by Principal Components
+
+* We shall denote the sample principal components by $\hat{y}_{1},\hat{y}_{2},\ldots,\hat{y}_{p}$.  
+
+* The observations $\mathbf{x}_{j}$ are often ``centered'' by subtracting
+$\bar{\mathbf{x}}$.  
+
+* This has no effect on the sample covariance matrix
+$\mathbf{S}$ and gives the $i$th principal component
+\[
+\hat{y}_{i}=\hat{\mathbf{e}}_{i}'(x-\bar{x}),\,\,\,\,\,i=1,2,\ldots,p
+\]
+for any observation vector $\mathbf{x}$.   
+
+
+## 
+
+* If we consider the values of the $i$th component
+\[
+\hat{y}_{ji}=\hat{\mathbf{e}}'_{i}(\mathbf{x}_{j}-\bar{\mathbf{x}}),\,\,\,\,\,\,j=1,2,\ldots,n
+\]
+generating by substituting each observation $\mathbf{x}_{j}$ for the arbitrary $\mathbf{x}$, then
+\[
+\bar{\hat{y}_{i}}=\frac{1}{n}\sum_{j=1}^{n}\hat{\mathbf{e}}'_{i}(\mathbf{x}_{j}-\bar{\mathbf{x}})=\frac{1}{n}\hat{\mathbf{e}}'_{i}\left(\sum_{j=1}^{n}(\mathbf{x}_{j}-\bar{\mathbf{x}})\right)=\frac{1}{n}\hat{\mathbf{e}}'_{i}\boldsymbol{0}=0
+\]
+
+
+## The Number of Principal Components
+
+* There is always the question of how many components to retain.  
+
+* A useful visual aid to determining an appropriate number of principal components is a \textbf{\emph{scree plot}}.  
+
+* With the eigenvalues ordered from largest to smallest, a scree plot is a plot of $\hat{\lambda}_{i}$ versus $i$ - the magnitude of an
+eigenvalue versus its number.  
+
+* To determine the appropriate number of components, we look for an elbow (bend) in the scree plot.  
+
+* The number of components is taken to be the point at which the remaining eigenvalues are relatively small and all about the same size.
+
+
+## Example 8.4: Summarizing the data with one sample principal component
+
+In a study of size and relationships for painted male turtles, Joicoeur and Moistmann measured carapace length, width, and height. The authors suggests a logarithmic transformation in studies of size-and-shape relationships. Perform a principal component analysis.
+
+
+## 
+
+```{r}
+turtles <- read.table("T6-9.DAT", header=F)[25:48,-4]
+X <- log(as.matrix(turtles))
+colnames(X) <- c("lnlength", "lnwidth", "lnheight")
+```
+
+##
+
+```{r}
+# Make plots of data:
+pairs(X, cex = 0.7) 
+```
+
+## 
+
+```{r}
+# Compute means and covariance matrix
+colMeans(X)
+(S <- cov(X))
+```
+
+
+## 
+
+Compute principal components for original data. Use `prcomp` built-in function in R
+
+```{r}
+(turtles.pcomp <- prcomp(X))
+# eigenvalues
+turtles.pcomp$sdev^2
+```
+
+##
+
+```{r}
+summary(turtles.pcomp)
+```
+
+
+## Checking
+
+Check calculations of principal components by computing eigenvalues/eigenvectors and proportion explained from the original data. Use the covariance matrix `S`
+
+```{r}
+eigen.turtles <- eigen(S)
+eigen.turtles$values
+cumsum(eigen.turtles$values)/sum(eigen.turtles$values) 
+```
+
+
+## Screeplot order eigenvalues from largest to smallest
+
+```{r}
+screeplot(turtles.pcomp, type="lines")
+```
+
+
+##
+
+```{r}
+eigen.turtles$vectors
+```
+
+
+## Turtle Measurements via Principal Components
+
+* The scree plot in the previous slide has a very distinct elbow that occurs at $i=2$. There is clearly a dominant principal component.  
+
+* The first principal component, which explains 96\% of the total variance, has an interesting subject-matter interpretations.
+\begin{align*}
+\hat{y}_{1} & =.68\ln(\text{length})+.51\ln(\text{width})+.52\ln(\text{height})\\
+ & =\ln\left[(\text{length})^{.68}\times(\text{width})^{.51}\times(\text{height})^{.52}\right]
+\end{align*}
+
+##
+
+* The first principal component $\hat{y}_{1}$ may be viewed as the *volume* of a box with adjusted dimensions.  
+
+* For instance, the adjusted height, $(\text{height})^{.52}$, can account (in some sense) for the rounded shape of the carapace.  
+
+* The values of the first principal component can be computed as
+\[
+\hat{\mathbf{y}}_{1}=\left[\begin{array}{c}
+\hat{y}_{11}\\
+\hat{y}_{21}\\
+\vdots\\
+\hat{y}_{n1}
+\end{array}\right]=\mathbf{X}\hat{\mathbf{e}}_{1}=\mathbf{X}[.68, .51, .52]
+\]
+
+
+## 
+
+```{r}
+(ev1 <- turtles.pcomp$rotation[, 1])
+PC1 <- X%*%ev1
+summary(PC1)
+```
+
+
+## {.allowframebreaks}
+
+```{r}
+stem(PC1)
+qqnorm(PC1)
+qqline(PC1)
+```
+
+
+## Standardizing the Sample Principal Components
+
+* Sample principal components are, in general, not invariant with respect to changes in scale.  
+
+* Variables measured on different scales or on a common scale with widely  differing ranges are often standardized.  
+
+* For $j=1,2.\ldots,n$, the standardized observation of the $j$th observation in the sample is
+\[
+\mathbf{z}_{j}=\mathbf{D}^{-1/2}(\mathbf{x}_{j}-\bar{\mathbf{x}})=\left[\begin{array}{c}
+\frac{x_{j1}-\bar{x}_{1}}{\sqrt{s_{11}}}\\
+\frac{x_{j2}-\bar{x}_{2}}{\sqrt{s_{22}}}\\
+\vdots\\
+\frac{x_{jp}-\bar{x}_{p}}{\sqrt{s_{pp}}}
+\end{array}\right]=\left[\begin{array}{c}
+z_{j1}\\
+z_{j2}\\
+\vdots\\
+z_{jp}
+\end{array}\right]
+\]
+
+
+## Standardizing the Sample Principal Components
+
+
+* The $n\times p$ data matrix of standardized observations
+\[
+\mathbf{Z}=\left[\begin{array}{c}
+\mathbf{z}'_{1}\\
+\mathbf{z}'_{2}\\
+\vdots\\
+\mathbf{z}'_{n}
+\end{array}\right]=\left[\begin{array}{cccc}
+z_{11} & z_{12} & \cdots & z_{1p}\\
+z_{21} & z_{22} & \cdots & z_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+z_{n1} & z_{n2} & \cdots & z_{np}
+\end{array}\right]
+\]
+
+
+##
+
+* Verify that $\bar{\mathbf{z}}=\frac{1}{n}\left(\boldsymbol{1}'\mathbf{Z}\right)'=\frac{1}{n}\mathbf{Z}'\boldsymbol{1}=\boldsymbol{0}$
+and $\mathbf{S}_{z}=\mathbf{R}$, where $\mathbf{R}$ is the correlation
+matrix.  
+
+* The $i$th principal component, $i=1,2,\ldots,p$, is
+\begin{align*}
+\hat{y}_{i} & =\hat{\mathbf{e}}'_{i}\mathbf{z}=\hat{e}_{i1}z_{1}+\hat{e}_{i2}z_{2}+\cdots+\hat{e}_{ip}z_{p}\\
+\text{Sample variance}(\hat{y}_{i}) & =\hat{\lambda}_{i}\\
+\text{Sample covariance}(\hat{y}_{i},\hat{y}_{k}) & =0,\,\,\,i\neq k
+\end{align*}
+where $(\hat{\lambda}_{i},\hat{\mathbf{e}}_{i})$ is the $i$th eigenvalue-eigenvector
+pair of $\mathbf{R}$ with $\hat{\lambda}_{1}\geq\hat{\lambda}_{2}\geq\cdots\geq\hat{\lambda}_{p}\geq0$.
+
+
+
+## Principal Components for stock return data - Exercise 8.10
+
+The weekly rates of return for five stocks listed on the New York Stock Exchange are given in T8-4.DAT.
+
+* Construct the sample covariance matrix $S$, and find the sample principal components.  
+
+* Determine the proportion of the total sample variance explained by the first three principal components. Interpret the components.  
+
+* Given the results, do you feel that the stock rates-of-terun data can be summarized in fewer than five dimensions? Explain.
+
+
+
+## 
+
+```{r}
+stock <- read.table("T8-4.DAT", header=F,
+    col.names = c("morgan", "citi", "fargo", 
+                  "shell", "exxon"))
+stock <- as.matrix(stock)
+colMeans(stock)
+```
+
+## 
+
+```{r}
+pairs(stock, cex = 0.3)
+```
+
+
+
+## 
+
+Compute principal components for standardized data scale = TRUE will result in all variables being   scaled to have unit variance (i.e. a variance of 1, and hence a standard deviation of 1). 
+
+```{r}
+(stock.pcomp <- prcomp(stock, scale = T))
+# eigenvalues
+stock.pcomp$sdev^2
+summary(stock.pcomp)
+```
+
+
+## Checking
+
+Check calculations of principal components by computing eigenvalues/eigenvectors and proportion explained from the standardized data
+
+```{r}
+(R <- cor(stock))
+eigen.stock <- eigen(R)
+eigen.stock$values
+cumsum(eigen.stock$values)/sum(eigen.stock$values)  
+```
+
+## Screeplot - Stocks Data
+
+Screeplot order eigenvalues from largest to smallest.
+
+```{r}
+screeplot(stock.pcomp, npcs = 5, type = "lines")
+```
+
+
+## Stock Data via Principal Components
+
+* Using the standardized variables, the first two sample principal components
+\begin{align*}
+\hat{y}_{1} & =\hat{\mathbf{e}}_{1}\mathbf{z}=.469z_{1}+.532z_{2}+.465z_{3}+.387z_{4}+.361z_{5}\\
+\hat{y}_{2} & =\hat{\mathbf{e}}_{2}\mathbf{z}=-.368z_{1}-.236z_{2}-.315z_{3}+.585z_{4}+.606z_{5}
+\end{align*}  
+
+* These components account for
+\[
+\left(\frac{\hat{\lambda}_{1}+\hat{\lambda}_{2}}{p}\right)100\%=\left(\frac{2.437+1.407}{5}\right)100\%=77\%
+\]
+of the total (standardized) sample variance.  
+
+* The first component is a roughly equally weighted sum, or ``index'' of the five stocks. This component might be called a \emph{market
+component}.  
+
+## 
+
+```{r fig.width=5}
+biplot(stock.pcomp)
+```
+
+
+
+## 
+
+* The second component represents a contrast between the banking stocks
+(JP Morgan, Citibank, Wells Fargo) and the oil stocks (Royal Dutch
+Shell, Exxon-Mobil). It might be called an \emph{industry component}.  
+
+* We see that most of the variation in these stock returns is due to market activity and uncorrelated industry activity.
