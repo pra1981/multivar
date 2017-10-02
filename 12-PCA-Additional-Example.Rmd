@@ -1,0 +1,126 @@
+---
+title: "12 -  PCA Additional Example"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Wine Data
+
+The `wine` data is the result of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents found in each of the three types of wines.  
+
+```{r}
+data(wine, package = 'rattle.data')
+names(wine)
+```
+
+## 
+
+```{r fig.width = 4, echo = FALSE}
+pairs(wine[,2:5], col = wine$Type, upper.panel = NULL, pch = 16, cex = 0.5)
+legend("topright", bty = "n", legend = c("Type 1","Type 2","Type 3"), pch = 16, col = c("black","red","green"), xpd = T, cex = 1, y.intersp = 0.5)
+```
+
+
+
+
+## PCA Wine Data using `prcomp`
+
+```{r}
+# need to center and scale the data
+wine.pca1 <- prcomp(wine[,-1], scale. = T, center = T)
+names(wine.pca1)
+
+# Variances/Eigenvalues of PCA
+(wine.pca1$sdev)^2
+```
+
+
+
+
+
+##
+
+```{r fig.width = 4}
+screeplot(wine.pca1, type="lines")
+```
+
+## Summary of PCA
+
+```{r}
+summary(wine.pca1)
+```
+
+## First Four Eigenvectors (or Loadings) using `prcomp`
+
+```{r}
+wine.pca1$rotation[,1:4]
+```
+
+## First Four Principal Components (or Scores) using `prcomp`
+
+```{r}
+head(wine.pca1$x[,1:4], 10)
+```
+
+
+## 
+
+```{r fig.width = 4,}
+plot(wine.pca1$x[,1:2], col = wine$Type, cex = 0.7, main = "1st and 2nd PC's")
+```
+
+
+##
+
+```{r fig.width = 4,}
+plot(wine.pca1$x[,3:4], col = wine$Type, cex = 0.7, main = "3rd and 4th PC's")
+```
+
+
+
+## PCA Wine Data using `princomp`
+
+```{r}
+# set cor = TRUE to use scaled data
+wine.pca2 <- princomp(wine[,-1], cor = TRUE)
+names(wine.pca2)
+
+# Variances/Eigenvalues of PCA
+(wine.pca2$sdev)^2
+```
+
+## First Four Eigenvectors (or Loadings) using `princomp`
+
+```{r}
+wine.pca2$loadings[,1:4]
+```
+
+## First Four Principal Components (or Scores) using `princomp`
+
+```{r}
+head(wine.pca2$scores[,1:4], 10)
+```
