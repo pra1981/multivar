@@ -11,6 +11,7 @@
 9. [Multivariate Two Sample Inference](https://github.com/jpailden/multivar/blob/master/09-Multivariate-Two-Sample-Inference.pdf)  
 10. [Multivariate Analysis of Variance](https://github.com/jpailden/multivar/blob/master/10-Multivariate-ANOVA.pdf)  
 11. [Principal Components Analysis](https://github.com/jpailden/multivar/blob/master/11-Principal-Components-Analysis.pdf)  
-12. [PCA Additional Example](https://github.com/jpailden/multivar/blob/master/12-PCA-Additional-Example.pdf)  
+12. [PCA Additional Example](https://github.com/jpailden/multivar/blob/master/12-PCA-Additional-Example.pdf)   
+      * [Population Structure and Eigenanalysis by Patterson, et. al. 2006](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020190)
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
