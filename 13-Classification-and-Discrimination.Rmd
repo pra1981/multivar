@@ -1,0 +1,440 @@
+---
+title: "13 -  Discriminaiton"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Introduction
+
+Discrimination and classification are multivariate techniques concerned with separating distinct sets of objects (or observations) and with allocating new objects (observations) to previously defined groups.
+
+
+## Goal
+
+* To describe, either graphically (in three or fewer dimensions) or algebraically, the differential features of objects (observations) from several known collections (populations). We try to find ``discriminants''
+whose numerical values are such that the collections are separated as much as possible.  
+
+* To sort objects (observations) into two or more labeled classes. The emphasis is on deriving a rule that can be used to optimally assign new objects to the labeled classes.
+
+
+## Iris Data Species
+
+Observations made on four attributes (sepal length/width, petal length/width) of each of three types of irises.   
+  * Top right: Setosa  
+  * Bottom left: Versicolor  
+  * Bottom right: Virginica
+
+
+## Types of Iris Flower
+
+![](Iris_fig.png)
+
+
+## Iris Data
+
+```{r}
+# iris data is included in base R
+str(iris)
+```
+
+
+
+
+
+## Iris Data
+
+```{r fig.width=4, fig.height=2.5}
+library(tidyverse)
+iris %>% ggplot(aes(x = Sepal.Length, y = Petal.Length,
+                    colour = Species)) +
+  geom_point()
+```
+
+
+## Classification for Two Populations
+
+1. Separating two classes of objects.  
+2. Assigning a new object to one of two classes (or both).
+
+* Label the classes (populations) as $\pi_{1}$ and $\pi_{2}$.  
+* Objects are classified on basis of of measurements on $p$ associated random variables $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$.  
+* The observed values of $\mathbf{X}$ differ to some extent from one class (population) to the other.   
+* Values from first class as being the population of $\mathbf{x}$ values for $\pi_{1}$ and those from the second class as population of $\mathbf{x}$ for $\pi_{2}$. 
+
+## Classification for Two Populations (cont)
+
+* Let $f_{1}(\mathbf{x})$ and $f_{2}(\mathbf{x})$ be the pdf's associated with $\mathbf{X}$ for pop'ns $\pi_{1}$ and $\pi_{2}$.  
+* Let $\Omega=\{\mathbf{x}\}$ be the sample space - collection of all possible observations $\mathbf{x}$.    
+* Let $R_{i}$ be that set of $\mathbf{x}$ values for w/c we classify objects as $\pi_{i},\,\,i=1,2$.   
+* Note, $R_{2}=\Omega-R_{1}$ and $R_{1}\bigcap R_{2}=\emptyset$. 
+
+## Conditional Probability of Misclassification
+
+* Conditional probability, $P(2|1)$, of classifying an object as $\pi_{2}$ when, in fact, it is from $\pi_{1}$ is
+\[
+P(2|1)=P(\mathbf{X}\in R_{2}|\pi_{1})=\int_{R_{2}}f_{1}(\mathbf{x})d\mathbf{x}.
+\]  
+* Similarly, conditional probability, $P(1|2)$, of classifying an object as $\pi_{1}$ when, in fact, it is from $\pi_{2}$ is
+\[
+P(1|2)=P(\mathbf{X}\in R_{1}|\pi_{2})=\int_{R_{1}}f_{2}(\mathbf{x})d\mathbf{x}.
+\]
+
+
+## 
+
+Let $p_{i}$ be the prior probability of $\pi_{i}$, $i=1,2$, where
+$p_{1}+p_{2}=1$.
+\begin{align*}
+P(\text{obs is correctly classified as}\,\,\pi_{1}) & =P(\text{obs comes from \ensuremath{\pi_{1}}\,\,\ and }\\
+ & \,\,\,\,\,\,\,\text{is correctly classified as \ensuremath{\pi_{1})}}\\
+ & =P(\mathbf{X}\in R_{1}|\pi_{1})P(\pi_{1})=P(1|1)p_{1}\\
+P(\text{obs is misclassified as}\,\,\pi_{1}) & =P(\text{obs comes from \ensuremath{\pi_{2}}\,\,\ and }\\
+ & \,\,\,\,\,\,\,\text{is misclassified as \ensuremath{\pi_{1})}}\\
+ & =P(\mathbf{X}\in R_{1}|\pi_{2})P(\pi_{2})=P(1|2)p_{2}
+\end{align*}
+
+
+## 
+
+\begin{align*}
+P(\text{obs is correctly classified as}\,\,\pi_{2}) & =P(\text{obs comes from \ensuremath{\pi_{2}\,\,}and }\\
+ & \,\,\,\,\,\,\,\text{is correctly classified as \ensuremath{\pi_{2})}}\\
+ & =P(\mathbf{X}\in R_{2}|\pi_{2})P(\pi_{2})=P(2|2)p_{2}\\
+P(\text{obs is misclassified as}\,\,\pi_{2}) & =P(\text{obs comes from \ensuremath{\pi_{1}}\,\,\ and }\\
+ & \,\,\,\,\,\,\,\text{is misclassified as \ensuremath{\pi_{2})}}\\
+ & =P(\mathbf{X}\in R_{2}|\pi_{1})P(\pi_{1})=P(2|1)p_{1}
+\end{align*}
+
+## Costs of Misclassification: Cost Matrix
+
+
+| Classify as True Population | $\pi_{1}$ | $\pi_{2}$ |
+|-----------------------------|-----------|-----------| 
+| $\pi_{1}$ | 0 | c(2\|1) |
+| $\pi_{2}$ | c(1\|2) | 0 |
+
+The average or expected cost of misclassification (ECM) is
+\begin{align*}
+\text{ECM} & =c(2|1)P(2|1)p_{1}+c(1|2)P(1|2)p_{2}\\
+ & =c(2|1)p_{1}\int_{R_{2}}f_{1}(\mathbf{x})d\mathbf{x}+c(1|2)p_{2}\int_{R_{1}}f_{2}(\mathbf{x})d\mathbf{x}\\
+ & =\int_{R_{1}}\left[c(1|2)p_{2}f_{2}(\mathbf{x})-c(2|1)p_{1}f_{1}(\mathbf{x})\right]d\mathbf{x}+c(2|1)p_{1}
+\end{align*}
+A reasonable classification rule should have an ECM as small, or nearly as small, as possible.
+
+
+## Result 11.1 Minimum Expected Cost Regions
+
+The regions $R_{1}$ and $R_{2}$ that minimize the ECM are defined by the values $\mathbf{x}$ for which the following inequalities hold:
+
+\begin{align*}
+R_{1}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})} & \geq\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)\\
+(\text{density ratio}) & \geq(\text{cost ratio})(\text{prior prob ratio})
+\end{align*}
+
+\begin{align*}
+R_{2}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})} & <\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)\\
+(\text{density ratio}) & <(\text{cost ratio})(\text{prior prob ratio})
+\end{align*}
+
+
+## Special Cases of Minimum Expected Cost Regions
+
+* $p_{2}/p_{1}=1$ (equal prior probabilities)
+\[
+R_{1}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}\geq\frac{c(1|2)}{c(2|1)}\,\,,\,\,\,\,R_{2}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}<\frac{c(1|2)}{c(2|1)}
+\]  
+
+* $c(1|2)/c(2|1)=1$ (equal misclassification costs)
+\[
+R_{1}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}\geq\frac{p_{2}}{p_{1}}\,\,,\,\,\,\,R_{2}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}<\frac{p_{2}}{p_{1}}
+\]  
+
+* $p_{2}/p_{1}=c(1|2)/c(2|1)=1$ (equal prior prob's and equal misclassification costs) 
+\[
+R_{1}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}\geq1\,\,,\,\,\,\,R_{2}:\frac{f_{1}(\mathbf{x})}{f_{2}(\mathbf{x})}<1
+\]
+
+## 
+
+* When prior probabilities are unknown, they are often taken to be equal.  
+
+* If the misclassification cost ratio is indeterminate, it is usually taken to be unity.
+
+
+
+## Classification with Two Multivariate Normal Populations
+
+* Classification procedures based on normal populations predominate in statistical practice because of their simplicity and reasonably high efficiency across a wide variety of population models.  
+
+* We now assume that $f_{1}(\mathbf{x})\sim N(\boldsymbol{\mu}_{1},\boldsymbol{\Sigma}_{1})$
+and $f_{1}(\mathbf{x})\sim N(\boldsymbol{\mu}_{2},\boldsymbol{\Sigma}_{2})$
+are multivariate normal densities.
+
+* When $\boldsymbol{\Sigma}_{1}=\boldsymbol{\Sigma}_{2}=\boldsymbol{\Sigma}$
+
+* Suppose that the joint densities of $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$
+for popn's $\pi_{1}$ and $\pi_{2}$ are given by
+\[
+f_{i}(\mathbf{x})=\frac{1}{(2\pi)^{p/2}|\boldsymbol{\Sigma}|^{1/2}}\exp\left[-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{i})'\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{i})\right],\,\,\,i=1,2
+\]  
+
+
+## 
+
+Suppose that $\boldsymbol{\mu}_{1},\boldsymbol{\mu}_{2}$, and $\boldsymbol{\Sigma}$
+are known. Then, after cancelling the terms $(2\pi)^{p/2}|\boldsymbol{\Sigma}|^{1/2}$,
+the minimum ECM regions become
+
+\begin{align*}
+R_{1}:\,\,\exp\left[-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{1})'\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{1})+\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{2})'\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{2})\right]\\
+\geq\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)\\
+R_{2}:\,\,\exp\left[-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{1})'\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{1})+\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{2})'\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{2})\right]\\
+<\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)
+\end{align*}  
+
+
+## 
+
+* Allocate new observation $\mathbf{x}_{0}$ to $\pi_{1}$ if
+\[
+(\boldsymbol{\mu}_{1}-\boldsymbol{\mu}_{2})'\boldsymbol{\Sigma}^{-1}\mathbf{x}_{0}-\frac{1}{2}(\boldsymbol{\mu}_{1}-\boldsymbol{\mu}_{2})'\boldsymbol{\Sigma}^{-1}(\boldsymbol{\mu}_{1}+\boldsymbol{\mu}_{2})\geq\ln\left[\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)\right]
+\]
+
+* Allocate $\mathbf{x}_{0}$ to $\pi_{2}$ otherwise.  
+
+* When $\boldsymbol{\mu}_{1},\boldsymbol{\mu}_{2}$, and $\boldsymbol{\Sigma}$ are unknown, as in most practical cases, we replace the parameters by their sample counterparts.
+
+
+## 
+
+* Suppose that we have $n_{i}$ observations (IID copies) of $\mathbf{X}'=[X_{1},X_{2},\ldots,X_{p}]$
+from pop'n $\pi_{i}$, $i=1,2$, with $n_{1}+n_{2}-2\geq p$. The
+data matrices are
+\begin{align*}
+\underset{(n_{1}\times p)}{\mathbf{X}_{1}} & =\left[\begin{array}{c}
+\mathbf{x}'_{11}\\
+\mathbf{x}'_{12}\\
+\vdots\\
+\mathbf{x}'_{1n_{1}}
+\end{array}\right],\,\,\,\,\underset{(n_{2}\times p)}{\mathbf{X}_{2}}=\left[\begin{array}{c}
+\mathbf{x}'_{21}\\
+\mathbf{x}'_{22}\\
+\vdots\\
+\mathbf{x}'_{2n_{1}}
+\end{array}\right]\\
+\underset{(p\times1)}{\bar{\mathbf{x}}_{i}} & =\frac{1}{n_{i}}\sum_{j=1}^{n_{i}}\mathbf{x}_{ij},\,\,i=1,2\\
+\underset{(p\times p)}{\mathbf{S}_{i}} & =\frac{1}{n_{i}-1}\sum_{j=1}^{n_{i}}(\mathbf{x}_{ij}-\bar{\mathbf{x}}_{i})(\mathbf{x}_{ij}-\bar{\mathbf{x}}_{i})',\,\,\,i=1,2\\
+\mathbf{S}_{\text{pooled}} & =\left[\frac{n_{1}-1}{(n_{1}-1)+(n_{2}-1)}\right]\mathbf{S}_{1}+\left[\frac{n_{2}-1}{(n_{1}-1)+(n_{2}-1)}\right]\mathbf{S}_{2}
+\end{align*}
+
+
+## 
+
+* $\mathbf{S}_{\text{pooled}}$ is unbiased estimate of $\boldsymbol{\Sigma}$ if the data matrices $\mathbf{X}_{1}$ and $\mathbf{X}_{2}$ are random
+samples from the pop'ns $\pi_{1}$ and $\pi_{2}$.  
+ 
+
+## Sample Classification Rule
+
+The Estimated Minimum ECM Rule for Two Populations
+
+1. Allocate new observation $\mathbf{x}_{0}$ to $\pi_{1}$ if
+\begin{align*}
+(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}\mathbf{x}_{0}-\frac{1}{2}(\bar{\mathbf{x}}_{1}-&\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}(\bar{\mathbf{x}}_{1}+\bar{\mathbf{x}}_{2})  \geq \\
+\quad \ln & \left[\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)\right]
+\end{align*} 
+2. Allocate $\mathbf{x}_{0}$ to $\pi_{2}$ otherwise. 
+
+* Once parameter estimates are inserted for the corresponding unknown pop'n quantities, there is no assurance that the resulting rule will
+minimize the ECM.  
+
+* However, it seems reasonable to expect that it should perform well if the sample sizes are large.
+
+
+## 
+
+* Given a new observation $\mathbf{x}_{0}$, let 
+\begin{align*}
+\hat{y} & =(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}\mathbf{x}_{0}=\hat{\mathbf{a}}'\mathbf{x}_{0}\\
+\bar{y}_{1} & =(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}\bar{\mathbf{x}}_{1}=\hat{\mathbf{a}}'\bar{\mathbf{x}}_{1}\\
+\bar{y}_{2} & =(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}\bar{\mathbf{x}}_{2}=\hat{\mathbf{a}}'\bar{\mathbf{x}}_{2}\\
+\hat{m} & =\frac{1}{2}(\bar{\mathbf{x}}_{1}-\bar{\mathbf{x}}_{2})'\mathbf{S}_{\text{polled}}^{-1}(\bar{\mathbf{x}}_{1}+\bar{\mathbf{x}}_{2})=\frac{1}{2}(\bar{y}_{1}+\bar{y}_{2})
+\end{align*}
+
+* If $\left(\frac{c(1|2)}{c(2|1)}\right)\left(\frac{p_{2}}{p_{1}}\right)=1$,
+then $\ln(1)=0$ (equal prior and equal costs), then estimated minimum ECM rule for two normal populations implies allocating new observation $\mathbf{x}_{0}$ to $\pi_1$ if $\hat{y}\geq\hat{m}$; allocate to  $\pi_{2}$ otherwise.
+
+
+## Exercise 11.1
+
+```{r}
+# Read the data sets of exercise 11.1 into R:   
+X1 <- matrix(c(3,7,2,4,4,7), nrow = 3, ncol = 2, 
+             byrow = T) 
+X2 <- matrix(c(6,9,5,7,4,8), nrow = 3, ncol = 2, 
+             byrow = T) 
+```
+
+## Sample ECM Two Population Function
+
+```{r}
+
+ECM.two.popn <- function(X1, X2){
+  n1 <- nrow(X1) 
+  n2 <- nrow(X2) 
+  xbar1 <- colMeans(X1) 
+  xbar2 <- colMeans(X2) 
+  S1 <- cov(X1) 
+  S2 <-cov(X2) 
+  Sp <- ((n1-1)/(n1+n2-2))*S1+((n2-1)/(n1+n2-2))*S2  
+  ta <- t(xbar1-xbar2)%*%solve(Sp) 
+  list(a = t(ta), m = 0.5*(ta%*%xbar1+ta%*%xbar2))
+}
+```
+
+## Exercise 11.1  {.allowframebreaks}
+
+```{r}
+# a)  Compute the vector a for the linear discriminant 
+# function given by (11-19) in J&W
+# b)  Compute the scalar m given by (11-20):
+(out1 <- ECM.two.popn(X1, X2))
+# Classify the new obs x0 = c(2,7) to pi1
+# if t(a)%*%c(2,7) > m
+t(out1$a)%*%c(2,7) 
+# since -4 > -8, then c(2,7) is 
+# classified as belonging to pi1
+# Check original observations
+# Classified to pi1?
+X1
+t(out1$a)%*%t(X1) >= -8 
+X2
+t(out1$a)%*%t(X2) >= -8 
+
+```
+
+
+
+## Plots - Exercise 11.1
+
+```{r }
+X <- data.frame(c(rep(1,3), rep(2,3)), rbind(X1, X2))
+colnames(X) <- c("Popn", "Var1", "Var2")
+X$Popn <- as.factor(X$Popn)
+X
+```
+
+
+##
+
+```{r fig.height=2.5}
+p1 <-  X %>% ggplot(aes(x = Var1, y = Var2, 
+                        colour = Popn)) +
+  geom_point()
+p1
+```
+
+
+## Classify New Point (2,7)
+
+```{r fig.height=2.2}
+# add new point (2,7)
+p1 + geom_point(aes(x = 2, y = 7), 
+                      colour = "blue" ) +  
+    geom_vline(xintercept = out1$m/out1$a[1])
+```
+
+
+
+## Iris Data {.allowframebreaks}
+
+```{r}
+str(iris)
+# create data subset for Species = versicolor,
+# columns Sepal.Length and Petal.Length
+X.versicolor <- iris %>% 
+  filter(Species == "versicolor") %>% 
+  select(Sepal.Length, Petal.Length)
+# same for Specifies = virginica
+X.virginica <- iris %>% 
+  filter(Species == "virginica") %>% 
+  select(Sepal.Length, Petal.Length)
+
+(out.iris <- ECM.two.popn(X.versicolor, X.virginica))
+
+# Classifier Function
+belong.iris <- function(X){
+  if(t(out.iris$a)%*%X >= out.iris$m){
+    type = "versicolor"
+  } else {
+    type = "virginica"
+  }
+  return(type)
+}
+
+# Check the classifier on existing observations
+res1 <- apply(X.versicolor, 1, belong.iris)
+table(res1)
+# misclassified to pi2 
+sum(res1 == "virginica")
+
+res2 <- apply(X.virginica, 1, belong.iris)
+table(res2)
+# misclassified to pi3
+sum(res2 == "versicolor") 
+```
+
+
+
+## Linear discrimator between Species Versicolor and Virginica
+
+```{r eval = FALSE}
+# select variables, filter species
+iris %>% select(Sepal.Length, Petal.Length, Species) %>%
+  filter(Species != "setosa") %>%
+  ggplot(aes(x = Sepal.Length, y = Petal.Length,
+             colour = Species)) +
+  geom_point() +
+  # draw the linear discrimination border
+  geom_abline(intercept = out.iris$m/out.iris$a[2],
+              slope = -out.iris$a[1]/out.iris$a[2]) 
+```
+
+
+## Linear discrimator between Species Versicolor and Virginica
+
+```{r echo = FALSE, fig.height=3, fig.width=4}
+iris %>% select(Sepal.Length, Petal.Length, Species) %>%
+  filter(Species != "setosa") %>%
+  ggplot(aes(x = Sepal.Length, y = Petal.Length,
+             colour = Species)) +
+  geom_point() +
+  # draw the linear discrimination border
+  geom_abline(intercept = out.iris$m/out.iris$a[2],
+              slope = -out.iris$a[1]/out.iris$a[2]) 
+```
+
