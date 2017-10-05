@@ -1,5 +1,5 @@
 ---
-title: "13 -  Discriminaiton"
+title: "13 -  Linear Classification"
 subtitle: "Junvie Pailden"   
 author: "SIUE, F2017, Stat 589"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
