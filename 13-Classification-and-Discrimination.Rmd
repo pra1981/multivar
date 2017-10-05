@@ -132,10 +132,10 @@ P(\text{obs is misclassified as}\,\,\pi_{2}) & =P(\text{obs comes from \ensurema
 ## Costs of Misclassification: Cost Matrix
 
 
-| Classify as True Population | $\pi_{1}$ | $\pi_{2}$ |
-|-----------------------------|-----------|-----------| 
-| $\pi_{1}$ | 0 | c(2\|1) |
-| $\pi_{2}$ | c(1\|2) | 0 |
+|  | Classify as   | $\pi_{1}$ | $\pi_{2}$ |
+|-----------|-----------|---|---------| 
+| True      | $\pi_{1}$ | 0 | c(2\|1) |
+| Population| $\pi_{2}$ | c(1\|2) | 0 |
 
 The average or expected cost of misclassification (ECM) is
 \begin{align*}
