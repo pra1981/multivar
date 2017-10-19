@@ -13,7 +13,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  options(digits = 2), # round to 2 digits
+  options(digits = 3), # round to 2 digits
   echo = TRUE,
   comment = "#",
   fig.path = "figures/",
@@ -437,4 +437,69 @@ iris %>% select(Sepal.Length, Petal.Length, Species) %>%
   geom_abline(intercept = out.iris$m/out.iris$a[2],
               slope = -out.iris$a[1]/out.iris$a[2]) 
 ```
+
+
+
+## Play with the IRIS data
+
+```{r}
+library(dplyr) # for data manipulation
+# select variables, filter species
+iris23 <- iris %>% 
+  select(Sepal.Length, Petal.Length, Species) %>%
+  filter(Species != "setosa") %>%
+  droplevels() # drop empty level (e.g. setosa)
+```
+
+## Apply `belong.iris` function
+
+```{r}
+iris.belong <- apply(iris23[,-3], 1 , belong.iris)
+(tab.belong <- table(iris.belong, iris23$Species))
+# accuracy rate
+(47 + 47)/( 50 + 50)
+```
+
+## Confusion Matrix and Some Classification Statistics
+
+Load Caret package to use `confusionMatrix` function
+```{r eval = FALSE}
+library(caret)
+cm1 <- confusionMatrix(tab.belong)
+names(cm1)
+cm1$table # confusion matrix 
+cm1$overall # accuracy, etc
+```
+
+
+##
+
+```{r echo = FALSE}
+cm1 <- caret::confusionMatrix(tab.belong)
+names(cm1)
+cm1$table
+cm1$overall
+```
+
+
+
+
+## Using `lda()` function in R
+
+Need to load `MASS` package in R.
+
+```{r}
+library(MASS)
+iris.lda <- lda(Species ~  # formula interface
+                  Sepal.Length + Petal.Length, 
+                  data = iris23, 
+                  prior = c(1/2, 1/2))
+# use equal priors for comparison with belong.iris fcn
+lda1 <- predict(iris.lda)
+# check prediction results of belong.iris and lda
+table(iris.belong, lda1$class)
+```
+
+
+
 
