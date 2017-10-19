@@ -1,0 +1,419 @@
+---
+title: "14 -  Quadratic Classification and Classification for Several Populations"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Classification of Two Normal Populations When Covariances are Unequal
+
+* Consider the multivariate normal densities with $\boldsymbol{\Sigma}_{i},i=1,2$,
+replacing $\boldsymbol{\Sigma}$.  
+
+* Substituting multivariate normal densities with different covariance
+matrices gives
+\begin{align*}
+R_{1}:-\frac{1}{2}\mathbf{x}'(\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}+(\boldsymbol{\mu}_{1}'\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\mu}_{2}'&\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}-k\\
+\geq & \ln \left( \frac{c(1|2)}{c(2|1)} \cdot \frac{p_{2}}{p_{1}}\right)\\
+R_{2}:-\frac{1}{2}\mathbf{x}'(\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}+(\boldsymbol{\mu}_{1}'\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\mu}_{2}'&\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}-k\\
+< & \ln \left( \frac{c(1|2)}{c(2|1)} \cdot \frac{p_{2}}{p_{1}} \right) 
+\end{align*}
+
+
+##
+
+* where
+
+$$
+k=\frac{1}{2}\ln\left(\frac{|\boldsymbol{\Sigma}_{1}|}{|\boldsymbol{\Sigma}_{2}|}\right)+\frac{1}{2}(\boldsymbol{\mu}'_{1}\boldsymbol{\Sigma}_{1}^{-1}\boldsymbol{\mu}_{1}-\boldsymbol{\mu}'_{2}\boldsymbol{\Sigma}_{2}^{-1}\boldsymbol{\mu}_{2})
+$$
+
+* The classification regions are define by quadratic functions of $\mathbf{x}$.  
+
+* When $\boldsymbol{\Sigma}_{1}=\boldsymbol{\Sigma}_{2}$, the term
+$-\frac{1}{2}\mathbf{x}'(\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}$
+disappers.
+
+
+
+## Quadratic Classification Rule 
+
+* Allocate to $\mathbf{x}_{0}$ to $\pi_{1}$ if
+\begin{align*}
+-\frac{1}{2}\mathbf{x}_{0}'(\boldsymbol{S}_{1}^{-1}-\boldsymbol{S}_{2}^{-1})\mathbf{x}_{0}+(\boldsymbol{\bar{x}}_{1}'\boldsymbol{S}_{1}^{-1}-\boldsymbol{\bar{x}}_{2}'&\boldsymbol{S}_{2}^{-1})\mathbf{x}_{0}-k\\
+\geq & \ln \left( \frac{c(1|2)}{c(2|1)} \cdot \frac{p_{2}}{p_{1}} \right) 
+\end{align*}
+
+* Allocate to $\mathbf{x}_{0}$ to $\pi_{2}$ otherwise.
+
+
+## Play with the IRIS data
+
+```{r}
+library(dplyr) # for data manipulation
+# select variables, filter species
+iris23 <- iris %>% 
+  select(Sepal.Length, Petal.Length, Species) %>%
+  filter(Species != "setosa") %>%
+  droplevels() # drop empty level (e.g. setosa)
+```
+
+
+## Using `qda()` for Quadratic Classification/Discriminant Analysis
+
+```{r}
+library(MASS)
+iris.qda <- qda(Species ~  
+                  Sepal.Length + Petal.Length, 
+                  data = iris23)
+# use equal priors for comparison
+iris.predict.qda <- predict(iris.qda)
+table(iris.predict.qda$class, iris23$Species)
+```
+Quadratic and Linear Discrimination produces similar results for the IRIS data.
+
+
+## Example 11.1: Discriminating owners from nonowners of riding mowers
+
+```{r}
+mower <- read.table("T11-1.DAT", 
+          col.names = c("income", "size", "riding"))
+mower$riding <- recode_factor(mower$riding, `1` = "owner", `2` = "nonowner")
+str(mower)
+```
+
+
+## Linear Classification/Discriminant Analysis
+
+```{r}
+mower.lda <- lda(riding ~ income + size,
+                  data = mower)
+mower.lda$means # means by owner type
+mower.pred.lda <- predict(mower.lda)
+table(mower.pred.lda$class, mower$riding)
+```
+
+## Add preicted class column to data
+
+```{r}
+# add new predicted class column, save
+mower <- mower %>% 
+  mutate(ldapred = mower.pred.lda$class) 
+head(mower)
+```
+
+## Plots
+
+```{r eval = FALSE}
+library(ggplot2)
+# plot, add shape as predicted class
+mower %>% 
+  ggplot(aes(x = income, y = size,
+             colour = riding, shape = ldapred)) +
+  geom_point()
+```
+
+##
+
+```{r echo = FALSE, fig.height=2.5, fig.width=4}
+library(ggplot2)
+# plot, add shape as predicted class
+mower %>% 
+  ggplot(aes(x = income, y = size,
+             colour = riding, shape = ldapred)) +
+  geom_point() 
+```
+
+
+## Classification with Several Populations
+
+* Let $f_{i}(\mathbf{x})$ be the density associated with population
+$\pi_{i}$, $i=1,2,\ldots,g$. 
+
+\begin{align*}
+p_{i} & =\text{the prior prob'y of population }\pi_{i},i=1,\ldots,g\\
+c(k|i) & =\text{cost of allocating an item to }\pi_{k}\,\text{when it belongs to }\pi_{i},k\neq i
+\end{align*}
+
+* Let $R_{k}$ be the set of $\mathbf{x}$'s classified as $\pi_{k}$ and
+
+\begin{align*}
+P(k|i) & =P(\text{classifying item as }\pi_{k}|\pi_{i})=\int_{R_{k}}f_{i}(\mathbf{x})d\mathbf{x}\\
+P(i|i) & =1-\underset{k\neq i}{\sum_{k=1}^{g}}P(k|i)
+\end{align*}
+
+## Conditional Expected Cost of Misclassifying (CECM)
+
+* The conditional expected cost of misclassifying an $\mathbf{x}$ from
+$\pi_{1}$ into $\pi_{2}$, or $\pi_{3}$,$\ldots$, or $\pi_{k}$
+is
+\begin{align*}
+ECM(1) & =P(2|1)c(2|1)+P(3|1)c(3|1)+\cdots+P(g|1)c(g|1)\\
+ & =\sum_{k=2}^{g}P(k|1)c(k|1)
+\end{align*}  
+
+* The conditional expected cost occurs with prior proby $p_{1}$, the proby of $\pi_{1}$.  
+
+* Similarly, we can obtain $ECM(2),\ldots,ECM(g)$.  
+
+
+## Overall ECM
+
+* The overall ECM is 
+\begin{align*}
+ECM & =p_{1}ECM(1)+\cdots+p_{g}ECM(g)\\
+ & =\sum_{i=1}^{g}p_{i}\left(\underset{k\neq i}{\sum_{k=1}^{g}}P(k|i)c(k|i)\right)
+\end{align*}  
+
+* Choose mutually exclusive and exhaustive classification regions $R_{1},\ldots,R_{g}$
+such that ECM is a minimum.
+
+## Minimum ECM Classification Rule with Equal Misclassification Costs
+
+* Suppose misclassification costs are equal (say all equal to 1).
+
+* Allocate $\mathbf{x}_{0}$ to $\pi_{k}$ if
+\begin{align}
+p_{k}f_{k}(\mathbf{x}) &> p_{i}f_{i}(\mathbf{x})\,\,\,\,\text{for all}\,\,i\neq k \\
+\text{or} \qquad \ln\,p_{k}f_{k}(\mathbf{x}) &> \ln\,p_{i}f_{i}(\mathbf{x})
+\end{align}
+
+* Note that this misclassification rule is identical to the one that maximizes the ``posterior'' probability
+\begin{align*}
+P(\pi_{k}|\mathbf{x}) & =P(\mathbf{x}\,\text{comes from }\,\pi_{k}\,\text{given that}\,\mathbf{x}\,\text{was observed})\\
+ & =\frac{p_{k}f_{k}(\mathbf{x})}{\sum_{i=1}^{g}p_{i}f_{i}(\mathbf{x})}=\frac{(\text{prior})\times(\text{likelihood})}{\Sigma[(\text{prior})\times(\text{likelihood})]}
+\end{align*}
+    for $k=1,\ldots,g$
+
+
+## Classification with Normal Populations
+
+* Let $f_{i}(\mathbf{x}) \sim N_p(\boldsymbol{\mu}_{i}, \boldsymbol{\Sigma}_{i})$, \quad possibly unequal $\boldsymbol{\Sigma}_{i}$, $i = 1, \ldots, g$
+
+* Allocate $\mathbf{x}$ to $\pi_{k}$ if
+\begin{align*}
+\ln p_{k}f_{k}(\mathbf{x}) & =\ln p_{k}-\left(\frac{p}{2}\right)\ln(2\pi)-\frac{1}{2}\ln|\boldsymbol{\Sigma}_{k}| \\
+& \qquad -\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{k})'\boldsymbol{\Sigma}_{k}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{k})\\
+ & =\max_{i}\ln p_{i}f_{i}(\mathbf{x})
+\end{align*}
+
+* Let $d_{i}^{Q}(\mathbf{x})$ be the **quadratic discriminant score** given by
+\[
+d_{i}^{Q}(\mathbf{x})=-\frac{1}{2}\ln|\boldsymbol{\Sigma}_{i}|-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{i})'\boldsymbol{\Sigma}_{i}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{i})+\ln p_{i},
+\]
+where $i=1,\ldots, g$
+
+
+
+## Quadratic Discriminant Analysis (QDA)
+
+* Using Minimum Total Probbability of Misclassification (TPM) Rule for Normal Populations   
+ 
+* (**QDA**) Allocate $\mathbf{x}$ to $\pi_{k}$ if the **quadratic discriminant score**
+\[
+d_{k}^{Q}(\mathbf{x})=\max \left\{d_{1}^{Q}(\mathbf{x}),\ldots,d_{g}^{Q}(\mathbf{x})\right\}
+\]
+where
+\[
+d_{i}^{Q}(\mathbf{x})=-\frac{1}{2}\ln|\boldsymbol{\Sigma}_{i}|-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu}_{i})'\boldsymbol{\Sigma}_{i}^{-1}(\mathbf{x}-\boldsymbol{\mu}_{i})+\ln p_{i},
+\]
+
+
+
+## Linear Discriminant Analysis (LDA)
+
+* When $\boldsymbol{\Sigma}_{i}=\boldsymbol{\Sigma}$, for $i=1,\ldots,g$, the quadratic discriminator score becomes
+
+\begin{align*}
+d_{i}^{Q}(\mathbf{x}) & =-\frac{1}{2}\ln|\boldsymbol{\Sigma}|-\frac{1}{2}\mathbf{x}'\boldsymbol{\Sigma}^{-1}\mathbf{x}+\boldsymbol{\mu}_{i}'\boldsymbol{\Sigma}^{-1}\mathbf{x}-\frac{1}{2}\boldsymbol{\mu}_{i}'\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu}_{i}+\ln p_{i}\\
+ & =-\frac{1}{2}\ln|\boldsymbol{\Sigma}|-\frac{1}{2}\mathbf{x}'\boldsymbol{\Sigma}^{-1}\mathbf{x}+d_{i}(\mathbf{x})
+\end{align*}
+where $d_{i}(\mathbf{x})$ is called the **linear disciminant score**,
+$$
+d_{i}(\mathbf{x}) = \boldsymbol{\mu}_{i}'\boldsymbol{\Sigma}^{-1}\mathbf{x}-\frac{1}{2}\boldsymbol{\mu}_{i}'\boldsymbol{\Sigma}^{-1}\boldsymbol{\mu}_{i}+\ln p_{i}
+$$
+
+
+* The first two terms are the same for all $d_{i}^{Q}(\mathbf{x})$ so we ignore these terms.
+
+* (**LDA**) Allocate $\mathbf{x}$ to $\pi_{k}$ if the **linear discriminant score**
+\[
+d_{k}(\mathbf{x})=\max \left\{d_{1}(\mathbf{x}),\ldots,d_{g}(\mathbf{x})\right\}
+\]
+
+
+## Sample Version of linear discriminant scores
+
+
+* We estimate $d_{i}(\mathbf{x})$ by
+\[
+\hat{d}_{i}(\mathbf{x})=\boldsymbol{\bar{x}}_{i}'\boldsymbol{S}_{p}^{-1}\mathbf{x}-\frac{1}{2}\boldsymbol{\bar{x}}_{i}'\boldsymbol{S}_{p}^{-1}\boldsymbol{\bar{x}}_{i}+\ln p_{i},\,\,\text{for}\:i=1,\ldots,g
+\]
+
+* Equivalently, we can also consider the squared distances (estimate of the second term of $d_{i}^{Q}(\mathbf{x})$)
+\[
+D_{i}^{2}(\mathbf{x})=(\mathbf{x}-\bar{\mathbf{x}}_{i})'\mathbf{S}_{p}^{-1}(\mathbf{x}-\bar{\mathbf{x}}_{i})
+\]
+
+## Sample Linear Discriminant Analysis
+
+* Estimated TPM Rule for Equal-Covariance Normal Populations
+
+* Allocate $\mathbf{x}$ to $\pi_{k}$ if the **estimated linear discriminant score**
+\[
+\hat{d}{}_{k}(\mathbf{x})=\max\left\{\hat{d}{}_{1}(\mathbf{x}),\ldots,\hat{d}_{g}(\mathbf{x})\right\}
+\]
+
+* Or, (in terms of squared distances) allocate $\mathbf{x}$ to $\pi_{k}$
+if 
+
+\[
+-\frac{1}{2}D_{k}^{2}(\mathbf{x})+\ln p_{k}\,\,\,\text{is largest}
+\]
+
+* Or, (when priors are all equal) allocate $\mathbf{x}$ to $\pi_{k}$
+if $D_{k}^{2}(\mathbf{x})$ is smallest (observation is assigned to
+closest population)
+
+
+## Example 11.11: Classifying a potential business-school graduate students
+
+```{r}
+bsgrad.df <- read.table("T11-6.DAT", col.names = c("gpa", "gmat", "admission"))
+bsgrad.df$admission <- recode_factor(bsgrad.df$admission,
+                                     
+      `1` =  "Yes", `2` = "No", `3` =  "Borderline")
+str(bsgrad.df)
+```
+
+##
+
+```{r}
+head(bsgrad.df)
+```
+
+
+## 
+
+```{r fig.height=2.5, fig.width=4}
+bsgrad.df %>% 
+  ggplot(aes(x = gpa, y = gmat, colour = admission)) + 
+  geom_point()
+```
+
+
+## Linear Discriminant Analysis, Grad School
+
+```{r}
+bs.lda <- lda(admission ~ gpa + gmat, 
+                   data = bsgrad.df)
+bs.pred.lda <- predict(bs.lda)
+(cm.bs.lda <- table(bs.pred.lda$class, 
+                    bsgrad.df$admission))
+# accuracy rate
+sum(diag(cm.bs.lda))/nrow(bsgrad.df)
+```
+
+## LDA, Business School
+
+```{r fig.height=2.5, fig.width=4, eval = FALSE}
+# add new predicted class column
+bsgrad.df <- bsgrad.df %>% 
+  mutate(ldapred = bs.pred.lda$class) 
+
+# plot, add shape as predicted class
+bsgrad.df %>%
+  ggplot(aes(x = gpa, y = gmat, 
+             colour = admission, shape = ldapred)) +
+  geom_point()
+```
+
+
+## LDA result, Business School
+
+```{r fig.height=2.5, fig.width=4, echo = FALSE}
+bsgrad.df <- bsgrad.df %>% # add new predicted column
+  mutate(ldapred = bs.pred.lda$class) 
+bsgrad.df %>%
+  ggplot(aes(x = gpa, y = gmat, 
+             colour = admission, shape = ldapred)) +
+  geom_point()
+```
+
+
+
+## Quadratic Discriminant Analysis, Business School
+
+```{r}
+bs.qda <- qda(admission ~ gpa + gmat, 
+                   data = bsgrad.df)
+bs.pred.qda <- predict(bs.qda)
+(cm.bs.qda <- table(bs.pred.lda$class, 
+                    bsgrad.df$admission))
+# accuracy rate
+sum(diag(cm.bs.qda))/nrow(bsgrad.df)
+```
+
+## LDA and QDA, Business School
+
+Similar Result for LDA and QDA
+```{r}
+cm.bs.lda
+cm.bs.qda
+```
+
+
+## QDA, Business School
+
+```{r fig.height=2.5, fig.width=4, eval = FALSE}
+# add new predicted class column
+bsgrad.df <- bsgrad.df %>% 
+  mutate(qdapred = bs.pred.qda$class) 
+
+# plot, add shape as predicted class
+bsgrad.df %>%
+  ggplot(aes(x = gpa, y = gmat, 
+             colour = admission, shape = qdapred)) +
+  geom_point()
+```
+
+
+## QDA result, Grad School
+
+```{r fig.height=2.5, fig.width=4, echo = FALSE}
+# add new predicted class column
+bsgrad.df <- bsgrad.df %>% 
+  mutate(qdapred = bs.pred.qda$class) 
+
+# plot, add shape as predicted class
+bsgrad.df %>%
+  ggplot(aes(x = gpa, y = gmat, 
+             colour = admission, shape = qdapred)) +
+  geom_point()
+```
+
+
