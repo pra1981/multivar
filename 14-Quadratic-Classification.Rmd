@@ -56,7 +56,7 @@ $$
 
 * When $\boldsymbol{\Sigma}_{1}=\boldsymbol{\Sigma}_{2}$, the term
 $-\frac{1}{2}\mathbf{x}'(\boldsymbol{\Sigma}_{1}^{-1}-\boldsymbol{\Sigma}_{2}^{-1})\mathbf{x}$
-disappers.
+disappears.
 
 
 
@@ -231,7 +231,7 @@ where $i=1,\ldots, g$
 
 ## Quadratic Discriminant Analysis (QDA)
 
-* Using Minimum Total Probbability of Misclassification (TPM) Rule for Normal Populations   
+* Using Minimum Total Probability of Misclassification (TPM) Rule for Normal Populations   
  
 * (**QDA**) Allocate $\mathbf{x}$ to $\pi_{k}$ if the **quadratic discriminant score**
 \[
