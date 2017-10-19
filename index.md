@@ -12,6 +12,7 @@
 10. [Multivariate Analysis of Variance](https://github.com/jpailden/multivar/blob/master/10-Multivariate-ANOVA.pdf)  
 11. [Principal Components Analysis](https://github.com/jpailden/multivar/blob/master/11-Principal-Components-Analysis.pdf)  
 12. [PCA Additional Example](https://github.com/jpailden/multivar/blob/master/12-PCA-Additional-Example.pdf)   
-      * [Population Structure and Eigenanalysis by Patterson, et. al. 2006](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020190)
+      * [Population Structure and Eigenanalysis by Patterson, et. al. 2006](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020190)  
+13. [Linear Classification](https://github.com/jpailden/multivar/blob/master/13-Classification-and-Discrimination.pdf)
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
