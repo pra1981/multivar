@@ -4,7 +4,6 @@ author: "SIUE, F2017, Stat 589"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document:
-    keep_md: true
     toc: true
     toc_depth: 2
     toc_float: true
