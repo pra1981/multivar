@@ -1,5 +1,5 @@
 ---
-title: "15 -  LDA & QDA Additional Example"
+title: "15 -  LDA & QDA, Training/Testing Data. Cross-Validation"
 subtitle: "Junvie Pailden"   
 author: "SIUE, F2017, Stat 589"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
