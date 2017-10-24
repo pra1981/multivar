@@ -1,0 +1,324 @@
+---
+title: "15 -  LDA & QDA Additional Example"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 2), # round to 2 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+## Case 1: Credit Scoring on German Bank 
+
+The German credit data set was obtained from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29). The data set, which contains attributes and outcomes on 1000 loan applications.
+
+This dataset classifies people described by a set of attributes/predictors as good or bad credit risks.
+
+* Number of rows = 1000  
+* Number of attributes = 20
+
+
+```{r eval = FALSE}
+credit <- read.csv("germancredit.csv")
+names(credit)
+```
+
+
+## {.allowframebreak}
+
+```{r echo = FALSE}
+credit <- read.csv("germancredit.csv")
+names(credit)
+library(dplyr)
+credit$Default <- recode_factor(credit$Default, 
+        `0` = "No", `1` = "Yes"
+)
+```
+
+## Select Numeric Attributes/Predictors Only
+
+```{r}
+credit1 <- credit %>%
+  select(Default, duration, amount, installment, age)
+head(credit1, 2)
+```
+
+
+## Summary Measures by Class Default - Mean
+
+```{r}
+credit1 %>%
+  group_by(Default) %>%
+  summarise_all(mean)
+```
+
+
+## Summary Measures by Class Default - Std Deviation
+
+```{r}
+credit1 %>%
+  group_by(Default) %>%
+  summarise_all(sd)
+```
+
+
+## Histogram of Attributes
+
+```{r}
+library(tidyr)
+library(ggplot2)
+credit1.long <- credit1 %>% 
+  gather(variable, value, -Default)
+head(credit1.long, 4)
+```
+
+
+## 
+
+```{r eval = FALSE}
+credit1.long %>%
+  filter(Default == "No") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~variable, scales = 'free_x') +
+  ggtitle("Default = No")
+```
+
+## 
+
+```{r echo = FALSE}
+credit1.long %>%
+  filter(Default == "No") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~variable, scales = 'free_x') +
+  ggtitle("Default = No")
+```
+
+
+
+## 
+
+```{r eval = FALSE}
+credit1.long %>%
+  filter(Default == "Yes") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~variable, scales = 'free_x') +
+  ggtitle("Default = Yes")
+```
+
+## 
+
+```{r echo = FALSE}
+credit1.long %>%
+  filter(Default == "Yes") %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~variable, scales = 'free_x') +
+  ggtitle("Default = Yes")
+```
+
+
+## Split Data into Training and Testing Sets
+
+Randomly split data into 70\% training and 30\% testing.
+
+Build/train the classification (LDA/QDA) model on the training set and check the model performance on the testing set.
+
+```{r}
+set.seed(1) # fix seed to get same training set
+train <- sample(nrow(credit1), size = 0.7*nrow(credit1))
+cred.train <- credit1[train, ]
+dim(cred.train)
+cred.test <- credit1[-train,]
+dim(cred.test)
+```
+
+
+
+## Build LDA classifier/model on Training Data
+
+```{r}
+library(MASS)
+# Default ~. includes all attributes
+# Build model on training data
+cred.lda <- lda(Default ~. , data = cred.train) 
+# Confusion Matrix on Training Data
+(cm.lda.train <- table(Predicted = predict(cred.lda)$class, 
+      Default = cred.train$Default))
+sum(diag(prop.table(cm.lda.train))) # accuracy
+
+```
+
+## LDA prediction for new observation
+
+New individual apply for a loan.
+
+```{r}
+predict(cred.lda, 
+  newdata = data.frame(duration = 6, amount = 1100,
+                       installment = 4, age = 67))
+```
+
+
+
+## LDA prediction on the test data
+
+```{r}
+cred.test.lda <- predict(cred.lda, newdata = cred.test)
+(cm.lda.test <- table(Predicted = cred.test.lda$class, 
+      Default = cred.test$Default))
+sum(diag(prop.table(cm.lda.test))) # accuracy
+```
+
+
+
+## Build QDA classifier/model on Training Data
+
+```{r}
+# Default ~. includes all attributes
+# Build model on training data
+cred.qda <- qda(Default ~. , data = cred.train) 
+# Confusion Matrix on Training Data
+(cm.qda.train <- table(Predicted = predict(cred.qda)$class, 
+      Default = cred.train$Default))
+sum(diag(prop.table(cm.qda.train))) # accuracy
+```
+
+
+## QDA prediction on the test data
+
+```{r}
+cred.test.qda <- predict(cred.qda, newdata = cred.test)
+(cm.qda.test <- table(Predicted = cred.test.qda$class, 
+      Default = cred.test$Default))
+sum(diag(prop.table(cm.qda.test))) # accuracy
+```
+With equal prior and equal cost of misclassification, on the test data QDA (72\%) performed slightly better than LDA (70\%).
+
+
+## Assign Unequal Priors {.allowframebreaks}
+
+```{r}
+table(credit1$Default)/nrow(credit1)
+cred.qda2 <- qda(Default ~. , data = cred.train, 
+                 prior = c(0.7, 0.3)) 
+cred.test.qda2 <- predict(cred.qda2, newdata = cred.test)
+(cm.qda.test <- table(Predicted = cred.test.qda2$class, 
+      Default = cred.test$Default))
+sum(diag(prop.table(cm.qda.test))) # accuracy
+```
+
+
+## Case 2: Wine Data
+
+We consider the wine data set first used in Lecture 12: PCA additional example.
+
+The `wine` data is the result of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents found in each of the three types of wines. 
+
+```{r}
+data(wine, package = 'rattle.data')
+names(wine)
+```
+
+
+## 
+
+```{r fig.width = 4, echo = FALSE}
+pairs(wine[,2:6], col = wine$Type, upper.panel = NULL, pch = 16, cex = 0.5)
+legend("topright", bty = "n", legend = c("Type 1","Type 2","Type 3"), pch = 16, col = c("black","red","green"), xpd = T, cex = 1, y.intersp = 0.5)
+```
+
+
+## 
+
+```{r fig.width = 4, echo = FALSE}
+pairs(wine[,7:10], col = wine$Type, upper.panel = NULL, pch = 16, cex = 0.5)
+legend("topright", bty = "n", legend = c("Type 1","Type 2","Type 3"), pch = 16, col = c("black","red","green"), xpd = T, cex = 1, y.intersp = 0.5)
+```
+
+
+
+## 
+
+```{r fig.width = 4, echo = FALSE}
+pairs(wine[,11:14], col = wine$Type, upper.panel = NULL, pch = 16, cex = 0.5)
+legend("topright", bty = "n", legend = c("Type 1","Type 2","Type 3"), pch = 16, col = c("black","red","green"), xpd = T, cex = 1, y.intersp = 0.5)
+```
+
+## LDA on Wine Data
+
+The purpose of linear discriminant analysis (LDA) in this example is to find the linear combinations of the original variables (the 13 chemical concentrations here) that gives the best possible separation between the groups (wine `Type`) in our data set. 
+
+If we want to separate the wines by `Type`, the wines come from three different `Type`, so the number of groups $G=3$, and the number of variables is 13 $p=13$. The maximum number of useful discriminant functions that can separate the wines by `Type` is the minimum of $G-1$ and $p$ which is 2. Thus, we can find at most 2 useful discriminant functions to separate the wines by cultivar, using the 13 chemical concentration variables.
+
+
+## LDA on Wine Data {.allowframebreaks}
+
+```{r}
+wine.lda <- MASS::lda(Type ~ ., data=wine)
+wine.pred.lda <- predict(wine.lda, wine)
+(cm.lda.wine <- table(Predicted = wine.pred.lda$class, 
+      Default = wine$Type))
+sum(diag(prop.table(cm.lda.wine))) # accuracy
+```
+Don't get too excited about getting an accuracy of 100\% when predicting values based on models that were built using those values.
+
+Many data scientists think that the failure to develop a stronger predictive model is due to the problem of ``over-fitting."" 
+
+Over-fitting occurs when a model/procedure fails to accurately predict future events because it is too closely tailored to past events.
+
+
+## k-fold Cross Validation
+
+The k-fold cross validation is implemented by randomly dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a testing set, and the method is fit on the remaining k-1 folds (training set). 
+
+The procedure (classification) is then applied on the observations in the first fold (testing set) and the error (misclassication) rate is computed. 
+
+This procedure is repeated k times; each time, a different group of observations is treated as a validation set. This process results in k estimates of error rate. The k-fold CV estimate of the error rate is computed by averaging these k values.
+
+
+## Leave one out cross validation (LOOCV), LDA
+
+The LOOCV cross-validation approach is a special case of k-fold cross-validation in which k = n.
+
+```{r}
+wine.lda.cv <- MASS::lda(Type ~ ., data=wine, CV = TRUE)
+(cm.lda.wine.cv <- table(Predicted = wine.lda.cv$class, 
+      Default = wine$Type))
+sum(diag(prop.table(cm.lda.wine.cv))) # accuracy
+```
+
+
+## QDA on Wine Data, LOOCV
+
+
+```{r}
+wine.qda.cv <- MASS::qda(Type ~ ., data=wine, CV = TRUE)
+(cm.qda.wine.cv <- table(Predicted = wine.qda.cv$class, 
+      Default = wine$Type))
+sum(diag(prop.table(cm.qda.wine.cv))) # accuracy
+```
+
+
