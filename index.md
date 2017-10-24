@@ -16,5 +16,6 @@
 13. [Linear Discriminant Analysis](https://github.com/jpailden/multivar/blob/master/13-Classification-and-Discrimination.pdf)  
 14. [Classifying Several Populations, Quadratic Discriminant Analysis](https://github.com/jpailden/multivar/blob/master/14-Quadratic-Classification.pdf)  
 15. [LDA & QDA, Training/Testing Data. Cross-Validation](https://github.com/jpailden/multivar/blob/master/15-LDA-QDA-Examples.pdf)
+16. [Regression Basics and Diagnostics - html page](http://siue.edu/~jpailde/16-Regression-Basics-and-Diagnostics.html)
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
