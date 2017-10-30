@@ -1,0 +1,339 @@
+---
+title: "17 -  Logistic Regression and Classification"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 3), # round to 3 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Binary Response (Target) Variable
+
+
+ Analysis of whether or not business firms have an industrial relations
+department, according to size of firm.  
+
+  * Response: firm has industrial relations $(Y=1)$ or firm does not
+have industrial relations $(Y=0)$ 
+
+  * Explanatory: size of firm
+
+ Study of labor force participation of married women, as a function
+of age, number of children, and husbands income.  
+
+  * Response: married woman in the labor force $(Y=1)$ and married woman
+not in the labor force $(Y=0)$   
+
+  * Explanatory: age, \# of children, husbands income
+  
+  
+## Simple Logistic Regression Model
+
+* Response variable $Y_{i}$ ,$i=1,\ldots,n$, are independent Bernoulli r.v. with expected
+value $E(Y_{i})=p_i$ and $Z_i$ predictor,
+\[
+E(Y_{i}|Z_i = z_i) = p(z_i) = \frac{\exp(\beta_{0}+\beta_{1}z_{i})}{1+\exp(\beta_{0}+\beta_{1}z_{i})}
+\]
+is called the \emph{logistic response function}. Equivalently, 
+\[
+\ln\left(\frac{ p(z_i)}{1- p(z_i)}\right)=\beta_{0}+\beta_{1}z_{i}
+\]  
+
+* The ratio $p(z_i)/(1- p(z_i))$ is called the odds and $\log\left(\frac{ p(z_i)}{1- p(z_i)}\right)$ is called the logit.  
+
+
+> It is assumed that the logit transformation of the response prob'y of succes has a linear relationship with the predictor variable(s).
+
+
+## Recall Credit Scoring on German Bank 
+
+The German credit data set was obtained from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29). The data set, which contains attributes and outcomes on 1000 loan applications.
+
+This dataset classifies people described by a set of attributes/predictors as good or bad credit risks.
+
+* Number of rows = 1000  
+* Number of attributes = 20
+
+
+
+## Load the German Credit Data
+
+```{r}
+credit <- read.csv("germancredit.csv")
+library(dplyr)
+names(credit)
+```
+
+
+## Fit a Simple Logistic Regression Model 
+
+* Response Variable: $y$ = Default, 
+* Predictor Variable: $z$ = Duration of Loan
+
+```{r eval = FALSE}
+library(ggplot2)
+credit %>%
+  ggplot(aes(x = duration, y = Default)) +
+  geom_point() + 
+  stat_smooth(method = "glm", 
+        # logistic reg falls under general linear model
+        method.args = list(family = "binomial"), 
+        # use binomial family under glm
+        se = F) # remove confidence bands
+```
+
+
+##
+
+```{r 17-fg1, echo = FALSE, fig.width=4, fig.height=3}
+library(ggplot2)
+credit %>%
+  ggplot(aes(x = duration, y = Default)) +
+  geom_point(size = 0.7) + 
+  stat_smooth(method = "glm", 
+              # logistic regression falls under general linear model
+              method.args = list(family = "binomial"), 
+              # use binomial family under glm
+              se = F) # remove confidence bands
+```
+
+
+## Using `glm` function to fit logistic regression
+
+```{r}
+fit.logr1 <- glm(Default ~ duration, 
+                 data = credit, 
+                 family = binomial) 
+# use binomial family for logistic reg
+fit.logr1
+```
+
+
+## Logistic Regression Likelihood Function
+
+Since each $Y_{i}=0,1,$$i=1,\ldots,n$, is a Bernoulli r.v., its
+prob'y dist'n
+\[
+f_{i}(Y_{i})=p_i^{Y_{i}}(1-p_i)^{1-Y_{i}}
+\]
+
+The joint prob'y dist'n of $Y_{1},\ldots,Y_{n}$ independent r.v.s.
+is
+\[
+g(Y_{1},\ldots,Y_{n})=\prod_{i=1}^{n}f_{i}(Y_{i})=\prod_{i=1}^{n}p_i^{Y_{i}}(1-p_i)^{1-Y_{i}}
+\]
+
+
+## Log-likelihood Function on the Coefficients
+
+For convenience,
+\[
+\ln\,g(Y_{1},\ldots,Y_{n})=\sum_{i=1}^{n}\left[Y_{i}\cdot\ln\left(\frac{p_i}{1-p_i}\right)\right]+\sum_{i=1}^{n}\ln\left(1-p_i\right)\,\,\,\,\text{(Why?)}
+\]
+
+Thus, the log-likelihood function of $(\beta_{0},\beta_{1})$ can
+be written as
+\begin{eqnarray*}
+\ln\,L(\beta_{0},\beta_{1}) & = & \ln\,g(Y_{1},\ldots,Y_{n})\\
+ & = & \sum_{i=1}^{n}Y_{i}(\beta_{0}+\beta_{1}X_{i})-\sum_{i=1}^{n}\ln\left[1+\exp(\beta_{0}+\beta_{1}X_{i})\right]
+\end{eqnarray*}
+
+
+## Maximum Likelihood Estimation
+
+* No closed-form solution exists for the MLEs of $\beta_{0}$ and $\beta_{1}$.  
+* Computer-intensive numerical search procedures are required to find
+the MLE estimates $b_{0}$ and $b_{1}$. Use built-in `glm` function in R to find these estimates.  
+* Once the MLE estimates $b_{0}$ and $b_{1}$ are found, we can compute
+the fitted logistic response function 
+\[
+\hat{p}(z_i)=\frac{\exp(b_{0}+b_{1}z_i)}{1+\exp(b_{0}+b_{1}z_i)}
+\]
+* We can also compute the fitted logit response function (log-odds)
+\[
+\text{logit}(\hat{p}(z_i))=\ln\left(\frac{\hat{p}(z_i)}{1-\hat{p}(z_i)}\right) = b_{0}+b_{1}z_i
+\]
+
+
+## Interpretation of $b_{1}$
+
+At $Z=z_{j}$ and $Z=z_{j}+1$, 
+\begin{align*}
+\text{logit}[\hat{p}(z_{j})] & =  b_{0}+b_{1}z_{j}\\
+\text{logit}[\hat{p}(z_{j}+1)] & =  b_{0}+b_{1}(z_{j}+1)
+\end{align*}
+
+The difference between the two fitted values,
+\begin{align*}
+\text{logit}[\hat{p}(z_{j}+1)]-\text{logit}[\hat{p}(z_{j})] &= \log(odds_{2})-\log(odds_{1})\\
+ & =\log(\text{odds ratio}) = b_1 \\
+ \text{odds ratio}&=\hat{OR}=\exp(b_{1})
+\end{align*}
+
+The estimated odds is multiplied by $\exp(b_{1})$ for any unit increase in $z$.
+
+
+## Model Summary
+
+```{r}
+model1 <- summary(fit.logr1)
+names(model1)
+# coefficients
+model1$coefficients
+```
+
+
+## Multiple Logistic Regression
+
+The multiple logistic response function with $r$ predictors is
+\[
+E\{Y|\mathbf{z}_i\}=p(\mathbf{z}_i)=\frac{\exp(\mathbf{z}_i'\mathbf{\beta})}{1+\exp(\mathbf{z}'_i\mathbf{\beta})}=\frac{1}{1+\exp(-\mathbf{z}_i'\mathbf{\beta})}
+\]
+where
+$$
+\mathbf{z}_{i}'\beta  =  \beta_{0}+\beta_{1}z_{i,1}+\ldots+\beta_{r}z_{i,r}.
+$$
+
+Note that the $r$ predictors can be either continuous or discrete.
+
+
+## Using `glm` function to fit multiple logistic regr (full data)
+
+```{r}
+fit.logr2 <- glm(Default ~ duration + amount + installment +  age, 
+                 data = credit, 
+                 family = binomial) 
+
+summary(fit.logr2)$coefficients
+```
+
+
+
+## Using Logistic Regression for Classification (Performance)
+
+Randomly split data into 70\% training and 30\% testing.
+
+
+```{r}
+set.seed(1) # fix seed to get same training set
+train <- sample(nrow(credit), size = 0.7*nrow(credit))
+cred.train <- credit[train, ]
+dim(cred.train)
+cred.test <- credit[-train,]
+dim(cred.test)
+```
+
+
+## Multiple Logistic Regression on Train/Test Credit Data
+
+```{r}
+# build model on training data
+fit.train <- glm(Default ~ duration + amount + 
+                            installment +  age, 
+                 data = cred.train, 
+                 family = binomial)
+problr.test <- predict(fit.train, 
+                  newdata = cred.test, 
+                  type = "response") #predicted probability
+table(cred.test$Default) # ratio of 1's and 0's
+```
+
+
+## Determining Optimal Cutoff for Classification
+
+The default cutoff prediction probability score is 0.5 or the ratio of 1’s and 0’s in the training data (95/205 = 0.463). 
+
+But sometimes, tuning the probability cutoff can improve the accuracy in both the development and validation samples. 
+
+The `InformationValue::optimalCutoff` function provides ways to find the optimal cutoff to improve the prediction of 1’s, 0’s, both 1’s and 0’s that reduces the misclassification error.
+
+```{r}
+library(InformationValue)
+(optCutOff <- optimalCutoff(cred.test$Default, 
+                            predictedScores = problr.test))
+```
+
+
+## Histogram of Predicted Probabilities
+
+```{r eval = FALSE}
+data.frame(x = problr.test) %>% 
+  ggplot(aes(x)) + 
+  geom_histogram() +
+  geom_vline(xintercept = c(95/205, optCutOff), 
+             colour = c("red", "blue"))
+```
+
+
+##
+
+```{r 17-fg2, echo = FALSE, fig.width=4, fig.height=3}
+data.frame(x = problr.test) %>% 
+  ggplot(aes(x)) + 
+  geom_histogram() +
+  geom_vline(xintercept = c(95/205, optCutOff), 
+             colour = c("red", "blue"))
+```
+
+## Model Performance using Default Cut-off
+
+```{r}
+confusionMatrix(cred.test$Default, 
+                predictedScores = problr.test, 
+                threshold = 95/205)
+misClassError(cred.test$Default, 
+              predictedScores = problr.test, 
+                threshold = 95/205)
+```
+
+
+## Model Performance using Optimal Cut-off
+
+```{r}
+confusionMatrix(cred.test$Default, 
+                predictedScores = problr.test, 
+                threshold = optCutOff)
+misClassError(cred.test$Default, 
+                predictedScores = problr.test, 
+                threshold = optCutOff)
+```
+Note that the misclassification rate under the logistic regression model is slightly better than either LDA or QDA (see lecture 15).
+
+
+## Receiver Operating Characteristics (ROC) Curve 
+
+Receiver Operating Characteristics Curve traces the percentage of true positives accurately predicted by a given logit model as the prediction probability cutoff is lowered from 1 to 0. 
+
+For a good model, as the cutoff is lowered, it should mark more of actual 1’s as positives and lesser of actual 0’s as 1’s. So for a good model, the curve should rise steeply, indicating that the true positive rate TPR (Y-Axis) increases faster than the false positive rate FPR (X-Axis) as the cutoff score decreases. 
+
+Larger area under the ROC curve (depends on application) implies better predictive ability of the model.
+
+
+## ROC Curve of Logistic Reg Model for Credit Data
+
+```{r 17-fg3, fig.width=4, fig.height=2.5}
+plotROC(cred.test$Default, predictedScores = problr.test)
+```
+
