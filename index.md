@@ -13,5 +13,9 @@
 11. [Principal Components Analysis](https://github.com/jpailden/multivar/blob/master/11-Principal-Components-Analysis.pdf)  
 12. [PCA Additional Example](https://github.com/jpailden/multivar/blob/master/12-PCA-Additional-Example.pdf)   
       * [Population Structure and Eigenanalysis by Patterson, et. al. 2006](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.0020190)
+13. [Linear Discriminant Analysis](https://github.com/jpailden/multivar/blob/master/13-Classification-and-Discrimination.pdf)  
+14. [Classifying Several Populations, Quadratic Discriminant Analysis](https://github.com/jpailden/multivar/blob/master/14-Quadratic-Classification.pdf)  
+15. [LDA & QDA, Training/Testing Data. Cross-Validation](https://github.com/jpailden/multivar/blob/master/15-LDA-QDA-Examples.pdf)
+16. [Regression Basics and Diagnostics - html page](http://siue.edu/~jpailde/16-Regression-Basics-and-Diagnostics.html)
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
