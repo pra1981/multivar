@@ -1,0 +1,299 @@
+---
+title: "18 -  Cluster Analysis"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 3), # round to 3 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.5,
+  fig.width = 3.5,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## Introduction
+
+Objective: Given $p$-dimensional observations, group these into $g$
+significantly distinct groups, within which they are homogeneous (similar).
+
+* Grouping or clustering is distinct from the classification methods
+discussed in the previous chapter.   
+
+* Classification pertains to a \textbf{known} number of groups, and
+the operational objective is to assign new observations to one of
+these groups.   
+
+* Cluster analysis make no assumptions concerning the number of groups
+or the group structure.  
+
+* Grouping is done on the basis of similarities or distances (dissimilarities).
+
+
+
+## Distances between pairs of items
+
+Let $\mathbf{x,y}\in\mathbb{R}^{p}$. Common measurements/metrics between
+$\mathbf{x}$ and $\mathbf{y}$ are  
+
+1. Euclidean distance; $L^{2}$
+\begin{align*}
+d(\mathbf{x,y}) & =||\mathbf{x}-\mathbf{y}||=\sqrt{(\mathbf{x-y})^{T}(\mathbf{x-y})}\\
+ & =\sqrt{(x_{1}-y_{1})^{2}+(x_{2}-y_{2})^{2}+\cdots+(x_{p}-y_{p})^{2}}
+\end{align*}  
+
+2. Manhattan or City-block distance; $L^{1}$
+\[
+d(\mathbf{x,y})=\sum_{i=1}^{p}|x_{i}-y_{i}|
+\]
+
+
+## Euclidean distance vs City-block distance
+
+![Source: https://goo.gl/LwB9yB](https://qph.ec.quoracdn.net/main-qimg-e73d01f18d0b4a2f57ff2206a3863c10-c)
+
+
+
+## Distances between pairs of items
+
+3. Minkowski distance; $L^{m}$
+\[
+d(\mathbf{x,y})=\left[\sum_{i=1}^{p}|x_{i}-y_{i}|^{m}\right]^{1/m}
+\]  
+
+4. Mahalanobis distance; MD
+\[
+d(\mathbf{x,y})=\sqrt{(\mathbf{x-y})^{T}\mathbf{S}^{-1}(\mathbf{x-y})}
+\]
+where $\mathbf{S}$ contains the sample variances and covariances.
+
+Measurements (1) -(4) satisfy the definition of true distances:
+
+\begin{enumerate}
+\item $d(\mathbf{x,y})\geq0$, equality iff $\mathbf{x}=\mathbf{y}$
+\item $d(\mathbf{x,y})=d(\mathbf{y,x})$ .
+\item $d(\mathbf{x,z})\leq d(\mathbf{x,y})+d(\mathbf{y,z})$
+\end{enumerate}
+
+
+
+## Which clustering algorithm to choose?
+
+
+1. **Hierarchical methods**
+
+* Clusters formed sequentially, with the number of clusters decreasing as clusters merged with other similar clusters *agglomerative hierarchical methods* or split into less homogeneous groups *divisive methods*.     
+
+* We will only cover agglomerative clustering.
+
+
+
+2. **Nonhierarchical (partitioning) methods**
+
+* Designed to group items into a collection of $K$ clusters where the number of clusters may either be specified in advance or determined as part of the procedure.  
+* We will only cover **K-means method**.
+
+
+
+## Agglomerative clustering
+
+1. Start with $N$ clusters, each containing a single entity and an $N\times N$
+symmetric matrix of distances $\mathbf{D}=\{d_{ik}\}$.  
+
+\itemsep0em
+
+2. Search the distance matrix for the nearest (most similar) pair of
+clusters. Let the distance between ``most similar'' clusters $U$
+and $V$ be $d_{UV}$.  
+
+\itemsep0em
+
+
+3. Merge clusters $U$ and $V$. Label the newly formed cluster $(UV)$.
+update the entries in the distance matrix by (a) deleting the rows
+and columns corresponding to clusters $U$ and $V$ and (b) adding
+a row and column giving the distances between cluster $(UV)$ and
+the remaining clusters. 
+
+
+## Agglomerative clustering (cont.)
+
+
+\itemsep0em
+
+4. Repeat Steps 2 and 3 a total of $N-1$ times. (All objects will be
+in a single cluster after the algorithm terminates.) Record the identity
+of clusters that are merged and the levels (distances or similarities)
+at which the mergers take place.  
+
+> Note: Step 3 can be done in different ways, which is what distinguishes single-linkage from complete-linkage and average-linkage clustering.
+
+
+
+## Single Linkage
+
+* Initially, we find the smallest distance in $\mathbf{D}=\{d_{ik}\}$
+and merge corresponding objects to get cluster $(UV)$.  
+
+* The general distances (in Step 3) between $(UV)$ and any other cluster
+$W$ are computed by
+\[
+d_{(UV)W}=\min\{d_{UW},d_{VW}\}
+\]
+where $d_{UW}$and $d_{VW}$ are distances between the nearest neighbors
+of clusters $U$ and $V$ and clusters $V$ and $W$, respectively.  
+
+* The results of single linkage clustering can be graphically displayed
+in the form of a **dendogram**.  
+
+* The branches in the tree represent clusters. The branches come together
+(merge) at nodes.
+
+
+## Single linkage heirarchical clustering example {.allowframebreaks}
+
+```{r 01-lec18}
+x1 <- c(1, 2, 3, 4, 7, 8) 
+x2 <- c(8, 2, 3, 1, 11, 8) 
+X <- cbind(x1, x2) 
+(X.d <- dist(X, method = "euclidean"))  # default distance 
+plot(X, pch =16, xlim = c(0,10), ylim = c(0,13))
+text(x1, x2, 1:6, pos = 4, col = "blue")
+```
+
+## Single linkage heirarchical clustering using `hclust` {.allowframebreaks}
+
+```{r 02-lec18}
+# use builtin function hclust() and specify
+# method = "single" for single linkage
+X.hc.s <- hclust(X.d, method="single")
+# using the result in hclust(), cuttree()
+# cuts a tree into several groups by either 
+# number of groups, say k=3, or the cut height h
+cutree(X.hc.s, k = 3) 
+```
+
+
+## Dendogram {.allowframebreaks}
+
+* Cluster 1 = {1}  
+* Cluster 2 = {2,3,4}  
+* Cluster 3 = {5,6}
+
+```{r 03-lec18}
+# plotting an `hclust` object creates a dendogram
+plot(X.hc.s, xlab = NA)
+```
+
+
+## Single linkage heirarchical clustering {.allowframebreaks}
+
+```{r 04-lec18}
+plot(X, xlim = c(0,10), ylim = c(0,13), 
+     pch = cutree(X.hc.s, 3), 
+		 col = cutree(X.hc.s, 3)) 
+text(x1, x2, 1:6, pos = 4, col=cutree(X.hc.s, 3))
+```
+
+
+
+## IRIS Data: Single linkage HC {.allowframebreaks}
+
+```{r 05-lec18, fig.width=7}
+# remove, non-numeric column, compute euclidean distance
+iris.d <- dist(iris[,-5]) 
+iris.hc.s <- hclust(iris.d, method = "single")
+# create estimated labels for each obs
+table(predicted = cutree(iris.hc.s, k = 3), actual = iris[,5])
+plot(iris.hc.s, xlab = NA)
+# creates a rectangular cluster border
+rect.hclust(iris.hc.s, k = 3, border = "red")
+```
+
+
+
+## IRIS Data: Single linkage HC, analysis
+
+* We can use the known species variable to determine how well the clustering method (which doesn't use the species variable) is able to reconstruct the species.  
+
+* If it works well, plotting character and color should match well.  
+
+* If one approach doesn't appear to work very well, we can try other linkage methods.   
+
+* For the iris data, single linkage produces only two clusters instead of the three species variable. 
+
+
+## IRIS Data Clustered {.allowframebreaks}
+
+```{r 06-lec18, fig.height=5.5, fig.width=5.5}
+# specify point type according to species
+# specify color by clusters with k = 3
+pairs(iris[,-5], pch = unclass(iris[,5]), 
+			col = cutree(iris.hc.s, k = 3))
+```
+
+
+## USA Arrests Data {.allowframebreaks}
+
+This data set contains statistics, in arrests per 100,000 residents for assault, murder, and rape in each of the 50 US states in 1973. Also given is the percent of the population living in urban areas.
+
+```{r 07-lec18, fig.height=5.5, fig.width=5.5}
+str(USArrests)
+head(USArrests)
+pairs(USArrests, pch = 16)
+```
+
+
+## USA Arrests: Single Linkage HC {.allowframebreaks}
+
+```{r 08-lec18, fig.height=5.5, fig.width=5.5}
+arrests.hc.s <- hclust(dist(USArrests), method = "single")
+# check contents of clusters if number of cluster is specified
+table(cutree(arrests.hc.s, k = 2))
+table(cutree(arrests.hc.s, k = 3))
+table(cutree(arrests.hc.s, k = 4))
+table(cutree(arrests.hc.s, k = 5))
+table(cutree(arrests.hc.s, k = 6))
+table(cutree(arrests.hc.s, k = 7))
+table(cutree(arrests.hc.s, k = 8))
+```
+
+
+
+
+
+## USA Arrests: Dendogram  {.allowframebreaks}
+
+```{r 09-lec18, fig.height=5.5, fig.width=7 }
+plot(arrests.hc.s, hang = -1) # adjust labels placement
+# creates a rectangular cluster border
+rect.hclust(arrests.hc.s, k = 6, border = "red")
+```
+
+
+
+## USA Arrests Data Clustered {.allowframebreaks}
+
+```{r 10-lec18, fig.height=5.5, fig.width=5.5}
+# specify point type according to species
+# specify color by clusters with k = 3
+pairs(USArrests, col = cutree(arrests.hc.s, k = 6), pch = 16)
+```
+
