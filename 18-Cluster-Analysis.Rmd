@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
   echo = TRUE,
   comment = "#",
   fig.path = "figures/",
-  fig.height = 3.5,
-  fig.width = 3.5,
+  fig.height = 5.5,
+  fig.width = 5.5,
   fig.align = "center",
   cache = FALSE,
   warnings = FALSE,
@@ -242,7 +242,7 @@ rect.hclust(iris.hc.s, k = 3, border = "red")
 
 ## IRIS Data Clustered {.allowframebreaks}
 
-```{r 06-lec18, fig.height=5.5, fig.width=5.5}
+```{r 06-lec18}
 # specify point type according to species
 # specify color by clusters with k = 3
 pairs(iris[,-5], pch = unclass(iris[,5]), 
@@ -254,7 +254,7 @@ pairs(iris[,-5], pch = unclass(iris[,5]),
 
 This data set contains statistics, in arrests per 100,000 residents for assault, murder, and rape in each of the 50 US states in 1973. Also given is the percent of the population living in urban areas.
 
-```{r 07-lec18, fig.height=5.5, fig.width=5.5}
+```{r 07-lec18}
 str(USArrests)
 head(USArrests)
 pairs(USArrests, pch = 16)
@@ -263,7 +263,7 @@ pairs(USArrests, pch = 16)
 
 ## USA Arrests: Single Linkage HC {.allowframebreaks}
 
-```{r 08-lec18, fig.height=5.5, fig.width=5.5}
+```{r 08-lec18}
 arrests.hc.s <- hclust(dist(USArrests), method = "single")
 # check contents of clusters if number of cluster is specified
 table(cutree(arrests.hc.s, k = 2))
@@ -281,7 +281,7 @@ table(cutree(arrests.hc.s, k = 8))
 
 ## USA Arrests: Dendogram  {.allowframebreaks}
 
-```{r 09-lec18, fig.height=5.5, fig.width=7 }
+```{r 09-lec18, fig.width=7 }
 plot(arrests.hc.s, hang = -1) # adjust labels placement
 # creates a rectangular cluster border
 rect.hclust(arrests.hc.s, k = 6, border = "red")
@@ -291,9 +291,191 @@ rect.hclust(arrests.hc.s, k = 6, border = "red")
 
 ## USA Arrests Data Clustered {.allowframebreaks}
 
-```{r 10-lec18, fig.height=5.5, fig.width=5.5}
+```{r 10-lec18}
 # specify point type according to species
 # specify color by clusters with k = 3
-pairs(USArrests, col = cutree(arrests.hc.s, k = 6), pch = 16)
+pairs(USArrests, 
+      col = cutree(arrests.hc.s, k = 6), 
+      pch = 16)
 ```
+
+
+
+## Complete Linkage
+
+* At each stage, the distance between clusters is determined by the
+distance between the two elements from each cluster, that are **most
+distant**.   
+
+* Ensures that all items in a cluster are within some maximum distance
+of each other.  
+
+* Start by finding the minimum entry in $\mathbf{D}=\{d_{ik}\}$ ~and
+merging the corresponding objects to get cluster $(UV)$.  
+
+* For Step 3, the distances between $(UV)$ and any other cluster $W$
+are computed by
+\[
+d_{(UV)W}^{*}=\max\{d_{UV},d_{VW}\}
+\]
+
+
+## Complete linkage heirarchical clustering example {.allowframebreaks}
+
+
+```{r 11-lec18}
+# method = "complete" for complete linkage
+X.hc.c <- hclust(X.d, method = "complete")
+cutree(X.hc.c, k = 3) 
+# cluster 1 = {1}, cluster 2 = {2,3,4}
+# cluster 3 = {5,6}
+plot(X.hc.c)
+```
+
+
+## Complete linkage heirarchical clustering example {.allowframebreaks}
+
+
+```{r 12-lec18}
+plot(X,  xlim = c(0,10), ylim = c(0,13),
+     pch = cutree(X.hc.c, 3), 
+		 col = cutree(X.hc.c, 3)) 
+text(x1,x2, 1:6, pos = 4, col=cutree(X.hc.c, 3))
+```
+
+
+## IRIS Data: Complete linkage HC {.allowframebreaks}
+
+
+```{r 13-lec18}
+iris.hc.c <- hclust(iris.d, method = "complete")  
+plot(iris.hc.c)
+rect.hclust(iris.hc.c, k =3, border="red")
+```
+
+
+## IRIS Data: Complete linkage HC {.allowframebreaks}
+
+Complete linkage clustering gives at least more balanced clusters and somewhat obeys the natural three species variable grouping.
+
+
+
+```{r 14-lec18}
+# specify point type according to species
+# specify color by clusters with k = 3 using cutree()
+pairs(iris[,-5], pch = unclass(iris[,5]), 
+	      col=cutree(iris.hc.c, k = 3)) 
+```
+
+
+## USA Arrests: Complete Linkage HC {.allowframebreaks}
+
+```{r 15-lec18}
+arrests.hc.c <- hclust(dist(USArrests), method = "complete")
+# check contents of clusters if number of cluster is specified
+table(cutree(arrests.hc.c, k = 2))
+table(cutree(arrests.hc.c, k = 3))
+table(cutree(arrests.hc.c, k = 4))
+table(cutree(arrests.hc.c, k = 5))
+table(cutree(arrests.hc.c, k = 6))
+table(cutree(arrests.hc.c, k = 7))
+table(cutree(arrests.hc.c, k = 8))
+```
+
+
+
+
+
+## USA Arrests: Complete Linkage HC   {.allowframebreaks}
+
+```{r 16-lec18, fig.width=7 }
+plot(arrests.hc.c, hang = -1) # adjust labels placement
+# creates a rectangular cluster border
+rect.hclust(arrests.hc.c, k = 4, border = "red")
+```
+
+
+
+## USA Arrests Complete Linkage HC  {.allowframebreaks}
+
+```{r 17-lec18}
+# specify point type according to species
+# specify color by clusters with k = 3
+pairs(USArrests, 
+      col = cutree(arrests.hc.c, k = 4), 
+      pch = 16)
+```
+
+
+## Average Linkage
+
+* Treats the distance between two clusters as the average distance between
+all pairs of items where one member of a pair belongs to each cluster.  
+
+* Start by finding the minimum entry in $\mathbf{D}=\{d_{ik}\}$ ~and
+merging the corresponding objects to get cluster $(UV)$.  
+
+* For Step 3, the distances between $(UV)$ and the other cluster $W$
+are determined by
+\[
+d_{(UV)W}=\frac{\sum_{i}\sum_{k}d_{ik}}{N_{(UV)}N_{W}}
+\]
+where $d_{ik}$ is the distance between object $i$ in the cluster
+$(UV)$ and object $k$ in the cluster $W$, and $N_{(UV)}$ and $N_{W}$
+are the number of items in clusters $(UV)$ and $W$.
+
+
+## IRIS Data: Average linkage HC {.allowframebreaks}
+
+```{r 18-lec18}
+iris.hc.av <- hclust(iris.d, method = "average")
+plot(iris.hc.av)
+rect.hclust(iris.hc.av, k =3, border="red")
+```
+
+
+## IRIS Data: Average linkage HC {.allowframebreaks}
+
+```{r 19-lec18}
+pairs(iris[,-5], pch = unclass(iris[,5]), 
+	    col = cutree(iris.hc.av, k = 3)) 
+```
+
+
+
+## USA Arrests: Average Linkage HC {.allowframebreaks}
+
+```{r 20-lec18}
+arrests.hc.av <- hclust(dist(USArrests), method = "average")
+# check contents of clusters if number of cluster is specified
+table(cutree(arrests.hc.av, k = 2))
+table(cutree(arrests.hc.av, k = 3))
+table(cutree(arrests.hc.av, k = 4))
+table(cutree(arrests.hc.av, k = 5))
+table(cutree(arrests.hc.av, k = 6))
+table(cutree(arrests.hc.av, k = 7))
+table(cutree(arrests.hc.av, k = 8))
+```
+
+
+## USA Arrests: Average Linkage HC   {.allowframebreaks}
+
+```{r 21-lec18, fig.width=7 }
+plot(arrests.hc.av, hang = -1) # adjust labels placement
+# creates a rectangular cluster border
+rect.hclust(arrests.hc.av, k = 4, border = "red")
+```
+
+
+
+## USA Arrests Average Linkage HC  {.allowframebreaks}
+
+```{r 22-lec18}
+# specify point type according to species
+# specify color by clusters with k = 3
+pairs(USArrests, 
+      col = cutree(arrests.hc.av, k = 4), 
+      pch = 16)
+```
+
 
