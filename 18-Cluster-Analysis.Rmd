@@ -479,3 +479,55 @@ pairs(USArrests,
 ```
 
 
+
+## Example 12.7 Complete vs Average linkage HC {.allowframebreaks}
+
+Data collected on 22 US public utility companies for the year 1975 using 8 measurements.  
+
+* $X_1$: Fixed-charge coverage ratio (income/debt)  
+* $X_2$: Rate of return on capital.  
+* $X_3$: Cost per KW capacity in place.  
+* $X_4$: Annual load factor.  
+* $X_5$: Peak kWh deman growth from 1974 to 1975.  
+* $X_6$: Sales (kWh use per year).  
+* $X_7$: Percent nuclear  
+* $X_8$: Total fuel costs (cents per kWh).  
+
+
+
+
+```{r 23-lec18}
+X <- read.table("T12-5.DAT") 
+utility <- X[,-9]
+rownames(utility) <- X[,9]
+utility.d <- dist(utility) 
+# complete linkage
+utility.hc.c = hclust(utility.d, method="complete")   
+# average linkage
+utility.hc.av = hclust(utility.d, method="average") 
+plot(as.dendrogram(utility.hc.c), horiz = T,
+	main = "Complete linkage HC")
+```
+
+```{r 24-lec18}
+plot(as.dendrogram(utility.hc.av), horiz = T, 
+	main = "Average linkage HC")
+```
+
+
+
+## Comments on Hierarchical Procedures
+
+* All agglomerative procedures follow the basic algorithm discussed
+in this section.  
+
+* Sources of error and variation are not formally considered in hierarchical
+procedures - meaning that HC procedures are sensitive to outliers.  
+
+* It a good practice to try several clustering procedures methods and
+withing a given method, a couple of different ways of assigning distances.
+
+* If the outcomes from several methods are (roughly) consistent with
+one another, perhaps a case for ``natural'' groupings can be advanced.
+
+
