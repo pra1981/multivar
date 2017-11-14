@@ -99,7 +99,7 @@ text(X0, c("A", "B", "C", "D"), pos = 4, col = "red")
 ```{r 011-lec19}
 (fit0 <- kmeans(X0, centers = 2))
 plot(X0, pch =16, xlim = c(-4, 6), ylim = c(-3, 4))
-text(X0, c("A", "B", "C", "D"), pos = 4, col = "blue")
+text(X0, c("A", "B", "C", "D"), pos = 4, col = "red")
 points(fit0$centers, col = "blue", pch = 16)
 ```
 
