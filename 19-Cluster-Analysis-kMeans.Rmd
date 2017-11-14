@@ -1,0 +1,265 @@
+---
+title: "19 -  Cluster Analysis - k Means Method"
+subtitle: "Junvie Pailden"   
+author: "SIUE, F2017, Stat 589"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+    beamer_presentation:
+      theme: "Singapore"
+      colortheme: "lily"
+      fonttheme: "professionalfonts"
+  #ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  options(digits = 3), # round to 3 digits
+  echo = TRUE,
+  comment = "#",
+  fig.path = "figures/",
+  fig.height = 3.6,
+  fig.width = 4,
+  fig.align = "center",
+  cache = FALSE,
+  warnings = FALSE,
+  message = FALSE)
+knitr::opts_knit$set(
+  root.dir="data/"
+  )
+```
+
+
+## K-Means Method (Nonhierarchical Clustering)
+
+1. Partition the items into $K$ initial clusters.  
+
+2. Proceed through the list of items, assigning an item to the cluster
+whose centroid (mean) is nearest (usually used Euclidean distance).  
+
+    * Recalculate the centroid for the cluster receiving the new item and for the cluster losing the item.  
+
+3. Repeat Step 2 until no more reassignments take place.
+
+
+    * Rather than starting with a parition of all items into $K$ preliminary groups in Step 1, we could specify $K$ initial centroids (seed points) and then proceed to Step 2.  
+    
+    * Final assignment is dependent on the initial partition.
+
+
+## Example 12.11 Clustering using the K-means method
+
+Suppose we measure two variables $X_{1}$ and $X_{2}$ for each of
+foour items, $A,B,C$, and $D$.
+
+|      | Observations |       |
+|------|:------------:|:-----:|
+| Item |     $x_1$    | $x_2$ |
+| $A$  |       5      |   3   |
+| $B$  |      -1      |   1   |
+| $C$  |       1      |   -2  |
+| $D$  |      -3      |   -2  |
+
+* Divide the items into $K=2$ clusters such that the items within each
+cluster are closer to one another thatn they are to the items in different
+clusters.
+
+
+## Example 12.11 (cont)
+
+* At Step 2, we compute the Euclidean distance of each item from the
+groupcentroids and reassign each item to the nearest group.  
+
+* If an item is moved from the initial configuration, the cluster centroids
+(means) must be updated before proceeding.  
+
+* The $i$th coordinate, $i=1,2,\ldots,p$, of the centroid is easily
+updates using the formulas:
+\[
+\bar{x}_{i,new}=\begin{cases}
+\frac{n\bar{x}_{i}+x_{ji}}{n+1} & \text{\,\,\,\,\ if the jth item is added to a group}\\
+\frac{n\bar{x}_{i}-x_{ji}}{n-1} & \text{\,\,\,\,\ if the jth item is removed to a group}
+\end{cases}
+\]
+where $n$ is the number of items in the old group with centroid     $\bar{x}'=(\bar{x}_{1},\bar{x}_{2},\ldots,\bar{x}_{p})$.
+
+
+## Example 12.11  {.allowframebreaks}
+
+```{r 01-lec19}
+x1 <- c(5, -1, 1, -3) 
+x2 <- c(3, 1, -2, -2) 
+X0 <- cbind(x1, x2) 
+plot(X0, pch =16, xlim = c(-4, 6), ylim = c(-3, 4))
+text(X0, c("A", "B", "C", "D"), pos = 4, col = "red")
+```
+
+
+## Example 12.11 (Kmeans function) {.allowframebreaks}
+
+```{r 011-lec19}
+(fit0 <- kmeans(X0, centers = 2))
+plot(X0, pch =16, xlim = c(-4, 6), ylim = c(-3, 4))
+text(X0, c("A", "B", "C", "D"), pos = 4, col = "blue")
+points(fit0$centers, col = "blue", pch = 16)
+```
+
+
+## Syntethic Data Example {.allowframebreaks}
+
+```{r 02-lec19}
+library(MASS) 
+# generate a multivariate normal data
+Sigma1 <- matrix(c(2.25,1.5,1.5,2.25), nrow=2)  
+set.seed(17)
+group1 <- mvrnorm(50, mu = c(4, 4), Sigma = Sigma1) 
+group2 <- mvrnorm(50, mu = c(6, 0), Sigma = diag(2))
+group3 <- mvrnorm(50, mu = c(-2, 6), Sigma = Sigma1)
+X1 <- rbind(group1, group2, group3)
+class1 <- c(rep(1, 50), rep(2, 50), rep(3, 50))
+plot(X1, pch = class1, cex = 0.7)
+# point symbol is natural classes
+```
+
+
+
+## Random starts can give different predicted cluster {.allowframebreaks}
+
+```{r 03-lec19}
+set.seed(17)
+fit11 <- kmeans(X1, centers = 3)
+table(fit11$cluster)
+fit11$centers # cluster centers
+plot(X1, pch = class1, col = fit11$cluster, cex = 0.7)
+points(fit11$centers, col = "blue", pch = 16)
+# point symbol is natural classes
+# point color is cluster solution
+# blue point are cluster centers
+```
+
+
+
+## Different Seed, different predicted cluster {.allowframebreaks}
+
+```{r 04-lec19}
+set.seed(18)
+fit12 <- kmeans(X1, centers = 3)
+table(fit12$cluster)
+fit12$centers
+plot(X1, pch = class1, col = fit12$cluster, cex = 0.7)
+points(fit12$centers, col = "blue", pch = 16)
+# point symbol is natural classes
+# point color is cluster solution
+# blue point are cluster centers
+```
+
+
+
+## Fixed on random start issue? {.allowframebreaks}
+
+* The \texttt{nstart} argument tells \texttt{kmeans} to try many random starts and keep the best.    
+
+* With 20 or 25 random starts, you'll generally find the overall best solution unless your sample size is really big.
+
+```{r 05-lec19}
+fit21 <- kmeans(X1, centers = 3, nstart = 25)
+fit22 <- kmeans(X1, centers = 3, nstart = 25)
+# heirarchical clustering method using Ward Method
+fit2.hclust <- hclust(dist(X1), method = "ward.D")
+# similar kmeans predicted cluster
+table(kmeans1 = fit21$cluster, kmeans2 = fit22$cluster)
+# kmeans and Ward Heirarchical clustering method
+table(kmeans1 = fit21$cluster, 
+       hclust = cutree(fit2.hclust, k = 3))
+# lets see kmeans clusters output
+plot(X1, pch = class1, col = fit21$cluster, cex = 0.7)
+```
+
+
+## Comparison between heirarchical clustering and kmeans {.allowframebreaks}
+
+
+```{r 051-lec19}
+# heirarchical clustering method using Ward Method
+fit2.hclust <- hclust(dist(X1), method = "ward.D")
+# predicted clusters are almost the same
+table(kmeans1 = fit21$cluster, 
+      hclust = cutree(fit2.hclust, k = 3))
+# lets see kmeans and hclust clusters output
+plot(X1, pch = fit21$cluster, 
+      col = cutree(fit2.hclust, k = 3), cex = 0.7)
+```
+
+## Example 12.12 K-means clustering of public utilities {.allowframebreaks}
+
+* The $K$-means algorithm for several choices of $K$ was run.   
+
+* The choise of $K$ depends upon the subject-matter knowedgge as well choosing $K$ so as to maximize the between-cluster variability relative to the within-cluster variability, such as
+
+$$SS_{ratio}=\frac{|\boldsymbol{W}|}{|\boldsymbol{B+W}|} \quad \text{and} \quad tr(\boldsymbol{W^{-1}}\boldsymbol{B})$$
+
+```{r 06-lec19}
+utility <- as.matrix(read.table("T12-5.DAT")[,1:8]) 
+rownames(utility) <- read.table("T12-5.DAT")[,9]
+ssratio <- rep(NA, 10) # create storage vector
+for(k in 1:length(ssratio)) { 	
+	# Tries numerous random starts
+	fit = kmeans(utility, k, nstart = 25)   	
+	ssratio[k] <- fit$betweenss/fit$totss 	
+} 
+# Levels out after k = 3
+plot(ssratio, type = "b", pch = 16) 
+```
+
+
+## K-means clustering of public utilities  
+
+```{r 07-lec19, fig.height=5, fig.width=5}
+colnames(utility) <- c("Income/Debt", "ReturnCap", 
+                       "CostPerKW", "Load", "Demand", 
+                       "Sales", "PercNuc", "FuelC")
+# use 3 clusters
+util.kmeans <- kmeans(utility, 3, nstart = 25) 
+# compare with agglomerative clustering 
+```
+
+##
+
+```{r 071-lec19, fig.height=5, fig.width=5, eval = FALSE}
+pairs(utility[, 1:6], col = util.kmeans$cluster, 
+      pch = 16, cex = 0.6)
+```
+
+
+##
+
+```{r 072-lec19, fig.height=4, fig.width=4, echo = FALSE}
+pairs(utility[, 1:6], col = util.kmeans$cluster, 
+      pch = 16, cex = 0.6)
+```
+
+
+## Swiss Canton Data  {.allowframebreaks}
+
+Switzerland, in 1888, was entering a period known as the demographic transition; i.e., its fertility was beginning to fall from the high level typical of underdeveloped countries. The data collected are for 47 French-speaking "provinces" at about 1888.
+
+
+```{r 08-lec19, fig.height=4, fig.width=4}
+names(swiss)
+# use 3 clusters
+swiss.kmeans <- kmeans(scale(swiss), 3, nstart=25)  
+```
+
+##
+
+```{r 081-lec19, fig.height=4, fig.width=4, eval = FALSE}
+pairs(swiss, col = swiss.kmeans$cluster, 
+      pch = 16, cex = 0.6)  
+```
+
+
+##
+
+```{r 082-lec19, fig.height=4, fig.width=4, echo = FALSE}
+pairs(swiss, col = swiss.kmeans$cluster, 
+      pch = 16, cex = 0.6)  
+```
