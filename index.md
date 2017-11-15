@@ -18,6 +18,11 @@
 15. [LDA & QDA, Training/Testing Data. Cross-Validation](https://github.com/jpailden/multivar/blob/master/15-LDA-QDA-Examples.pdf)
 16. [Regression Basics and Diagnostics - html page](http://siue.edu/~jpailde/16-Regression-Basics-and-Diagnostics.html)  
 17. [Logistic Regression and Classification](https://github.com/jpailden/multivar/blob/master/17-Logistic-Regression-and-Classification.pdf)  
+<<<<<<< HEAD
 18. [Cluster Analysis - part 1](https://github.com/jpailden/multivar/blob/master/18-Cluster-Analysis.pdf)
+=======
+18. [Cluster Analysis - Hierarchical Procedure](https://github.com/jpailden/multivar/blob/master/18-Cluster-Analysis.pdf)  
+19. [Cluster Analysis - k Means Method](https://github.com/jpailden/multivar/blob/master/19-Cluster-Analysis-kMeans.pdf)
+>>>>>>> f76feb1094ff7e1cf067f8263ba0a16bae0cc4c6
 
 > [Data Sets in the Lecture](https://github.com/jpailden/multivar/tree/master/data)
