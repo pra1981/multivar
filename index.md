@@ -1,5 +1,7 @@
 ### Lecture Notes for Stat 589 - Fall 2017
 
+*written by [Junvie Pailden](http://www.siue.edu/~jpailde/)*
+
 1. [Introduction to Computing using R](https://github.com/jpailden/multivar/blob/master/00-R-computing.pdf)  
 2. [What is Multivariate Data?](https://github.com/jpailden/multivar/blob/master/01-Intro-Multivar.pdf)  
 3. [Review of Basic Matrix Results](https://github.com/jpailden/multivar/blob/master/02-Matrix-Review.pdf)  
